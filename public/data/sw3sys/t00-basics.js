@@ -1,0 +1,122 @@
+export default {
+  spor: {
+    id: 't00', nr: 0, titel: 'Computing Systems & OS Basics', kort: 'Basics', emoji: '🖥️',
+    farve: '#11998E', gradient: 'linear-gradient(135deg, #11998E 0%, #38EF7D 100%)',
+    lektion: 'Lektion 1.1 + 1.2 (forudsætning for alle emner)',
+    disposition: [
+      'Computersystemets ressourcer: CPU, hukommelse, I/O – OS som resource allocator',
+      'Processorer: single-core, multicore, multiprocessor',
+      'Hukommelseshierarki: registre → cache → RAM → disk',
+      'Dual-mode: user mode vs kernel mode, system calls, timer',
+      'Brugere, grupper, root og filrettigheder (rwx, chmod)',
+      'Bash scripting og sysroot ved krydskompilering',
+    ],
+  },
+  kort: [
+    {
+      id: 'k1', type: 'koncept', orden: 1,
+      hook: 'Dit program må ikke røre hardwaren. Det skal spørge kernen pænt.',
+      body: 'CPU\'en har en **mode bit**: **user mode** eller **kernel mode**. Privilegerede instruktioner, fx direkte I/O, ændring af sidetabeller og timeren, må kun køre i kernel mode.\n\nNår dit program vil skrive til en fil, laver det et **system call**. Det udløser en **trap**: CPU\'en skifter til kernel mode og hopper til kernens handler. Kernen udfører arbejdet og vender tilbage til user mode med en returværdi.\n\nInterrupts og exceptions (fx division med nul) skifter også til kernel mode.\n\nPointen er **beskyttelse**. Et fejlbehæftet program kan ikke vælte OS\'et eller læse andres hukommelse. En **timer** afbryder med faste intervaller, så OS\'et altid får kontrollen tilbage, også fra en uendelig løkke.',
+    },
+    {
+      id: 'k1q', type: 'quiz', om: 'k1',
+      sporgsmal: 'Hvad sker der, når et program i user mode kalder write()?',
+      svar: [
+        'Programmet skriver direkte til disk-controlleren',
+        'En trap skifter CPU\'en til kernel mode, kernen udfører skrivningen og vender tilbage til user mode',
+        'OS\'et kopierer programmet ind i kernen',
+        'CPU\'en skifter permanent til kernel mode',
+      ],
+      rigtigt: 1,
+      forklaring: 'System calls er den kontrollerede vej ind i kernen: trap → kernel mode → handler → return-from-trap → user mode.',
+    },
+    {
+      id: 'k2', type: 'koncept', orden: 2,
+      hook: 'Hurtig hukommelse er lille og dyr. Stor hukommelse er langsom. Computeren snyder med lag.',
+      body: 'Et computersystem består af **CPU**, **hukommelse** og **I/O-enheder**. OS\'et er både **resource allocator**, der fordeler dem mellem programmer, og **control program**, der forhindrer programmer i at ødelægge for hinanden.\n\nCPU\'en kører fetch-decode-execute. En **multicore**-processor har flere kerner på én chip. Et **multiprocessor**-system (SMP) har flere CPU\'er, der deler hukommelse.\n\nHukommelsen er et **hierarki**: registre (ns), cache (få ns), RAM (~100 ns), SSD/disk (µs-ms). Jo hurtigere, jo dyrere pr. byte og jo mindre.\n\nDe øverste lag er **flygtige** og mister data uden strøm. Tricket er **lokalitet**: programmer bruger ofte de samme data igen, så en lille hurtig cache rammer rigtigt det meste af tiden.',
+    },
+    {
+      id: 'k2q', type: 'quiz', om: 'k2',
+      sporgsmal: 'Hvorfor har computere et hukommelseshierarki i stedet for kun den hurtigste hukommelse?',
+      svar: [
+        'Hurtig hukommelse er dyr pr. byte, så man kombinerer lidt hurtig med meget langsom og udnytter lokalitet',
+        'Langsom hukommelse er mere pålidelig',
+        'CPU\'en kan kun adressere én type hukommelse ad gangen',
+        'Det er et krav fra operativsystemet',
+      ],
+      rigtigt: 0,
+      forklaring: 'Pris, størrelse og hastighed trækker i hver sin retning. Lokalitet gør, at en lille cache giver det meste af hastigheden.',
+    },
+    {
+      id: 'k3', type: 'koncept', orden: 3,
+      hook: '-rwxr-x--- er ikke støj. Det er ni ja/nej-svar.',
+      body: 'Hver fil har en **ejer** (user), en **gruppe** og rettigheder for tre klasser: **owner**, **group** og **others**. Hver klasse har **r** (read), **w** (write) og **x** (execute).\n\n`-rwxr-x---` betyder: ejer rwx, gruppe r-x, andre ingenting. Som oktal: r=4, w=2, x=1, altså **750**.\n\n`chmod 640 fil` giver ejer rw, gruppe r, andre intet. `chown bruger:gruppe fil` skifter ejer.\n\nPå en **mappe** betyder x »må gå ind i / slå navne op i«, og r betyder »må liste indholdet«.\n\nBrugere står i `/etc/passwd`. **root** har UID 0 og springer de almindelige rettighedstjek over. Derfor bruger man `sudo` til enkelte kommandoer i stedet for at være logget ind som root.',
+    },
+    {
+      id: 'k3q', type: 'quiz', om: 'k3',
+      sporgsmal: 'Hvad giver chmod 640 rapport.txt?',
+      svar: [
+        'Ejer: rw, gruppe: r, andre: ingenting',
+        'Ejer: rwx, gruppe: r, andre: ingenting',
+        'Ejer: r, gruppe: rw, andre: ingenting',
+        'Alle kan læse, kun ejer kan skrive',
+      ],
+      rigtigt: 0,
+      forklaring: '6 = 4+2 = rw, 4 = r, 0 = ingen rettigheder.',
+    },
+    {
+      id: 'kode1', type: 'quiz', efter: 'k3',
+      sporgsmal: 'Hvad gør scriptet?',
+      kode: '#!/bin/bash\nfor f in *.log; do\n  [ -s "$f" ] || rm "$f"\ndone',
+      svar: [
+        'Sletter alle .log-filer',
+        'Sletter tomme .log-filer',
+        'Sletter .log-filer, der ikke er tomme',
+        'Udskriver størrelsen på hver .log-fil',
+      ],
+      rigtigt: 1,
+      forklaring: '[ -s fil ] er sandt, hvis filen findes og er større end 0 bytes. `||` kører rm kun, når testen fejler, altså når filen er tom.',
+    },
+    {
+      id: 'myte1', type: 'myte', efter: 'k3',
+      pastand: 'root kan læse en fil, selv om filen har rettighederne 000.',
+      rigtigt: 1,
+      forklaring: 'Fakta. root springer DAC-rettighedstjek over (CAP_DAC_OVERRIDE). Rettigheder beskytter mod andre brugere, ikke mod root. Undtagelser findes, fx sikkerhedsmoduler som SELinux.',
+    },
+    {
+      id: 'seq1', type: 'raekkefolge', efter: 'k1',
+      sporgsmal: 'Sæt trinene i et system call i rækkefølge',
+      trin: [
+        'Programmet kalder write() i libc',
+        'libc lægger syscall-nummer og argumenter i registre',
+        'Trap: CPU\'en skifter til kernel mode',
+        'Kernen slår syscall-nummeret op og udfører operationen',
+        'Return-from-trap: tilbage i user mode med returværdien',
+      ],
+      forklaring: 'libc er kun en tynd wrapper. Selve skiftet til kernel mode sker ved trap-instruktionen.',
+    },
+    {
+      id: 'f1', type: 'forklar', efter: 'k1',
+      sporgsmal: 'Forklar dual-mode operation, og hvorfor den findes.',
+      punkter: [
+        { tekst: 'Mode bit skelner mellem user mode og kernel mode', ord: ['mode bit', 'user mode', 'kernel mode', 'bruger', 'kerne'] },
+        { tekst: 'Privilegerede instruktioner kun i kernel mode', ord: ['privilegere', 'instruktion'] },
+        { tekst: 'System call / trap er vejen ind i kernen', ord: ['system call', 'systemkald', 'trap', 'syscall'] },
+        { tekst: 'Interrupts og exceptions skifter også til kernel mode', ord: ['interrupt', 'exception', 'afbryd'] },
+        { tekst: 'Formål: beskytte OS og processer mod hinanden', ord: ['beskyt', 'protect', 'sikker'] },
+        { tekst: 'Timer sikrer, at OS\'et får kontrollen tilbage', ord: ['timer'] },
+      ],
+    },
+    {
+      id: 'f2', type: 'forklar', efter: 'k3',
+      sporgsmal: 'Hvad er et sysroot, og hvorfor skal du bruge det, når du krydskompilerer til Raspberry Pi?',
+      punkter: [
+        { tekst: 'En mappe, der spejler target-systemets rodfilsystem', ord: ['mappe', 'rodfilsystem', 'root', 'kopi', 'spejl'] },
+        { tekst: 'Indeholder target\'s headers og biblioteker (/usr/include, /usr/lib)', ord: ['header', 'bibliotek', 'lib', 'include'] },
+        { tekst: 'Cross-compileren finder ARM-versionerne i stedet for host\'ens x86', ord: ['arm', 'x86', 'host', 'target', 'cross'] },
+        { tekst: 'Undgår at linke mod forkerte biblioteksversioner', ord: ['link', 'version'] },
+        { tekst: 'Angives med --sysroot eller CMAKE_SYSROOT', ord: ['--sysroot', 'cmake_sysroot', 'toolchain'] },
+      ],
+    },
+  ],
+};

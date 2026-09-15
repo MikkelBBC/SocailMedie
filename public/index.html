@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light only">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-title" content="Leths super App">
+  <title>Leths super App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="exam.css">
+  <link rel="stylesheet" href="play.css">
+  <script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="topbar">
+        <button class="logo" id="logo">Leths super App</button>
+        <div class="hud-stats">
+          <span class="pill boost" id="boost" title="XP-boost fra case" hidden></span>
+          <span class="pill streak" title="Dage i træk">🔥 <b id="streak">0</b></span>
+          <span class="ring" title="Level">
+            <svg viewBox="0 0 36 36"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#833AB4"/><stop offset="1" stop-color="#E1306C"/></linearGradient></defs><circle cx="18" cy="18" r="15.9" class="bg" pathLength="100"/><circle id="level-fg" cx="18" cy="18" r="15.9" class="fg" stroke="url(#lg)" pathLength="100"/></svg>
+            <b id="level">1</b>
+          </span>
+          <span class="ring" title="Dagens mål">
+            <svg viewBox="0 0 36 36"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCAF45"/><stop offset="1" stop-color="#FD1D1D"/></linearGradient></defs><circle cx="18" cy="18" r="15.9" class="bg" pathLength="100"/><circle id="goal-fg" cx="18" cy="18" r="15.9" class="fg" stroke="url(#gg)" pathLength="100"/></svg>
+            <small id="goal-label">0/10</small>
+          </span>
+        </div>
+      </div>
+      <div id="highlights" class="highlights"></div>
+    </header>
+
+    <main id="view-feed" class="view">
+      <div id="feed" class="feed"></div>
+    </main>
+
+    <main id="view-eksamen" class="view page" hidden>
+      <h1>Eksamen <span class="h1-sub">SW3SYS · mundtlig</span></h1>
+      <div id="exam"></div>
+    </main>
+
+    <main id="view-gemt" class="view page" hidden>
+      <h1>Gemt</h1>
+      <div id="saved-list"></div>
+    </main>
+
+    <main id="view-fremskridt" class="view page" hidden>
+      <h1>Statistik</h1>
+      <div id="progress"></div>
+    </main>
+
+    <nav class="nav">
+      <button class="nav-btn on" data-view="feed"><span>🏠</span>Feed</button>
+      <button class="nav-btn" data-view="eksamen"><span>🎓</span>Eksamen</button>
+      <button class="nav-btn" data-view="gemt"><span>❤️</span>Gemt</button>
+      <button class="nav-btn" data-view="fremskridt"><span>📊</span>Statistik</button>
+    </nav>
+
+    <div id="sheet" hidden>
+      <div class="sheet-panel">
+        <button id="sheet-close" aria-label="Luk">✕</button>
+        <div id="sheet-content"></div>
+      </div>
+    </div>
+    <div id="sim" hidden>
+      <button id="sim-close" aria-label="Afslut simulering">✕</button>
+      <div id="sim-body"></div>
+    </div>
+    <div id="toast" hidden></div>
+  </div>
+</body>
+</html>

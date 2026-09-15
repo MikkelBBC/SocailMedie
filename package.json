@@ -1,0 +1,13 @@
+{
+  "name": "leths-super-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Scroll-feed som TikTok, men hvert kort lærer dig noget",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20.12"
+  }
+}

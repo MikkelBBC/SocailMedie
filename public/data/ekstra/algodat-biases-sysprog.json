@@ -1,0 +1,300 @@
+{
+  "spor": [
+    { "id": "algodat", "titel": "Når O(1) ikke holder", "kort": "AlgoDat", "emoji": "🧮", "farve": "#405DE6", "gradient": "linear-gradient(135deg, #00C6FF 0%, #405DE6 50%, #833AB4 100%)" },
+    { "id": "biases", "titel": "Hjernens genveje", "kort": "Biases", "emoji": "🧠", "farve": "#F77737", "gradient": "linear-gradient(135deg, #FCAF45 0%, #F77737 45%, #E1306C 100%)" },
+    { "id": "sysprog", "titel": "To tråde, én fejl", "kort": "SysProg", "emoji": "🧵", "farve": "#C13584", "gradient": "linear-gradient(135deg, #E1306C 0%, #C13584 45%, #5851DB 100%)" }
+  ],
+  "kort": [
+    {
+      "id": "a1", "spor": "algodat", "type": "koncept", "orden": 1,
+      "hook": "En O(n²)-algoritme slår en O(n log n). Hver eneste dag.",
+      "body": "Store-O fortæller, hvordan tiden **vokser**, når n bliver stor. Konstanter og små input smider den bevidst væk.\n\nDet betyder, at en »dårlig« algoritme med lille konstant kan vinde, så længe n er lille. Insertion sort er O(n²), men den laver næsten ingenting pr. skridt: ingen rekursion, ingen ekstra hukommelse, og den læser data i rækkefølge, som CPU-cachen elsker.\n\nDerfor snyder rigtige sorteringsbiblioteker. Pythons Timsort og mange quicksort-implementeringer skifter til insertion sort, når et delarray er under ca. 32-64 elementer.\n\nLektien: Store-O er et værktøj til at sammenligne **vækst**, ikke en stopur. Når nogen siger »den her er hurtigere«, er det rigtige modspørgsmål: for hvilken størrelse n?"
+    },
+    {
+      "id": "a1q", "spor": "algodat", "type": "quiz", "om": "a1",
+      "sporgsmal": "Hvorfor skifter mange sorteringsbiblioteker til insertion sort for små delarrays?",
+      "svar": [
+        "Lille konstant og cache-venlig læsning slår bedre vækst, når n er lille",
+        "Insertion sort er O(n log n), når n er lille",
+        "Store-O gælder ikke under 100 elementer",
+        "Quicksort kan ikke sortere under 64 elementer"
+      ],
+      "rigtigt": 0,
+      "forklaring": "Store-O skjuler konstanter. For små n dominerer konstanten, og insertion sort har en meget lille én. Store-O ›gælder‹ stadig, den siger bare intet om små n."
+    },
+    {
+      "id": "a2", "spor": "algodat", "type": "koncept", "orden": 2,
+      "hook": "En hashtabel er O(1). Indtil den er O(n).",
+      "body": "En hashtabel regner nøglen om til et tal og bruger det som indeks i et array af »buckets«. Rammer to nøgler samme bucket, er det en **kollision**, og de ender i en lille liste.\n\nI gennemsnit er listerne korte, så opslag er O(1). Men i **værste tilfælde** lander alle nøgler i samme bucket, og hvert opslag bliver en lineær søgning: O(n).\n\nDet er ikke teori. I 2011 viste forskere »hash flooding«: send en webserver tusindvis af parametre, der kolliderer, og én request kan æde minutters CPU. Svaret var tilfældigt seedede hashfunktioner (Python og Rust bruger SipHash), og Java 8 laver lange bucket-lister om til balancerede træer, så værste tilfælde bliver O(log n).\n\nGennemsnit er et løfte om typisk data. Værste tilfælde er det, en angriber vælger."
+    },
+    {
+      "id": "a2q", "spor": "algodat", "type": "quiz", "om": "a2",
+      "sporgsmal": "En angriber sender n nøgler, der alle hasher til samme bucket (chaining med lister). Hvad koster ét opslag?",
+      "svar": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+      "rigtigt": 2,
+      "forklaring": "Alle nøgler ligger i én lang liste, så opslag er lineær søgning: O(n). At indsætte alle n koster O(n²) i alt. Java 8 laver lange buckets om til træer og får O(log n)."
+    },
+    {
+      "id": "a3", "spor": "algodat", "type": "koncept", "orden": 3,
+      "hook": "Nogle gange tager append en evighed. I gennemsnit tager det ingenting.",
+      "body": "Et dynamisk array (Pythons list, C++'s vector, Javas ArrayList) har en fast kapacitet. Når det er fuldt, allokeres et nyt og **større** array, og alt kopieres over. Den ene append koster O(n).\n\nTricket er at **fordoble** kapaciteten. Så sker kopieringen sjældnere og sjældnere. Over n appends kopieres der højst 1 + 2 + 4 + ... < 2n elementer, så den samlede pris er O(n) og hver append koster **amortiseret** O(1).\n\nVokser arrayet i stedet med et fast antal pladser, fx +10, bliver den samlede pris O(n²). Det er en af de mest almindelige skjulte ydelsesfejl.\n\nOg en fælde: amortiseret O(1) er ikke det samme som O(1) hver gang. I et spil eller et realtidssystem kan den ene dyre kopiering stadig give et hak."
+    },
+    {
+      "id": "a3q", "spor": "algodat", "type": "quiz", "om": "a3",
+      "sporgsmal": "Et dynamisk array vokser med +10 pladser, hver gang det er fuldt. Hvad koster n appends i alt?",
+      "svar": ["O(n)", "O(n log n)", "O(n²)", "O(1) amortiseret"],
+      "rigtigt": 2,
+      "forklaring": "Der kopieres 10 + 20 + 30 + ... ≈ n²/20 elementer, altså O(n²). Kun vækst med en faktor (fx ×2 eller ×1,5) giver amortiseret O(1)."
+    },
+    {
+      "id": "a4", "spor": "algodat", "type": "koncept", "orden": 4,
+      "hook": "Indsæt i midten: linked list vinder på papiret og taber i virkeligheden.",
+      "body": "Lærebogen: at indsætte i en linked list er O(1), i et array O(n), fordi elementer skal flyttes.\n\nMen for at indsætte i **midten** af en liste skal du først **finde** stedet, og det er O(n) pointer-hop. Hvert hop lander et tilfældigt sted i hukommelsen og giver ofte et cache-miss, der er omkring 100 gange langsommere end at læse fra CPU-cachen.\n\nArrayet ligger derimod samlet. At finde stedet og flytte resten med memmove er lineært, men det er lineært på den måde, hardwaren er bygget til. Bjarne Stroustrup har vist, at vector slår list selv ved tilfældige indsættelser, langt op i store n.\n\nListen vinder, når du **allerede har en pointer** til noden, fx i en LRU-cache (hashmap + dobbeltkædet liste), eller når elementer ikke må flytte sig i hukommelsen."
+    },
+    {
+      "id": "a4q", "spor": "algodat", "type": "quiz", "om": "a4",
+      "sporgsmal": "Hvornår er en linked list reelt det bedste valg?",
+      "svar": [
+        "Når du ofte indsætter elementer et tilfældigt sted",
+        "Når du allerede har en pointer til noden og skal flytte eller fjerne den i O(1)",
+        "Når du skal iterere hurtigt over alle elementer",
+        "Når data er små tal"
+      ],
+      "rigtigt": 1,
+      "forklaring": "Uden pointeren skal du søge O(n) med cache-misses. Med pointeren (som i en LRU-cache) får du ægte O(1). Iteration og små elementer er netop dér, hvor arrays vinder mest."
+    },
+    {
+      "id": "a5", "spor": "algodat", "type": "koncept", "orden": 5,
+      "hook": "Quicksort er den hurtigste sortering. Giv den sorteret input, og den kollapser.",
+      "body": "Quicksort vælger en pivot, deler arrayet i »mindre end« og »større end« og sorterer delene rekursivt. Deler pivoten nogenlunde på midten, får du O(n log n) med små konstanter og god cache-adfærd.\n\nDen naive udgave bruger **første element** som pivot. Er input allerede sorteret, er pivoten altid det mindste element. Delingen bliver 0 og n-1 hver gang, arbejdet bliver n + (n-1) + ... = **O(n²)**, og rekursionsdybden bliver n, hvilket kan sprænge stakken.\n\nSorteret input er ikke et sjældent hjørne. Det er noget af det mest almindelige input, der findes.\n\nDerfor bruger rigtige implementeringer tilfældig pivot, median-af-tre, eller introsort/pdqsort, som opdager dårlige delinger og skifter til heapsort. Så er værste tilfælde garanteret O(n log n)."
+    },
+    {
+      "id": "a5q", "spor": "algodat", "type": "quiz", "om": "a5",
+      "sporgsmal": "Naiv quicksort (første element er pivot) får et allerede sorteret array med n elementer. Hvad sker der?",
+      "svar": [
+        "O(n) – den opdager, at det er sorteret",
+        "O(n log n) som altid",
+        "O(n²) og rekursionsdybde n",
+        "Den giver et forkert resultat"
+      ],
+      "rigtigt": 2,
+      "forklaring": "Pivoten er altid minimum, så hver deling fjerner kun ét element. n + (n-1) + ... = O(n²), og stakken bliver n dyb."
+    },
+    {
+      "id": "am1", "spor": "algodat", "type": "myte", "efter": "a1",
+      "hook": "Myte eller fakta?",
+      "pastand": "Binær søgning er altid hurtigere end lineær søgning i et sorteret array.",
+      "svar": ["Myte", "Fakta"], "rigtigt": 0,
+      "forklaring": "Myte. For små arrays (typisk op til et par dusin elementer) er lineær søgning ofte hurtigere. Den kører i rækkefølge, som CPU'en kan forudsige og cache, mens binær søgning hopper rundt og rammer fejlforudsagte branches."
+    },
+    {
+      "id": "ac1", "spor": "algodat", "type": "case", "efter": "a2",
+      "hook": "Case",
+      "scenarie": "Din webserver lægger alle query-parametre i en hashmap. Hashfunktionen er fast og offentligt kendt. En dag bruger én enkelt request med 50.000 parametre 40 sekunders CPU.",
+      "sporgsmal": "Hvad er den mest sandsynlige årsag?",
+      "svar": [
+        "Garbage collection",
+        "Hash flooding: parametrene er valgt til at kollidere",
+        "Netværket er langsomt",
+        "En hukommelseslæk"
+      ],
+      "rigtigt": 1,
+      "forklaring": "Kendt hashfunktion + brugerstyrede nøgler = angriberen kan vælge nøgler, der kolliderer. Hver indsættelse bliver O(n) og det hele O(n²). Løsning: tilfældigt seedet hash og et loft over antal parametre."
+    },
+
+    {
+      "id": "b1", "spor": "biases", "type": "koncept", "orden": 1,
+      "hook": "Dine biases er ikke bugs. De er features i den forkerte kontekst.",
+      "body": "I 1970'erne viste Kahneman og Tversky, at folk bruger **heuristikker**, altså mentale genveje, når de vurderer sandsynligheder. Genvejene giver systematiske fejl, og dem kalder vi biases.\n\nGerd Gigerenzer har vist den anden side: simple tommelfingerregler klarer sig ofte **bedre** end avancerede modeller, når der er stor usikkerhed og lidt data. En kompleks model tilpasser sig støjen (overfitting), mens reglen ikke har nok frihed til at tage fejl på den måde.\n\nSå det interessante spørgsmål er ikke »har jeg en bias?«, for det har du. Det er: **passer miljøet til genvejen?** En heuristik fejler, når omgivelserne er anderledes end dem, den er formet til: medier, der forstærker sjældne hændelser, eller tal, der er valgt for at manipulere dig.\n\nDet er den ramme, resten af sporet bygger på."
+    },
+    {
+      "id": "b1q", "spor": "biases", "type": "quiz", "om": "b1",
+      "sporgsmal": "Hvornår klarer en simpel tommelfingerregel sig ofte BEDRE end en detaljeret model?",
+      "svar": [
+        "Når der er meget data og lav støj",
+        "Når der er stor usikkerhed og lidt data",
+        "Aldrig, modellen vinder altid med nok tid",
+        "Kun når beslutningen er uvigtig"
+      ],
+      "rigtigt": 1,
+      "forklaring": "Med lidt, støjfyldt data overfitter en kompleks model. En simpel regel har for få frihedsgrader til at lære støjen og generaliserer derfor bedre. Det er Gigerenzers pointe om ›less is more‹."
+    },
+    {
+      "id": "b2", "spor": "biases", "type": "koncept", "orden": 2,
+      "hook": "Et tilfældigt tal flytter dit skøn. Også når du ved, det er tilfældigt.",
+      "body": "I Tversky og Kahnemans klassiske forsøg fra 1974 drejede deltagerne et lykkehjul, der var fikset til at stoppe på 10 eller 65. Derefter skulle de skønne, hvor mange procent af FN's medlemslande der ligger i Afrika.\n\nDe, der havde fået 10, svarede i median 25 %. De, der havde fået 65, svarede 45 %. Tallet var **åbenlyst** tilfældigt, og det virkede alligevel.\n\nDet kaldes **anchoring**: vi starter i et tal og justerer for lidt væk fra det. Effekten er en af dem, der har klaret sig godt i store replikationsprojekter.\n\nDu møder den overalt: det første bud i en lønforhandling, »førpris« på et tilbud, estimater i et softwareprojekt.\n\nAt blive advaret hjælper overraskende lidt. Det, der har bedre støtte, er **consider-the-opposite**: aktivt at formulere grunde til, at ankeret kan være forkert."
+    },
+    {
+      "id": "b2q", "spor": "biases", "type": "quiz", "om": "b2",
+      "sporgsmal": "Hvilken strategi har bedst dokumentation for at dæmpe anchoring?",
+      "svar": [
+        "At få at vide, at anchoring findes",
+        "At tænke længere over tallet",
+        "Aktivt at argumentere for, hvorfor ankeret kan være forkert",
+        "At vælge et andet anker selv"
+      ],
+      "rigtigt": 2,
+      "forklaring": "Consider-the-opposite tvinger dig til at hente information, der peger væk fra ankeret. Advarsler alene virker svagt, og at tænke længere justerer ofte stadig ud fra samme startpunkt."
+    },
+    {
+      "id": "b3", "spor": "biases", "type": "koncept", "orden": 3,
+      "hook": "Du vurderer, hvor ofte noget sker, ud fra hvor let du kommer i tanke om det.",
+      "body": "Er der flest engelske ord, hvor K er **første** bogstav, eller hvor K er **tredje**? De fleste siger første. Det er forkert: der er cirka dobbelt så mange med K på tredjepladsen.\n\nMen det er meget lettere at finde på ord, der **starter** med K. Tversky og Kahneman kaldte det **availability-heuristikken** (1973): vi bruger den lethed, eksempler dukker op med, som et mål for hyppighed.\n\nDet er ofte et fint signal, for ting du har set mange gange, er typisk almindelige. Men dramatiske, nylige og mediedækkede hændelser er lette at huske, uden at de er hyppige.\n\nEfter 11. september valgte mange amerikanere bilen i stedet for flyet. Gigerenzer har anslået, at det gav omkring 1.600 ekstra trafikdødsfald i året efter. Det er flere, end der døde i de fire fly."
+    },
+    {
+      "id": "b3q", "spor": "biases", "type": "quiz", "om": "b3",
+      "sporgsmal": "Er der flest engelske ord med K som første eller som tredje bogstav?",
+      "svar": ["Første bogstav", "Tredje bogstav", "Nogenlunde lige mange"],
+      "rigtigt": 1,
+      "forklaring": "Tredje bogstav, cirka dobbelt så mange. Ord, der starter med K, er bare lettere at hente frem, og den lethed forveksles med hyppighed."
+    },
+    {
+      "id": "b4", "spor": "biases", "type": "koncept", "orden": 4,
+      "hook": "Det mest lærerige spørgsmål er det, du ikke har lyst til at stille.",
+      "body": "Peter Wason gav i 1960 folk tallene **2-4-6** og sagde: de følger en regel. Find reglen ved at foreslå nye talrækker, og jeg siger ja eller nej.\n\nDe fleste gætter »stiger med 2« og tester 8-10-12. Ja. 20-22-24. Ja. Så er de sikre. Men reglen var bare »tre stigende tal«, og under hver fjerde fandt den ved første forsøg.\n\nFejlen: de testede kun rækker, der **passede** med deres egen hypotese. Svaret blev ja hver gang, men et ja kunne ikke skelne mellem deres regel og den rigtige. Det er **confirmation bias**.\n\nDen informative test er den, der kunne **modbevise** dig: 1-2-3 eller 3-2-1.\n\nDet samme sker ved debugging. Du kører den test, du forventer virker, og kalder koden fejlfri."
+    },
+    {
+      "id": "b4q", "spor": "biases", "type": "quiz", "om": "b4",
+      "sporgsmal": "Du tror, reglen er »tal, der stiger med 2«. Hvilken test giver dig MEST information?",
+      "svar": ["10-12-14", "1-2-3", "100-102-104", "2-4-6 igen"],
+      "rigtigt": 1,
+      "forklaring": "1-2-3 bryder din hypotese. Et ja afslører, at reglen er bredere end du troede. De andre giver ja under både din og den rigtige regel og lærer dig intet."
+    },
+    {
+      "id": "b5", "spor": "biases", "type": "koncept", "orden": 5,
+      "hook": "Nogle af psykologiens mest berømte fund holdt ikke.",
+      "body": "I 2015 forsøgte Open Science Collaboration at gentage 100 publicerede psykologistudier. 97 % af originalerne havde signifikante resultater. I gentagelserne var det omkring **36 %**.\n\nEnkelte kendte eksempler:\n\n**Ego depletion** (viljestyrke som et batteri): et stort samarbejde mellem 23 laboratorier i 2016 fandt en effekt tæt på nul.\n\n**Power posing**: den påståede effekt på hormoner kunne ikke gentages.\n\n**Priming** med ord om alderdom, der skulle få folk til at gå langsommere, fejlede også.\n\nMen det er ikke kaos. Mange klassiske kognitive effekter som anchoring har klaret sig fint.\n\nMønstret for det, der fejlede: små stikprøver, overraskende og »for gode« resultater, og mange måder at analysere data på. Brug det som filter, næste gang en populærbog lover en livshack."
+    },
+    {
+      "id": "b5q", "spor": "biases", "type": "quiz", "om": "b5",
+      "sporgsmal": "Hvilket af disse fund har klaret sig BEDST i store replikationer?",
+      "svar": ["Ego depletion", "Power posing og hormoner", "Anchoring", "Alderdoms-priming og gangtempo"],
+      "rigtigt": 2,
+      "forklaring": "Anchoring replikerer robust. De tre andre er blandt de mest kendte eksempler, der ikke kunne gentages i større studier."
+    },
+    {
+      "id": "bm1", "spor": "biases", "type": "myte", "efter": "b2",
+      "hook": "Myte eller fakta?",
+      "pastand": "Når du ved, at du har en bestemt bias, holder den op med at påvirke dig.",
+      "svar": ["Myte", "Fakta"], "rigtigt": 0,
+      "forklaring": "Myte. Folk ser biases tydeligt hos andre og undervurderer dem hos sig selv (Pronins ›bias blind spot‹). Viden hjælper lidt. Procedurer som tjeklister, pre-mortems og consider-the-opposite hjælper mere."
+    },
+    {
+      "id": "bc1", "spor": "biases", "type": "case", "efter": "b1",
+      "hook": "Case",
+      "scenarie": "Din projektgruppe har brugt tre uger på en løsning, der halter. En ny tilgang ville tage én uge og blive bedre. En i gruppen siger: »Vi kan ikke smide tre ugers arbejde ud nu.«",
+      "sporgsmal": "Hvad er fejlen, og hvilket spørgsmål bør gruppen stille?",
+      "svar": [
+        "Anchoring – hvad var vores første estimat?",
+        "Sunk cost – hvad giver det bedste resultat herfra og frem?",
+        "Availability – hvad husker vi bedst?",
+        "Confirmation bias – hvem havde ret?"
+      ],
+      "rigtigt": 1,
+      "forklaring": "De tre uger er brugt uanset hvad I vælger. Det relevante er kun fremtidig pris og gevinst: én uge til en bedre løsning mod fortsat at slås med en dårlig."
+    },
+
+    {
+      "id": "s1", "spor": "sysprog", "type": "koncept", "orden": 1,
+      "hook": "En tråd er en proces, der deler hukommelse med sine søskende.",
+      "body": "En **proces** har sit eget adresserum. To processer kan ikke se hinandens variabler uden at bruge pipes, sockets eller delt hukommelse, som OS'et sætter op.\n\n**Tråde** i samme proces deler næsten alt: heap, globale variabler, åbne filer. Hver tråd har kun sin egen **stak** og sine egne CPU-registre, herunder programtælleren.\n\nDet giver to konsekvenser. Skift mellem tråde er billigere end skift mellem processer, fordi adresserummet ikke skal skiftes. Og en tråd, der skriver forkert i hukommelsen, kan ødelægge data for alle de andre. Crasher én tråd, dør hele processen.\n\nPå Linux er forskellen mindre, end den lyder: begge er »tasks«, oprettet med systemkaldet `clone`. Flagene bestemmer, hvad der deles."
+    },
+    {
+      "id": "s1q", "spor": "sysprog", "type": "quiz", "om": "s1",
+      "sporgsmal": "Hvad deler to tråde i samme proces IKKE?",
+      "svar": ["Heap", "Globale variabler", "Stak", "Åbne filer"],
+      "rigtigt": 2,
+      "forklaring": "Hver tråd har sin egen stak (lokale variabler, returadresser) og egne registre. Resten af adresserummet er fælles, og det er derfor race conditions er mulige."
+    },
+    {
+      "id": "s2", "spor": "sysprog", "type": "koncept", "orden": 2,
+      "hook": "counter++ er tre instruktioner. Det er nok til at miste data.",
+      "body": "`counter++` ligner én operation, men CPU'en gør typisk tre ting: **læs** værdien ind i et register, **læg 1 til**, **skriv** tilbage.\n\nKører to tråde det samtidig, kan det gå sådan: tråd A læser 5. Tråd B læser 5. A skriver 6. B skriver 6. To optællinger, én registreret. Det kaldes en **lost update**, og det er en race condition: resultatet afhænger af timing.\n\nLad to tråde tælle 1.000.000 op hver, og du får ofte et tal under 2.000.000, som er forskelligt hver gang.\n\nDet lumske er, at fejlen er **ikke-deterministisk**. Tilføjer du en printf eller starter debuggeren, ændrer timingen sig, og fejlen forsvinder. Den slags kaldes en heisenbug.\n\nEn race condition kræver tre ting: delt data, mindst én skriver, og ingen koordinering."
+    },
+    {
+      "id": "s2q", "spor": "sysprog", "type": "quiz", "om": "s2",
+      "sporgsmal": "To tråde kører hver counter++ 1000 gange uden lås (counter starter på 0). Hvad er den MINDST mulige slutværdi?",
+      "svar": ["2000", "1000", "2", "1"],
+      "rigtigt": 2,
+      "forklaring": "2! A læser 0. B kører 999 gange. A skriver 1. B læser 1. A kører sine sidste 999. B skriver 2. Mange gætter 1000, men uheldig timing kan være meget værre."
+    },
+    {
+      "id": "s3", "spor": "sysprog", "type": "koncept", "orden": 3,
+      "hook": "En lås løser din race condition og giver dig tre nye problemer.",
+      "body": "En **mutex** sikrer, at kun én tråd ad gangen er inde i en **kritisk sektion**. Rundt om `counter++` gør den de tre instruktioner udelelige i forhold til andre tråde, der bruger **samme lås**.\n\nDet sidste er vigtigt: en lås er en aftale, ikke et skjold. Glemmer én kodesti at tage låsen, er racen der stadig.\n\nPrisen:\n\n**Ydelse**: tråde står i kø om låsen (contention). Store låse gør parallel kode seriel.\n\n**Deadlocks**: to tråde, der venter på hinandens låse.\n\n**Prioritetsinversion**: en vigtig tråd venter på en lås, som en uvigtig tråd holder.\n\nAlternativer til simple tællere er atomiske operationer, fx compare-and-swap, eller at undgå delt tilstand helt og sende beskeder mellem tråde."
+    },
+    {
+      "id": "s3q", "spor": "sysprog", "type": "quiz", "om": "s3",
+      "sporgsmal": "Tråd A skriver til en delt struct under en mutex. Tråd B læser den UDEN lås. Er det sikkert?",
+      "svar": [
+        "Ja, det er kun skrivninger, der kræver lås",
+        "Nej, B kan se en halvt opdateret struct",
+        "Ja, hvis B kun læser én gang",
+        "Kun på en CPU med én kerne"
+      ],
+      "rigtigt": 1,
+      "forklaring": "Al adgang til data, som nogen skriver til, skal bruge samme lås. Ellers kan B læse midt i A's opdatering. I C/C++ er det desuden en data race og dermed undefined behaviour. Én kerne redder dig heller ikke: tråden kan afbrydes midt i opdateringen."
+    },
+    {
+      "id": "s4", "spor": "sysprog", "type": "koncept", "orden": 4,
+      "hook": "A har X og venter på Y. B har Y og venter på X. De venter for evigt.",
+      "body": "En **deadlock** kræver, at fire betingelser er opfyldt samtidig (Coffman, 1971):\n\n**1. Gensidig udelukkelse**: en ressource kan kun holdes af én ad gangen.\n**2. Hold og vent**: man holder én lås, mens man venter på en anden.\n**3. Ingen preemption**: ingen kan tvinge en lås fra en anden.\n**4. Cirkulær venten**: A venter på B, der venter på A.\n\nFjern **én** betingelse, og deadlock er umulig.\n\nI praksis bryder man oftest nummer 4 med en **fast låserækkefølge**: tag altid låse i samme globale orden, fx efter id eller adresse. Så kan der ikke opstå en cirkel.\n\nAlternativet er at bryde nummer 2 med `trylock`: kan du ikke få lås nummer to, så slip den første, vent lidt og prøv igen. Det kan dog give livelock, hvor alle hele tiden viger for hinanden."
+    },
+    {
+      "id": "s4q", "spor": "sysprog", "type": "quiz", "om": "s4",
+      "sporgsmal": "Hvilken Coffman-betingelse bryder du ved altid at tage låse i samme faste rækkefølge?",
+      "svar": ["Gensidig udelukkelse", "Hold og vent", "Ingen preemption", "Cirkulær venten"],
+      "rigtigt": 3,
+      "forklaring": "Med en global rækkefølge venter en tråd kun på låse ›højere oppe‹ end dem, den holder. En cirkel ville kræve, at nogen venter nedad, og det kan ikke ske."
+    },
+    {
+      "id": "s5", "spor": "sysprog", "type": "koncept", "orden": 5,
+      "hook": "Mars Pathfinder genstartede igen og igen på grund af én lås.",
+      "body": "I 1997, kort efter landingen på Mars, begyndte Pathfinder at nulstille sig selv. Årsagen var **prioritetsinversion**.\n\nSchedulern i VxWorks kørte altid den klar-tråd, der havde **højest prioritet**. En opgave med lav prioritet tog en mutex på en delt databus. En opgave med høj prioritet skulle bruge bussen og ventede. Samtidig kom der opgaver med mellem-prioritet, som schedulern foretrak frem for den lave, så den lave fik aldrig CPU-tid til at slippe låsen.\n\nResultat: den vigtigste opgave var blokeret af de mellemvigtige. En watchdog opdagede det og genstartede systemet.\n\nLøsningen var **priority inheritance**: mens en tråd holder en lås, som en højt prioriteret tråd venter på, arver den den høje prioritet. NASA slog det til ved at uploade en ændring til Mars."
+    },
+    {
+      "id": "s5q", "spor": "sysprog", "type": "quiz", "om": "s5",
+      "sporgsmal": "Hvad løste Pathfinders genstarter?",
+      "svar": [
+        "Hurtigere CPU",
+        "At fjerne watchdog-timeren",
+        "Priority inheritance på mutexen",
+        "Round-robin i stedet for prioriteter"
+      ],
+      "rigtigt": 2,
+      "forklaring": "Lav-opgaven arver høj prioritet, mens den holder låsen. Så kan mellem-opgaverne ikke skubbe den væk, og den slipper låsen hurtigt."
+    },
+    {
+      "id": "sm1", "spor": "sysprog", "type": "myte", "efter": "s2",
+      "hook": "Myte eller fakta?",
+      "pastand": "Hvis mit program kører korrekt 10.000 gange i træk, har det ingen race conditions.",
+      "svar": ["Myte", "Fakta"], "rigtigt": 0,
+      "forklaring": "Myte. Races afhænger af timing, som ændrer sig med belastning, antal kerner og compiler-flag. Brug værktøjer som ThreadSanitizer eller stresstests med tilfældige forsinkelser. Test kan vise, at der er fejl, aldrig at der ingen er."
+    },
+    {
+      "id": "sc1", "spor": "sysprog", "type": "case", "efter": "s4",
+      "hook": "Case",
+      "scenarie": "transfer(a, b) låser først a.lock og derefter b.lock. Tråd 1 kalder transfer(konto1, konto2). Samtidig kalder tråd 2 transfer(konto2, konto1). Programmet fryser en sjælden gang.",
+      "sporgsmal": "Hvad sker der, og hvad er den bedste løsning?",
+      "svar": [
+        "Race condition – tilføj en global lås omkring alt",
+        "Deadlock – lås altid kontoen med lavest id først",
+        "Starvation – giv tråd 1 højere prioritet",
+        "Intet – hver konto har sin egen lås"
+      ],
+      "rigtigt": 1,
+      "forklaring": "Tråd 1 holder konto1 og venter på konto2, tråd 2 holder konto2 og venter på konto1: cirkulær venten. Sorter låsene efter id, så begge tager konto1 først. En global lås virker også, men gør alle overførsler serielle."
+    },
+
+    {
+      "id": "k1", "spor": "kobling", "type": "kobling", "kraever": ["b3q", "a4q"],
+      "hook": "Availability-heuristikken er en cache.",
+      "body": "Din hjerne kan ikke tælle, hvor ofte noget sker i verden. Den gør det, systemer gør, når det rigtige opslag er for dyrt: den kigger i **cachen**.\n\nHvad der ligger i cachen, bestemmes af det samme som i en CPU: **recency** (det var for nylig) og **frekvens** (det sker ofte). Plus én ting mere: **salience**, dvs. hvor voldsomt det var.\n\nSå »hvor let kommer jeg i tanke om det?« bliver et proxy-mål for »hvor almindeligt er det?«. Det virker fint, når cachen afspejler verden. Men medier fungerer som en proces, der konstant skriver dramatiske, sjældne hændelser ind i cachen. Estimatet bliver skævt, fordi **cachen ikke er repræsentativ** for den data, den skal spejle.\n\nNæste gang du er sikker på, at noget er almindeligt, så spørg: har jeg målt det, eller har jeg bare et cache-hit?"
+    },
+    {
+      "id": "k2", "spor": "kobling", "type": "kobling", "kraever": ["b4q", "s2q"],
+      "hook": "Du finder ikke dine race conditions, fordi du tester som i 2-4-6.",
+      "body": "Når du har skrevet samtidig kode, har du en hypotese: »den virker«. Så kører du den. Den virker. Du kører den igen. Den virker.\n\nDet er 8-10-12 og 20-22-24 igen. Hvert grønt resultat **passer** med din hypotese, men det ville også passe med »den har en race, der kun rammer ved uheldig timing«. Testen kan ikke skelne mellem de to forklaringer.\n\nDen informative test er den, der **aktivt prøver at vælte dig**, altså 1-2-3-testen for tråde:\n\n• Kør med ThreadSanitizer, der leder efter data races.\n• Stresstest med mange tråde og tilfældige `sleep`-kald i kritiske steder.\n• Kør på en maskine med flere kerner end din egen.\n\nDebugging er hypotesetest. Confirmation bias er bare den fejl, der gør det let at stoppe for tidligt."
+    }
+  ]
+}

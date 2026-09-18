@@ -20,6 +20,8 @@ fx `http://192.168.0.12:3000`. Der er ingen afhængigheder, kun Node 20.12+.
 | 🎓 SW3SYS | 12 eksamensemner + basics, simulator og parathed | `public/data/sw3sys/` |
 | 🧮 AlgoDat | Kompleksitet i praksis | `public/data/dao/` |
 | 🧠 Psykologi | Biases og hukommelse & indlæring | `public/data/psykologi/` |
+| 🩺 Psykiatri | Diagnoser, angst og depression, psykose | `public/data/psykiatri/` |
+| 🏛️ Filosofi | Stoicisme, tankeværktøjer, eksistens | `public/data/filosofi/` |
 
 Fagene samles i `public/data/index.js`. Der ligger også koblinger på tværs af
 fagene. I story-ringene trykker du på et fag for at se dets spor. **Alle**
@@ -31,6 +33,7 @@ blander det hele.
   træne ét emne.
 - **Eksamen**: eksamensdato, parathed pr. emne, modeldispositioner og
   🎲 simulatoren.
+- **Mønter** (tryk på mønt-pillen): saldo, inventar, salg og trade-up. Lykkehjul, skrabelodder, indsatser og jackpot-spørgsmål dukker op direkte i feedet.
 - **Gemt**: kort du har dobbelttrykket på.
 - **Fremskridt**: level, streak og mestring pr. emne.
 

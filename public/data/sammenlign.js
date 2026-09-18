@@ -293,4 +293,57 @@ export default [
     ],
     forklaring: 'Negativ forstærkning er IKKE straf. Begge former øger adfærd. Straf mindsker den.',
   },
+  // ---------- Psykiatri og filosofi ----------
+  {
+    id: 'sam-icd-dsm', spor: 'diagnoser', efter: 'diagnoser-k1',
+    a: { navn: 'ICD-11', emoji: '🌍' }, b: { navn: 'DSM-5', emoji: '🇺🇸' },
+    udsagn: [
+      { tekst: 'Udgivet af WHO', svar: 'a' },
+      { tekst: 'Udgivet af American Psychiatric Association', svar: 'b' },
+      { tekst: 'Det officielle system i danske sundhedsvæsen', svar: 'a' },
+      { tekst: 'Beskriver diagnoser ud fra kriterier', svar: 'begge' },
+      { tekst: 'Indeholder også legemlige sygdomme som brækket ben', svar: 'a' },
+      { tekst: 'Forklarer den biologiske årsag til hver diagnose', svar: 'ingen' },
+    ],
+    forklaring: 'Begge er beskrivende klassifikationer. ICD dækker alle sygdomme og bruges i Danmark, DSM er kun psykiatri og bruges meget i forskning.',
+  },
+  {
+    id: 'sam-hallucination-vrangforestilling', spor: 'psykose', efter: 'psykose-k1',
+    a: { navn: 'Hallucination', emoji: '👂' }, b: { navn: 'Vrangforestilling', emoji: '💭' },
+    udsagn: [
+      { tekst: 'At høre en stemme, som ingen andre hører', svar: 'a' },
+      { tekst: 'En fast overbevisning om at blive forfulgt trods modbevis', svar: 'b' },
+      { tekst: 'Et positivt psykotisk symptom', svar: 'begge' },
+      { tekst: 'En sanseoplevelse uden ydre kilde', svar: 'a' },
+      { tekst: 'Handler om, hvad man tror, snarere end hvad man sanser', svar: 'b' },
+      { tekst: 'Et negativt symptom som affladet følelsesudtryk', svar: 'ingen' },
+    ],
+    forklaring: 'Hallucinationer er sansning uden stimulus. Vrangforestillinger er faste, urokkelige overbevisninger. Begge er positive symptomer.',
+  },
+  {
+    id: 'sam-occam-hanlon', spor: 'ragekniv', efter: 'ragekniv-k2',
+    a: { navn: 'Occams ragekniv', emoji: '🪒' }, b: { navn: 'Hanlons ragekniv', emoji: '🤷' },
+    udsagn: [
+      { tekst: 'Foretræk forklaringen med færrest ekstra antagelser', svar: 'a' },
+      { tekst: 'Antag ikke ondskab, hvor dumhed eller travlhed forklarer det', svar: 'b' },
+      { tekst: 'En tommelfingerregel, ikke et bevis', svar: 'begge' },
+      { tekst: 'Handler specifikt om andre menneskers motiver', svar: 'b' },
+      { tekst: 'Opkaldt efter en munk fra 1300-tallet', svar: 'a' },
+      { tekst: 'Siger at den enkleste forklaring altid er sand', svar: 'ingen' },
+    ],
+    forklaring: 'Hanlon kan ses som et specialtilfælde af Occam for menneskelig adfærd: »ond plan« kræver flere antagelser end »glemte det«.',
+  },
+  {
+    id: 'sam-stoa-epikur', spor: 'stoicisme', efter: 'stoicisme-k1',
+    a: { navn: 'Stoicisme', emoji: '🏛️' }, b: { navn: 'Epikuræisme', emoji: '🍇' },
+    udsagn: [
+      { tekst: 'Det gode liv er fravær af smerte og sjælelig uro', svar: 'b' },
+      { tekst: 'Dyd og at leve i overensstemmelse med fornuften er det eneste sande gode', svar: 'a' },
+      { tekst: 'Sætter venskab højt', svar: 'begge' },
+      { tekst: 'Kontroldikotomien: skeln mellem det, der er op til os, og det, der ikke er', svar: 'a' },
+      { tekst: '»Døden er intet for os«', svar: 'b' },
+      { tekst: 'Anbefaler så meget luksus som muligt', svar: 'ingen' },
+    ],
+    forklaring: 'Begge er antikke skoler for et roligt, godt liv. Stoikerne satte dyd i centrum, epikuræerne en rolig, smertefri nydelse. Ingen af dem prædikede luksus.',
+  },
 ];

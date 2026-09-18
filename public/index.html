@@ -8,70 +8,102 @@
   <meta name="apple-mobile-web-app-title" content="Leths super App">
   <title>Leths super App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grand+Hotel&family=Plus+Jakarta+Sans:wght@400..800&display=swap">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="exam.css">
   <link rel="stylesheet" href="play.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="casino.css">
   <script type="module" src="src/app.js"></script>
 </head>
 <body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="ig-grad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FCAF45"/><stop offset=".45" stop-color="#FD1D1D"/><stop offset=".7" stop-color="#E1306C"/><stop offset="1" stop-color="#833AB4"/></linearGradient>
+      <linearGradient id="fire-grad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FD1D1D"/><stop offset="1" stop-color="#FCAF45"/></linearGradient>
+    </defs>
+  </svg>
+  <div class="shell">
+  <aside class="side side-left" id="side-left">
+    <div class="side-brand">
+      <span class="side-logo">Leths super App</span>
+      <small>SW3SYS · mundtlig eksamen</small>
+    </div>
+    <nav class="side-nav">
+      <button class="nav-btn on" data-view="feed"><i data-icon="home"></i>Feed</button>
+      <button class="nav-btn" data-view="eksamen"><i data-icon="exam"></i>Eksamen</button>
+      <button class="nav-btn" data-view="gemt"><i data-icon="heart"></i>Gemt</button>
+      <button class="nav-btn" data-view="fremskridt"><i data-icon="stats"></i>Statistik</button>
+    </nav>
+    <div id="side-profile"></div>
+  </aside>
   <div id="app">
     <header id="hud">
       <div class="topbar">
         <button class="logo" id="logo">Leths super App</button>
         <div class="hud-stats">
           <span class="pill boost" id="boost" title="XP-boost fra case" hidden></span>
-          <span class="pill streak" title="Dage i træk">🔥 <b id="streak">0</b></span>
-          <span class="ring" title="Level">
+          <button class="pill coins" id="coins" data-go="casino" title="Leth-mønter"><i class="coin"></i><b>100</b></button>
+          <span class="pill streak" title="Dage i træk"><i data-icon="flame" data-size="16"></i><b id="streak">0</b></span>
+          <span class="ring level-ring" title="Level">
             <svg viewBox="0 0 36 36"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#833AB4"/><stop offset="1" stop-color="#E1306C"/></linearGradient></defs><circle cx="18" cy="18" r="15.9" class="bg" pathLength="100"/><circle id="level-fg" cx="18" cy="18" r="15.9" class="fg" stroke="url(#lg)" pathLength="100"/></svg>
             <b id="level">1</b>
           </span>
-          <span class="ring" title="Dagens mål">
+          <button class="ring" id="goal-ring" title="Dagens mål og missioner">
             <svg viewBox="0 0 36 36"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCAF45"/><stop offset="1" stop-color="#FD1D1D"/></linearGradient></defs><circle cx="18" cy="18" r="15.9" class="bg" pathLength="100"/><circle id="goal-fg" cx="18" cy="18" r="15.9" class="fg" stroke="url(#gg)" pathLength="100"/></svg>
             <small id="goal-label">0/10</small>
-          </span>
+            <i class="ring-badge" id="mission-badge" hidden></i>
+          </button>
         </div>
       </div>
       <div id="highlights" class="highlights"></div>
     </header>
 
     <main id="view-feed" class="view">
+      <div id="combo" class="combo" hidden title="Combo · 5 i træk giver en case"><span>🔥</span><b></b></div>
       <div id="feed" class="feed"></div>
     </main>
 
     <main id="view-eksamen" class="view page" hidden>
-      <h1>Eksamen <span class="h1-sub">SW3SYS · mundtlig</span></h1>
+      <h1><span>Eksamen</span><small class="h1-sub">SW3SYS · mundtlig</small></h1>
       <div id="exam"></div>
     </main>
 
+    <main id="view-casino" class="view page casino-page" hidden>
+      <h1><span>Casino</span><small class="h1-sub">Leth-mønter · kun optjent ved at lære</small></h1>
+      <div id="casino"></div>
+    </main>
+
     <main id="view-gemt" class="view page" hidden>
-      <h1>Gemt</h1>
+      <h1><span>Gemt</span><small class="h1-sub">Dine gemte kort</small></h1>
       <div id="saved-list"></div>
     </main>
 
     <main id="view-fremskridt" class="view page" hidden>
-      <h1>Statistik</h1>
+      <h1><span>Statistik</span><small class="h1-sub">Fremskridt og aktivitet</small></h1>
       <div id="progress"></div>
     </main>
 
     <nav class="nav">
-      <button class="nav-btn on" data-view="feed"><span>🏠</span>Feed</button>
-      <button class="nav-btn" data-view="eksamen"><span>🎓</span>Eksamen</button>
-      <button class="nav-btn" data-view="gemt"><span>❤️</span>Gemt</button>
-      <button class="nav-btn" data-view="fremskridt"><span>📊</span>Statistik</button>
+      <button class="nav-btn on" data-view="feed"><i data-icon="home"></i>Feed</button>
+      <button class="nav-btn" data-view="eksamen"><i data-icon="exam"></i>Eksamen</button>
+      <button class="nav-btn" data-view="gemt"><i data-icon="heart"></i>Gemt</button>
+      <button class="nav-btn" data-view="fremskridt"><i data-icon="stats"></i>Statistik</button>
     </nav>
 
     <div id="sheet" hidden>
       <div class="sheet-panel">
-        <button id="sheet-close" aria-label="Luk">✕</button>
+        <button id="sheet-close" aria-label="Luk"><i data-icon="close" data-size="18"></i></button>
         <div id="sheet-content"></div>
       </div>
     </div>
     <div id="sim" hidden>
-      <button id="sim-close" aria-label="Afslut simulering">✕</button>
+      <button id="sim-close" aria-label="Afslut simulering"><i data-icon="close" data-size="20"></i></button>
       <div id="sim-body"></div>
     </div>
     <div id="toast" hidden></div>
+  </div>
+  <aside class="side side-right" id="side-right"></aside>
   </div>
 </body>
 </html>

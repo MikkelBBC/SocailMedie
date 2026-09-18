@@ -1,6 +1,8 @@
 // CS:GO-inspirerede cases. Kun XP, streak-frys og samleobjekter – ingen rigtige penge.
 // Sandsynlighederne er de officielt oplyste CS:GO-odds.
-// Belønningen udløses kun af læring (combos, dagens mål, perfekte sammenligninger og simuleringer).
+// Belønningen udløses kun af læring (combos, dagens mål, missioner, level, perfekte sammenligninger og simuleringer).
+
+import { sfx } from './sfx.js';
 
 export const RARITIES = [
   { id: 'milspec', navn: 'Mil-Spec', farve: '#4b69ff', p: 0.7992 },
@@ -37,13 +39,20 @@ const WEAR = [
   [0.07, 'Factory New'], [0.15, 'Minimal Wear'], [0.38, 'Field-Tested'], [0.45, 'Well-Worn'], [1, 'Battle-Scarred'],
 ];
 
-function rollRarity(rnd = Math.random()) {
+// Odds fra og med minRarity (fx bonus-casen fra missioner), normaliseret så de summer til 1.
+function oddsFor(minRarity = null) {
+  const pool = RARITIES.slice(Math.max(0, RARITIES.findIndex((r) => r.id === minRarity)));
+  const sum = pool.reduce((a, r) => a + r.p, 0);
+  return pool.map((r) => ({ ...r, p: r.p / sum }));
+}
+
+function rollRarity(odds, rnd = Math.random()) {
   let acc = 0;
-  for (const r of RARITIES) {
+  for (const r of odds) {
     acc += r.p;
     if (rnd < acc) return r.id;
   }
-  return 'milspec';
+  return odds[0].id;
 }
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -59,8 +68,8 @@ function rewardFor(rarity, freezes) {
   }
 }
 
-export function rollItem(freezes = 0) {
-  const rarity = rollRarity();
+export function rollItem(freezes = 0, minRarity = null) {
+  const rarity = rollRarity(oddsFor(minRarity));
   const [emoji, navn] = pick(SKINS[rarity]);
   const float = Math.random();
   const wear = WEAR.find(([max]) => float <= max)[1];
@@ -80,25 +89,15 @@ export const rewardText = (r) => [
 
 // ---------- Åbningsanimation ----------
 
+export const CASE_KILDER = {
+  combo: '5 rigtige i træk', maal: 'Dagens mål nået', perfekt: 'Perfekt runde', sim: 'Stærk eksamenssimulering',
+  mission: 'Mission klaret', bonus: 'Alle dagens missioner · mindst Restricted', level: 'Level up',
+  butik: 'Købt i casinoet', premium: 'Premium Case · mindst Classified', tradeup: 'Trade-up kontrakt', gemt: 'Gemt case',
+};
+
 const TILE = 112;
 const GAP = 6;
 const WIN_INDEX = 52;
-
-let audio = null;
-function tick(pitch = 1) {
-  try {
-    audio ??= new (globalThis.AudioContext || globalThis.webkitAudioContext)();
-    const o = audio.createOscillator();
-    const g = audio.createGain();
-    o.type = 'square';
-    o.frequency.value = 900 * pitch;
-    g.gain.setValueAtTime(0.04, audio.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + 0.04);
-    o.connect(g).connect(audio.destination);
-    o.start();
-    o.stop(audio.currentTime + 0.05);
-  } catch {}
-}
 
 const tileHtml = (it) => {
   const r = RARITY[it.rarity];
@@ -109,10 +108,10 @@ const tileHtml = (it) => {
  * Viser case-overlayet i `host`. Kalder onWin(item), når hjulet står stille,
  * så belønningen gives præcis når brugeren ser den.
  */
-export function openCase(host, { kilde = 'combo', freezes = 0, onWin, onClose }) {
-  const win = rollItem(freezes);
+export function openCase(host, { kilde = 'combo', freezes = 0, minRarity = null, onWin, onClose }) {
+  const win = rollItem(freezes, minRarity);
   const strip = Array.from({ length: WIN_INDEX + 8 }, (_, i) => (i === WIN_INDEX ? win : rollItem(freezes)));
-  const kildeTekst = { combo: '5 rigtige i træk', maal: 'Dagens mål nået', perfekt: 'Perfekt runde', sim: 'Stærk eksamenssimulering' }[kilde] ?? 'Belønning';
+  const kildeTekst = CASE_KILDER[kilde] ?? 'Belønning';
 
   const overlay = document.createElement('div');
   overlay.className = 'case-overlay';
@@ -121,7 +120,7 @@ export function openCase(host, { kilde = 'combo', freezes = 0, onWin, onClose })
       <small>${kildeTekst}</small>
       <h2>📦 Leths Case</h2>
     </div>
-    <div class="odds">${RARITIES.map((r) => `<span style="--r:${r.farve}">${r.navn} ${(r.p * 100).toFixed(2).replace('.', ',')}%</span>`).join('')}</div>
+    <div class="odds">${oddsFor(minRarity).map((r) => `<span style="--r:${r.farve}">${r.navn} ${(r.p * 100).toFixed(2).replace('.', ',')}%</span>`).join('')}</div>
     <div class="reel-window">
       <div class="reel-marker"></div>
       <div class="reel-strip">${strip.map(tileHtml).join('')}</div>
@@ -151,8 +150,7 @@ export function openCase(host, { kilde = 'combo', freezes = 0, onWin, onClose })
       const tileIdx = Math.floor((-m.m41 + windowW / 2) / (TILE + GAP));
       if (tileIdx !== lastTile) {
         lastTile = tileIdx;
-        tick(1 + (tileIdx % 3) * 0.05);
-        navigator.vibrate?.(4);
+        sfx.tick(1 + (tileIdx % 3) * 0.05);
       }
       if (anim.playState === 'running') requestAnimationFrame(loop);
     };
@@ -174,7 +172,7 @@ export function openCase(host, { kilde = 'combo', freezes = 0, onWin, onClose })
       btn.disabled = false;
       btn.textContent = 'Saml op';
       btn.onclick = () => { overlay.remove(); onClose?.(win); };
-      if (['classified', 'covert', 'gold'].includes(win.rarity)) tick(1.6);
+      if (['classified', 'covert', 'gold'].includes(win.rarity)) sfx.fanfare();
     };
   }, { once: true });
 

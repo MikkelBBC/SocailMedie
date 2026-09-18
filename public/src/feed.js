@@ -96,8 +96,17 @@ export class Feed {
   }
 
   queueCase(kilde = 'combo') {
-    if (this.pending.some((p) => p.id === '__case')) return;
-    this.insert('__case', `case:${kilde}`, this.count);
+    this.queueReward('__case', `case:${kilde}`);
+  }
+
+  // Belønnings- og casinokort (case, skrabelod, hjul, indsats) spredes ud med mindst to
+  // almindelige kort imellem, så de ikke kommer i klump.
+  queueReward(id, mode) {
+    const REWARD = new Set(['__case', '__skrab', '__hjul', '__bet']);
+    if (this.pending.some((p) => p.mode === mode)) return;
+    const lastShown = this.generated.findLastIndex((g) => REWARD.has(g.id));
+    const taken = [...this.pending.filter((p) => REWARD.has(p.id)).map((p) => p.at), ...(lastShown >= 0 ? [lastShown] : [])];
+    this.insert(id, mode, Math.max(this.count, ...taken.map((at) => at + 3)));
   }
 
   dueCount(filter, now = Date.now()) {

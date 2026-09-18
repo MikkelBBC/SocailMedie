@@ -1,3 +1,5 @@
+import { icon } from './icons.js';
+
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
 export function md(text = '') {
@@ -9,6 +11,11 @@ export function md(text = '') {
       .replace(/\n/g, '<br>')}</p>`)
     .join('');
 }
+
+// Små »du er tæt på«-chips under et svar: næste case, kobling, mission, level.
+export const teaserHtml = (res) => (res?.teasers?.length
+  ? `<div class="teasers">${res.teasers.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`
+  : '');
 
 const el = (html) => {
   const t = document.createElement('template');
@@ -39,16 +46,16 @@ export function confetti(container, amount = 70) {
 }
 
 const MODE_LABEL = {
-  pretest: '🎲 Gæt før du lærer det',
-  check: '🧠 Kan du huske det?',
-  review: '🔁 Gentagelse',
-  retry: '↩️ En gang til',
-  bonus: '⚡ Bonusrunde',
+  pretest: 'Gæt før du lærer det',
+  check: 'Kan du huske det?',
+  review: 'Gentagelse',
+  retry: 'En gang til',
+  bonus: 'Bonusrunde',
 };
 
 const TYPE_LABEL = {
   koncept: 'Koncept', quiz: 'Quiz', myte: 'Myte eller fakta', case: 'Case',
-  forklar: '🎤 Forklar højt', raekkefolge: '🧱 Rækkefølge', kobling: '🔗 Kobling låst op', sammenlign: '⚖️ Sammenlign',
+  forklar: 'Forklar højt', raekkefolge: 'Rækkefølge', kobling: 'Kobling låst op', sammenlign: 'Sammenlign',
 };
 
 const CONFIDENCE = [
@@ -63,6 +70,7 @@ function taps(node, { onSingle, onDouble }) {
   let lastTap = 0;
   node.addEventListener('click', (e) => {
     if (e.target.closest('button, textarea, input, a, .rail')) return;
+    if (!onDouble) return onSingle?.(e);
     const now = performance.now();
     if (now - lastTap < 280) {
       clearTimeout(timer);
@@ -87,9 +95,9 @@ function heartBurst(node, e) {
 function rail(card, ctx) {
   const node = el(`
     <aside class="rail">
-      <button class="rail-btn" data-act="save" aria-label="Gem"><span></span><small>Gem</small></button>
-      <button class="rail-btn" data-act="more" aria-label="Mere af dette"><span>🔥</span><small>Mere</small></button>
-      <button class="rail-btn" data-act="uddyb" aria-label="Uddyb"><span>✨</span><small>Uddyb</small></button>
+      <button class="rail-btn" data-act="save" aria-label="Gem"><span>${icon('heart', 24)}</span><small>Gem</small></button>
+      <button class="rail-btn" data-act="more" aria-label="Mere af dette"><span>${icon('trend', 24)}</span><small>Mere</small></button>
+      <button class="rail-btn" data-act="uddyb" aria-label="Uddyb"><span>${icon('sparkles', 24)}</span><small>Uddyb</small></button>
     </aside>`);
   node.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
@@ -106,8 +114,7 @@ function rail(card, ctx) {
 }
 
 export function syncSaved(node, saved) {
-  const span = node.querySelector('[data-act="save"] span');
-  if (span) span.textContent = saved ? '💖' : '🤍';
+  node.querySelector('[data-act="save"]')?.classList.toggle('on', saved);
 }
 
 // Myter, cases og gæt-først får deres egen farve, så feedet skifter look hele tiden.
@@ -131,6 +138,15 @@ function shell(card, mode, ctx, inner, extraClass = '') {
   if (card.id && card.spor) {
     node.append(rail(card, ctx));
     syncSaved(node, ctx.isSaved(card.id));
+    const p = ctx.trackProgress?.(card.spor);
+    if (p?.total) {
+      node.append(el(`
+        <div class="card-foot">
+          <span>${esc(track.titel ?? track.kort)}</span>
+          <div class="foot-bar"><i style="width:${(p.learned / p.total) * 100}%"></i></div>
+          <small>${p.learned}/${p.total}</small>
+        </div>`));
+    }
   }
   return node;
 }
@@ -143,7 +159,7 @@ function slidesFrom(body) {
   let words = 0;
   for (const p of body.split(/\n\n+/)) {
     const w = p.split(/\s+/).length;
-    if (cur.length && words + w > 70) {
+    if (cur.length && words + w > 48) {
       slides.push(cur.join('\n\n'));
       cur = [];
       words = 0;
@@ -184,10 +200,6 @@ function renderKoncept(card, mode, ctx) {
       if (back) return show(i - 1);
       if (i === total - 1) return ctx.scrollNext();
       show(i + 1);
-    },
-    onDouble(e) {
-      heartBurst(node, e);
-      ctx.setSaved(card.id, true);
     },
   });
   return node;
@@ -252,15 +264,18 @@ function renderQuestion(card, mode, ctx) {
 
     reveal.innerHTML = `
       <div class="headline ${correct ? 'good' : 'bad'}">${headline}</div>
+      ${teaserHtml(res)}
       <div class="explain">${md(card.forklaring)}</div>
       ${previous ? `<div class="past-explain">💬 Din forklaring sidst: »${esc(previous)}«</div>` : ''}
       ${extra}
       ${!correct && card.om && !res.pretest ? '<button class="ghost" data-act="koncept">📖 Se kortet igen</button>' : ''}
+      <button class="next-btn" data-act="next">Næste kort ↓</button>
       ${res.explainPrompt ? '<div class="explain-box"><button class="ghost" data-act="forklar">💬 Forklar hvorfor med dine egne ord · +15 XP</button></div>' : ''}`;
     reveal.hidden = false;
     const inner = node.querySelector('.card-inner');
     requestAnimationFrame(() => inner.scrollTo({ top: Math.max(0, reveal.offsetTop - inner.clientHeight * 0.35), behavior: 'smooth' }));
     reveal.querySelector('[data-act="koncept"]')?.addEventListener('click', () => ctx.onShowKoncept(card.om));
+    reveal.querySelector('[data-act="next"]').addEventListener('click', () => ctx.scrollNext());
     reveal.querySelector('[data-act="forklar"]')?.addEventListener('click', () => {
       const box = reveal.querySelector('.explain-box');
       box.innerHTML = `<textarea placeholder="Svaret er rigtigt, fordi …" maxlength="280"></textarea><div class="row"><button class="primary small">Gem</button></div>`;
@@ -273,7 +288,7 @@ function renderQuestion(card, mode, ctx) {
       });
     });
 
-    const pop = el(`<div class="xp-pop">+${res.xp} XP</div>`);
+    const pop = el(`<div class="xp-pop">+${res.xp} XP${res.coins ? `<small>+${res.coins} mønter</small>` : ''}</div>`);
     node.append(pop);
     setTimeout(() => pop.remove(), 1200);
     if (correct && (res.crit || res.combo >= 5)) confetti(node, 50);
@@ -390,6 +405,7 @@ export function forklarWidget(card, { onDone, compact = false }) {
       const pct = Math.round(ratio * 100);
       const head = pct >= 85 ? '🏆 Eksamensklar!' : pct >= 60 ? '💪 Godt, der mangler lidt' : pct >= 30 ? '🧩 Halvvejs' : '📖 Skal øves igen';
       list.append(el(`<div class="score ${pct >= 60 ? 'good' : 'bad'}"><b>${got}/${boxes.length}</b> punkter · ${head}${res?.xp ? ` · +${res.xp} XP` : ''}</div>`));
+      if (res?.teasers?.length) list.append(el(teaserHtml(res)));
       if (got < boxes.length) list.append(el('<p class="hint">De røde punkter er dem, eksaminator ville savne. Sig dem højt én gang nu.</p>'));
     });
   });
@@ -465,6 +481,7 @@ function renderRaekkefolge(card, mode, ctx) {
     reveal.hidden = false;
     reveal.innerHTML = `
       <div class="headline ${wrong === 0 ? 'good' : 'bad'}">${wrong === 0 ? '✅ Perfekt rækkefølge!' : `❌ ${wrong} trin på forkert plads`}</div>
+      ${teaserHtml(res)}
       ${wrong ? `<ol class="seq-correct">${card.trin.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>` : ''}
       <div class="explain">${md(card.forklaring)}</div>`;
     popXp(node, res);
@@ -476,7 +493,7 @@ function renderRaekkefolge(card, mode, ctx) {
 
 function popXp(node, res) {
   if (!res?.xp) return;
-  const pop = el(`<div class="xp-pop">+${res.xp} XP</div>`);
+  const pop = el(`<div class="xp-pop">+${res.xp} XP${res.coins ? `<small>+${res.coins} mønter</small>` : ''}</div>`);
   node.append(pop);
   setTimeout(() => pop.remove(), 1200);
   if (res.crit || res.combo >= 5) confetti(node, 50);
@@ -556,6 +573,7 @@ function renderSammenlign(card, mode, ctx) {
     reveal.hidden = false;
     reveal.innerHTML = `
       <div class="headline ${ratio >= 0.6 ? 'good' : 'bad'}">${ratio === 1 ? '🎯 Perfekt adskilt!' : `${got}/${svar.length} rigtige`}</div>
+      ${teaserHtml(res)}
       <ul class="vs-summary">${svar.map((x) => `<li class="${x.ok ? 'ok' : 'bad'}"><span>${x.ok ? '✓' : '✗'}</span>${esc(x.u.tekst)} <b>${esc(labelFor(x.u.svar))}</b></li>`).join('')}</ul>
       <div class="explain">${md(card.forklaring)}</div>`;
     popXp(node, res);
@@ -567,16 +585,20 @@ function renderSammenlign(card, mode, ctx) {
 
 function renderCase(mode, ctx) {
   const kilde = mode.split(':')[1] ?? 'combo';
-  const titel = { combo: '5 rigtige i træk!', maal: 'Dagens mål er nået!', perfekt: 'Perfekt runde!', sim: 'Stærk simulering!' }[kilde] ?? 'Du har fået en case';
+  const titel = {
+    combo: '5 rigtige i træk!', maal: 'Dagens mål er nået!', perfekt: 'Perfekt runde!', sim: 'Stærk simulering!',
+    mission: 'Mission klaret!', bonus: 'Alle dagens missioner klaret!', level: 'Level up!',
+  }[kilde] ?? 'Du har fået en case';
+  const sub = kilde === 'bonus' ? 'Bonus-case: mindst Restricted – måske en ★ kniv?' : 'Mil-Spec, Restricted, Classified, Covert – eller en sjælden ★ kniv?';
   const node = el(`
     <section class="card type-case-drop">
       <div class="card-inner center">
         <div class="case-box">📦</div>
         <p class="case-kicker">${titel}</p>
         <h2 class="hook">Leths Case</h2>
-        <p class="sub">Mil-Spec, Restricted, Classified, Covert – eller en sjælden ★ kniv?</p>
+        <p class="sub">${sub}</p>
         <button class="case-btn" data-act="open">Åbn case</button>
-        <button class="ghost-light" data-act="gem">Gem til senere</button>
+        ${kilde === 'bonus' ? '' : '<button class="ghost-light" data-act="gem">Gem til senere</button>'}
       </div>
     </section>`);
   const done = (txt) => {
@@ -584,7 +606,7 @@ function renderCase(mode, ctx) {
     node.querySelector('[data-act="next"]').addEventListener('click', () => ctx.scrollNext());
   };
   node.querySelector('[data-act="open"]').addEventListener('click', () => ctx.openCase(kilde, () => done('Case åbnet')));
-  node.querySelector('[data-act="gem"]').addEventListener('click', () => { ctx.saveCase(); done('Gemt i dit inventar 🎒'); });
+  node.querySelector('[data-act="gem"]')?.addEventListener('click', () => { ctx.saveCase(); done('Gemt i dit inventar 🎒'); });
   return node;
 }
 
@@ -624,6 +646,9 @@ function renderTom() {
 
 function renderInner(card, mode, ctx) {
   if (mode === 'maal') return renderMaal(ctx);
+  if (mode === 'bet') return ctx.renderBet();
+  if (mode.startsWith('skrab:')) return ctx.renderSkrab(mode.split(':')[1]);
+  if (mode.startsWith('hjul:')) return ctx.renderWheel(mode.split(':')[1]);
   if (mode.startsWith('case')) return renderCase(mode, ctx);
   if (mode === 'tom') return renderTom();
   if (card.type === 'koncept') return renderKoncept(card, mode, ctx);

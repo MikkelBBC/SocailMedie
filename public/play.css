@@ -150,3 +150,72 @@ svg.viz rect[rx].hot { stroke: #0b0b0b; stroke-width: 1.5; }
 .skin span { font-size: 28px; }
 .skin b { font-size: 9.5px; line-height: 1.15; }
 .skin small { font-size: 9px; color: #ffffff88; }
+
+/* ================= Combo-meter ================= */
+.combo {
+  position: absolute; z-index: 9; right: 13px; top: calc(var(--hud-h) + 20px);
+  width: 48px; height: 48px; border-radius: 50%; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: conic-gradient(#F77737 calc(var(--p, 0) * 360deg), #ffffffcc 0);
+  box-shadow: 0 6px 18px #f7773744; transition: top .3s, box-shadow .3s;
+}
+.combo::before { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: #fff; }
+.combo span, .combo b { position: relative; line-height: 1; }
+.combo span { font-size: 17px; }
+.combo b { font-size: 12px; font-weight: 900; color: #F77737; }
+.combo.hot { background: conic-gradient(#FD1D1D calc(var(--p, 0) * 360deg), #ffd8a8 0); box-shadow: 0 0 0 3px #fd1d1d22, 0 8px 26px #fd1d1d66; }
+.combo.hot b { color: #FD1D1D; }
+.combo.hot span { animation: pulse 0.9s ease-in-out infinite; }
+.combo.inferno { background: conic-gradient(#e4ae39 calc(var(--p, 0) * 360deg), #833AB4 0); box-shadow: 0 0 0 4px #833ab433, 0 10px 34px #c1358499; }
+.combo.inferno::before { background: #1c1c1e; }
+.combo.inferno b { color: #ffd66b; }
+.combo.broke { animation: combo-break .9s ease-in forwards; }
+@keyframes combo-break { 20% { transform: scale(1.2) rotate(-8deg); } 100% { transform: scale(.4) translateY(30px) rotate(20deg); opacity: 0; filter: grayscale(1); } }
+
+/* ================= Dagens mål-ring og missioner ================= */
+#goal-ring { padding: 0; }
+.ring-badge {
+  position: absolute; right: -5px; top: -5px; min-width: 17px; height: 17px; padding: 0 4px;
+  border-radius: 99px; background: #FD1D1D; color: #fff; font-size: 10px; font-weight: 800; font-style: normal;
+  display: grid; place-items: center; border: 2px solid #fff;
+}
+#goal-ring.nudge { animation: pulse 1.4s ease-in-out 4; }
+
+.missions h2 { margin-bottom: 4px; }
+.mission {
+  display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 10px;
+  padding: 12px; border-radius: 18px; background: #f6f5fb; margin-bottom: 8px; animation: pop-in .3s ease-out both;
+}
+.mission:nth-of-type(2) { animation-delay: .05s; }
+.mission:nth-of-type(3) { animation-delay: .1s; }
+.mission .m-emoji { font-size: 26px; text-align: center; }
+.mission b { display: block; font-size: 14.5px; line-height: 1.3; }
+.mission .bar { margin: 8px 0 0; height: 8px; }
+.mission .bar > div { background: var(--ig); }
+.mission small { font-weight: 800; color: var(--muted); font-size: 13px; }
+.mission.done { background: #e8faf1; }
+.mission.done .bar > div { background: var(--good); }
+.mission.done small { color: var(--good); }
+.mission-chest {
+  display: flex; align-items: center; gap: 10px; margin: 12px 0 10px; padding: 12px 14px; border-radius: 16px; color: #fff;
+  background: radial-gradient(120% 90% at 50% 10%, #3a2a6b, #140f24 75%);
+}
+.mission-chest span { font-size: 26px; }
+.mission-chest b { flex: 1; font-size: 14.5px; }
+.mission-chest.open { background: linear-gradient(135deg, #e4ae39, #eb4b4b); }
+.mission-chest.open span { animation: pulse 1.6s ease-in-out infinite; }
+.chest-dots { display: flex; gap: 5px; }
+.chest-dots i { width: 10px; height: 10px; border-radius: 50%; background: #ffffff33; }
+.chest-dots i.on { background: #ffd66b; box-shadow: 0 0 8px #ffd66b; }
+.goal-line { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-weight: 700; font-size: 14px; }
+.hint.center { text-align: center; }
+.missions .sheet-actions { display: flex; justify-content: center; }
+
+/* ================= Teasers under svar ================= */
+.teasers { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 10px; }
+.teasers span {
+  font-size: 12.5px; font-weight: 800; padding: 5px 11px; border-radius: 99px; color: var(--text);
+  border: 2px solid transparent; background: linear-gradient(#fff, #fff) padding-box, var(--ig) border-box;
+  box-shadow: 0 4px 12px #e1306c22; animation: pop-in .35s ease-out .15s both;
+}
+.teasers span:nth-child(2) { animation-delay: .3s; }

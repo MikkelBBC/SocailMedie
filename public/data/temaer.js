@@ -49,13 +49,13 @@ export default [
     id: 'algoritmedesign', navn: 'Genveje og strategier', emoji: '🧭',
     gradient: 'linear-gradient(135deg, #8E2DE2, #4A00E0)',
     ide: 'Tommelfingerregler og grådige valg – hurtige, ofte gode, nogle gange forkerte.',
-    koncepter: ['dp-k4', 'dp-k1', 'dp-k3', 'biases-b1', 'biases-b2', 'algodat-a1', 'grafer-k3', 'social-k3'],
+    koncepter: ['dp-k4', 'dp-k1', 'dp-k3', 'biases-b1', 'biases-b2', 'algodat-a1', 'grafer-k3', 'social-k3', 'ragekniv-k1', 'ragekniv-k2', 'ragekniv-k3'],
   },
   {
     id: 'beloenning', navn: 'Belønning og vaner', emoji: '🎰',
     gradient: 'linear-gradient(135deg, #F857A6, #FF5858)',
     ide: 'Hvad får os til at gøre noget igen – og igen?',
-    koncepter: ['afhaengighed-k1', 'afhaengighed-k2', 'afhaengighed-k3', 'afhaengighed-k5', 'vaner-k1', 'vaner-k3', 'vaner-k4'],
+    koncepter: ['afhaengighed-k1', 'afhaengighed-k2', 'afhaengighed-k3', 'afhaengighed-k5', 'vaner-k1', 'vaner-k3', 'vaner-k4', 'eksistens-k5', 'psykose-k2'],
   },
   {
     id: 'laering', navn: 'Læring og pres', emoji: '🎓',
@@ -68,5 +68,17 @@ export default [
     gradient: 'linear-gradient(135deg, #11998E, #38EF7D)',
     ide: 'Hvad sker der, når n bliver stor – eller når der kommer flere kerner, flere tilskuere?',
     koncepter: ['algodat-a1', 'algodat-a3', 't03-k2', 't03-k3', 'dp-k1', 'social-k2', 't09-k2'],
+  },
+  {
+    id: 'tolkning', navn: 'Tolkning former følelsen', emoji: '🪞',
+    gradient: 'linear-gradient(135deg, #A18CD1, #4776E6)',
+    ide: 'Det, der sker, og det, vi siger til os selv om det, er to forskellige ting.',
+    koncepter: ['stoicisme-k1', 'stoicisme-k2', 'stoicisme-k3', 'stress-k3', 'angst-k1', 'angst-k2', 'angst-k4', 'diagnoser-k4', 'eksistens-k3'],
+  },
+  {
+    id: 'mening', navn: 'Mening og identitet', emoji: '🧭',
+    gradient: 'linear-gradient(135deg, #1BCEDF, #5B247A)',
+    ide: 'Hvem er du, hvad er vigtigt – og hvornår er noget »det samme«?',
+    koncepter: ['eksistens-k1', 'eksistens-k2', 'eksistens-k4', 'stoicisme-k4', 'diagnoser-k1', 'diagnoser-k2', 't10-k1', 'hukommelse-k1'],
   },
 ];

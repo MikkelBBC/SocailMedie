@@ -205,7 +205,7 @@ const legend = (items) => `<div class="viz-legend">${items.map(([c, t]) => `<spa
 // ---------- Siden ----------
 
 export function renderStats(el, d) {
-  const { state, seed, readiness, mastered, reviewables, levelInfo, retrievability, RARITIES, openSavedCase, reset } = d;
+  const { state, seed, readiness, mastered, reviewables, levelInfo, retrievability, RARITIES, openCasino, reset } = d;
   const log = state.log ?? {};
   const days14 = lastDays(14);
   const sum = (keys, f) => keys.reduce((a, k) => a + (log[k]?.[f] ?? 0), 0);
@@ -313,18 +313,14 @@ export function renderStats(el, d) {
       <ol class="weak-list">${weakest.map(({ k, r, lapses }) => `<li><span>${esc(k.hook ?? k.sporgsmal ?? k.pastand ?? `${k.a?.navn} vs ${k.b?.navn}`)}</span><small>${lapses}× glemt · husker ~${pct(r)}</small></li>`).join('')}</ol></section>` : ''}
 
     <section class="viz-card inventory">
-      <header><h3>🎒 Inventar</h3><p>${inv.length} skins${state.cases ? ` · ${state.cases} uåbnede cases` : ''}</p></header>
-      ${state.cases ? '<button class="case-btn" id="open-saved-case">📦 Åbn en gemt case</button>' : ''}
+      <header><h3>Inventar</h3><p>${inv.length} skins · ${(state.coins ?? 0).toLocaleString('da-DK')} mønter${state.cases ? ` · ${state.cases} uåbnede cases` : ''}</p></header>
       <div class="rarity-row">${RARITIES.map((r) => `<span style="--r:${r.farve}"><b>${invCounts[r.id]}</b>${r.navn}</span>`).join('')}</div>
-      <div class="skins">${inv.slice(-24).reverse().map((x) => {
-        const r = RARITIES.find((y) => y.id === x.rarity);
-        return `<div class="skin" style="--r:${r.farve}"><span>${x.emoji}</span><b>${x.stattrak ? 'ST™ ' : ''}${esc(x.navn)}</b><small>${esc(x.wear)}</small></div>`;
-      }).join('') || '<p class="empty">Få 5 rigtige i træk for din første case.</p>'}</div>
+      <button class="case-btn" id="goto-casino">Åbn casinoet</button>
     </section>
 
     <button class="ghost danger" id="reset">Nulstil fremskridt</button>`;
 
   el.querySelectorAll('.viz-root').forEach(wireTooltip);
-  el.querySelector('#open-saved-case')?.addEventListener('click', openSavedCase);
+  el.querySelector('#goto-casino').addEventListener('click', openCasino);
   el.querySelector('#reset').addEventListener('click', reset);
 }

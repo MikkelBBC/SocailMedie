@@ -19,6 +19,12 @@ const fresh = () => ({
   goal: 10,
   streak: { count: 0, lastDay: null, freezes: 0 },
   daily: { day: null, answered: 0, goalShown: false },
+  missions: null,     // { day, list: [{ id, n, have, arg? }], bonus, shown }
+  lyd: true,
+  coins: 100,         // Leth-mønter (kun optjent ved læring)
+  coinLog: {},        // 'YYYY-MM-DD' -> { ind, ud }
+  bet: null,          // { stake } – indsats på næste svar
+  freeSpinDay: null,  // dagen, hvor dagens gratis spin er brugt
 });
 
 export function load() {

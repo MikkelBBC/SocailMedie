@@ -60,7 +60,14 @@ anbefaler at stoppe.
 (eller om 7 dage, hvis datoen ikke er sat). Kort, man aldrig har besvaret, tæller som 0.
 Basics vægter halvt i totalen. Svage emner får vægt 0,6–1,8 i feedets valg af nyt stof.
 
-## 5. Indhold
+## 5. Fagene
+
+SW3SYS er eksamensfaget. Resten er der, fordi blandet træning (interleaving)
+virker bedre end at læse ét emne ad gangen, og fordi koblinger på tværs gør
+begge sider lettere at huske: AI og teknologi hænger direkte sammen med
+operativsystemer, algoritmer og psykologi.
+
+## 6. Indhold
 
 `public/data/sw3sys/` – ét modul pr. emne (t00 basics + t01-t12) plus koblinger.
 205 kort: 58 koncepter, 72 quizzer (inkl. kode), 38 forklar-højt, 13 myter,

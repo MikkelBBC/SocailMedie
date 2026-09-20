@@ -49,7 +49,7 @@ export default [
     id: 'algoritmedesign', navn: 'Genveje og strategier', emoji: '🧭',
     gradient: 'linear-gradient(135deg, #8E2DE2, #4A00E0)',
     ide: 'Tommelfingerregler og grådige valg – hurtige, ofte gode, nogle gange forkerte.',
-    koncepter: ['dp-k4', 'dp-k1', 'dp-k3', 'biases-b1', 'biases-b2', 'algodat-a1', 'grafer-k3', 'social-k3', 'ragekniv-k1', 'ragekniv-k2', 'ragekniv-k3'],
+    koncepter: ['dp-k4', 'dp-k1', 'dp-k3', 'biases-b1', 'biases-b2', 'algodat-a1', 'grafer-k3', 'social-k3', 'ragekniv-k1', 'ragekniv-k2', 'ragekniv-k3', 'ailaering-k3'],
   },
   {
     id: 'beloenning', navn: 'Belønning og vaner', emoji: '🎰',
@@ -80,5 +80,23 @@ export default [
     gradient: 'linear-gradient(135deg, #1BCEDF, #5B247A)',
     ide: 'Hvem er du, hvad er vigtigt – og hvornår er noget »det samme«?',
     koncepter: ['eksistens-k1', 'eksistens-k2', 'eksistens-k4', 'stoicisme-k4', 'diagnoser-k1', 'diagnoser-k2', 't10-k1', 'hukommelse-k1'],
+  },
+  {
+    id: 'moenstre', navn: 'Mønstre i data', emoji: '📊',
+    gradient: 'linear-gradient(135deg, #11998E, #8E54E9)',
+    ide: 'At finde et mønster er ikke det samme som at forstå det – og et mønster i data kan være en fælde.',
+    koncepter: ['ailaering-k1', 'ailaering-k4', 'ailaering-k5', 'biases-b1', 'biases-b4', 'algodat-a2', 'diagnoser-k3', 'ragekniv-k1'],
+  },
+  {
+    id: 'sprog', navn: 'Sprog og betydning', emoji: '🗣️',
+    gradient: 'linear-gradient(135deg, #4776E6, #F857A6)',
+    ide: 'Hvordan ord bliver til noget, en maskine – eller en hjerne – kan regne med.',
+    koncepter: ['sprogmodeller-k1', 'sprogmodeller-k2', 'sprogmodeller-k3', 'sprogmodeller-k5', 'hukommelse-k1', 'ragekniv-k4', 'eksistens-k4'],
+  },
+  {
+    id: 'lag', navn: 'Lag og protokoller', emoji: '📡',
+    gradient: 'linear-gradient(135deg, #00C6FF, #0072FF)',
+    ide: 'Hvert lag stoler på laget under og skjuler rodet for laget over.',
+    koncepter: ['internet-k1', 'internet-k3', 'internet-k4', 'krypto-k1', 't06-k1', 't08-k1', 't00-k1'],
   },
 ];

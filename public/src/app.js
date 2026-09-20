@@ -460,21 +460,25 @@ function restartFeed(filter) {
 // ---------- HUD og story-ringe ----------
 
 function updateHud() {
-  $('#streak').textContent = state.streak.count;
+  // Tålmodig over for manglende elementer: HUD'en må aldrig kunne vælte resten.
+  const sæt = (sel, v) => { const n = $(sel); if (n) n.textContent = v; };
+  sæt('#streak', state.streak.count);
   const lvl = levelInfo(state.xp);
-  $('#level').textContent = lvl.level;
-  $('#level-fg').style.strokeDashoffset = String(100 - lvl.pct * 100);
+  sæt('#level', lvl.level);
+  if ($('#level-fg')) $('#level-fg').style.strokeDashoffset = String(100 - lvl.pct * 100);
   const pct = Math.min(1, state.daily.answered / state.goal);
-  $('#goal-fg').style.strokeDashoffset = String(100 - pct * 100);
-  $('#goal-label').textContent = `${Math.min(state.daily.answered, state.goal)}/${state.goal}`;
-  $('#level').parentElement.title = `Level ${lvl.level} · ${levelTitle(lvl.level)} · ${lvl.toNext} XP til næste`;
+  if ($('#goal-fg')) $('#goal-fg').style.strokeDashoffset = String(100 - pct * 100);
+  sæt('#goal-label', `${Math.min(state.daily.answered, state.goal)}/${state.goal}`);
+  if ($('#level')) $('#level').parentElement.title = `Level ${lvl.level} · ${levelTitle(lvl.level)} · ${lvl.toNext} XP til næste`;
   const boost = $('#boost');
-  boost.hidden = !boostActive();
-  if (boostActive()) boost.textContent = `⚡×${state.boost.mult} ${Math.ceil((state.boost.until - Date.now()) / 60_000)}m`;
+  if (boost) boost.hidden = !boostActive();
+  if (boost && boostActive()) boost.textContent = `⚡×${state.boost.mult} ${Math.ceil((state.boost.until - Date.now()) / 60_000)}m`;
   const missionsLeft = state.missions?.list.filter((m) => !isDone(m)).length ?? 0;
   const badge = $('#mission-badge');
-  badge.hidden = missionsLeft === 0;
-  badge.textContent = missionsLeft;
+  if (badge) {
+    badge.hidden = missionsLeft === 0;
+    badge.textContent = missionsLeft;
+  }
   updateCombo();
   updateHighlightBadges();
   renderSides();
@@ -551,6 +555,7 @@ function renderSides() {
 let shownCombo = 0;
 function updateCombo() {
   const meter = $('#combo');
+  if (!meter) return;
   const c = state.combo;
   if (c < 2) {
     if (shownCombo >= 3 && c === 0 && !meter.hidden) {

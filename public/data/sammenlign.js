@@ -346,4 +346,44 @@ export default [
     ],
     forklaring: 'Begge er antikke skoler for et roligt, godt liv. Stoikerne satte dyd i centrum, epikuræerne en rolig, smertefri nydelse. Ingen af dem prædikede luksus.',
   },
+  // ---------- AI og teknologi ----------
+  {
+    id: 'sam-rag-finetune', spor: 'aibrug', efter: 'aibrug-k3',
+    a: { navn: 'RAG', emoji: '📚' }, b: { navn: 'Fine-tuning', emoji: '🎓' },
+    udsagn: [
+      { tekst: 'Giver modellen viden, den ikke havde i forvejen', svar: 'a' },
+      { tekst: 'Ændrer modellens stil og svarformat', svar: 'b' },
+      { tekst: 'Kan opdateres ved bare at skifte dokumenterne ud', svar: 'a' },
+      { tekst: 'Kræver træningsdata og tid på GPU', svar: 'b' },
+      { tekst: 'Kan gøre svarene bedre til din opgave', svar: 'begge' },
+      { tekst: 'Fjerner risikoen for hallucination helt', svar: 'ingen' },
+    ],
+    forklaring: 'Viden hører til i konteksten (RAG). Form og stil kan trænes ind (fine-tuning). Ingen af dem fjerner behovet for at kontrollere svaret.',
+  },
+  {
+    id: 'sam-tcp-udp', spor: 'internet', efter: 'internet-k3',
+    a: { navn: 'TCP', emoji: '📮' }, b: { navn: 'UDP', emoji: '📣' },
+    udsagn: [
+      { tekst: 'Sætter en forbindelse op med et håndtryk først', svar: 'a' },
+      { tekst: 'Sender tabte pakker igen', svar: 'a' },
+      { tekst: 'Bruges typisk til live video og spil', svar: 'b' },
+      { tekst: 'Sender data i pakker over IP', svar: 'begge' },
+      { tekst: 'Garanterer rækkefølgen', svar: 'a' },
+      { tekst: 'Krypterer indholdet af sig selv', svar: 'ingen' },
+    ],
+    forklaring: 'TCP bruger tid på at være sikker, UDP på at være fremme nu. Kryptering er et lag for sig (TLS).',
+  },
+  {
+    id: 'sam-symmetrisk-asymmetrisk', spor: 'krypto', efter: 'krypto-k1',
+    a: { navn: 'Symmetrisk', emoji: '🔑' }, b: { navn: 'Asymmetrisk', emoji: '🗝️' },
+    udsagn: [
+      { tekst: 'Samme nøgle låser og låser op', svar: 'a' },
+      { tekst: 'Har en offentlig og en privat nøgle', svar: 'b' },
+      { tekst: 'Bruges til digitale underskrifter', svar: 'b' },
+      { tekst: 'Er hurtigst til store mængder data', svar: 'a' },
+      { tekst: 'Bruges i HTTPS', svar: 'begge' },
+      { tekst: 'Gør det unødvendigt at holde nøgler hemmelige', svar: 'ingen' },
+    ],
+    forklaring: 'HTTPS bruger asymmetrisk til at aftale en nøgle og symmetrisk til resten, fordi det er meget hurtigere.',
+  },
 ];

@@ -281,3 +281,66 @@
 
 /* Feedet scroller blødere på mobil */
 .feed { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+
+/* ================================================================
+   Animation: tegningerne bygger sig selv op, når sliden vises
+   ================================================================ */
+.figur-svg svg > * { animation: fig-ind .45s cubic-bezier(.2,.8,.3,1) both; }
+@keyframes fig-ind { from { opacity: 0; transform: translateY(6px) scale(.97); } to { opacity: 1; transform: none; } }
+.figur-svg svg { transform-box: fill-box; }
+.figur-svg svg > *:nth-child(1) { animation-delay: .02s; }
+.figur-svg svg > *:nth-child(2) { animation-delay: .06s; }
+.figur-svg svg > *:nth-child(3) { animation-delay: .10s; }
+.figur-svg svg > *:nth-child(4) { animation-delay: .14s; }
+.figur-svg svg > *:nth-child(5) { animation-delay: .18s; }
+.figur-svg svg > *:nth-child(6) { animation-delay: .22s; }
+.figur-svg svg > *:nth-child(7) { animation-delay: .26s; }
+.figur-svg svg > *:nth-child(8) { animation-delay: .30s; }
+.figur-svg svg > *:nth-child(9) { animation-delay: .34s; }
+.figur-svg svg > *:nth-child(10) { animation-delay: .38s; }
+.figur-svg svg > *:nth-child(n+11) { animation-delay: .42s; }
+/* Pilene tegner sig selv */
+.figur-svg line[marker-end] { stroke-dasharray: 400; animation: fig-ind .45s cubic-bezier(.2,.8,.3,1) both, tegn-pil .6s ease-out both; }
+@keyframes tegn-pil { from { stroke-dashoffset: 400; } to { stroke-dashoffset: 0; } }
+
+/* Trinnene falder ind ét ad gangen */
+.hvordan li { animation: trin-ind .4s cubic-bezier(.2,.8,.3,1) both; }
+.hvordan li:nth-child(1) { animation-delay: .05s; }
+.hvordan li:nth-child(2) { animation-delay: .13s; }
+.hvordan li:nth-child(3) { animation-delay: .21s; }
+.hvordan li:nth-child(4) { animation-delay: .29s; }
+.hvordan li:nth-child(5) { animation-delay: .37s; }
+.hvordan li:nth-child(n+6) { animation-delay: .45s; }
+@keyframes trin-ind { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+.hvordan li::before { animation: tal-pop .4s cubic-bezier(.2,.9,.3,1.4) both; animation-delay: inherit; }
+@keyframes tal-pop { from { transform: scale(0); } to { transform: none; } }
+
+/* Analogien: citatet toner ind, mærkaten glider ned */
+.analogi small { animation: maerkat .4s cubic-bezier(.2,.8,.3,1) both; }
+@keyframes maerkat { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.analogi p { animation: fig-ind .5s cubic-bezier(.2,.8,.3,1) .1s both; }
+
+/* Svarmulighederne lander efter hinanden */
+.options .opt { animation: svar-ind .35s cubic-bezier(.2,.8,.3,1) both; }
+.options .opt:nth-child(1) { animation-delay: .04s; }
+.options .opt:nth-child(2) { animation-delay: .10s; }
+.options .opt:nth-child(3) { animation-delay: .16s; }
+.options .opt:nth-child(4) { animation-delay: .22s; }
+@keyframes svar-ind { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Flammen i toppen lever, når der er en streak */
+.pill.streak .ic { animation: flamme 2.6s ease-in-out infinite; transform-origin: 50% 80%; }
+@keyframes flamme { 25% { transform: scale(1.1) rotate(-4deg); } 60% { transform: scale(.96) rotate(3deg); } }
+
+/* Emne-ringen i toppen ånder svagt, når den er valgt */
+.hl.on .hl-ring { animation: aande 3.4s ease-in-out infinite; }
+@keyframes aande { 50% { transform: scale(1.1); } }
+
+/* Nyt kort glider blødt på plads */
+.card > .card-inner { animation: kort-ind .4s cubic-bezier(.2,.8,.3,1) both; }
+@keyframes kort-ind { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* Forklaringen efter et svar folder sig ud */
+.reveal .explain { animation: fig-ind .4s cubic-bezier(.2,.8,.3,1) .08s both; }
+.headline { animation: overskrift .45s cubic-bezier(.2,.9,.3,1.3) both; }
+@keyframes overskrift { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: none; } }

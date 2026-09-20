@@ -22,6 +22,8 @@ fx `http://192.168.0.12:3000`. Der er ingen afhængigheder, kun Node 20.12+.
 | 🧠 Psykologi | Biases og hukommelse & indlæring | `public/data/psykologi/` |
 | 🩺 Psykiatri | Diagnoser, angst og depression, psykose | `public/data/psykiatri/` |
 | 🏛️ Filosofi | Stoicisme, tankeværktøjer, eksistens | `public/data/filosofi/` |
+| 🤖 AI | Sådan lærer en model, sprogmodeller indefra, AI i praksis | `public/data/ai/` |
+| 🌐 Teknologi | Internettet bag skærmen, kryptering og sikkerhed | `public/data/tek/` |
 
 Fagene samles i `public/data/index.js`. Der ligger også koblinger på tværs af
 fagene. I story-ringene trykker du på et fag for at se dets spor. **Alle**

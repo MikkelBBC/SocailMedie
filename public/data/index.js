@@ -17,6 +17,11 @@ import psykose from './psykiatri/psykose.js';
 import stoicisme from './filosofi/stoicisme.js';
 import ragekniv from './filosofi/ragekniv.js';
 import eksistens from './filosofi/eksistens.js';
+import ailaering from './ai/laering.js';
+import sprogmodeller from './ai/sprogmodeller.js';
+import aibrug from './ai/brug.js';
+import internet from './tek/internet.js';
+import krypto from './tek/krypto.js';
 import sammenlign from './sammenlign.js';
 import forklaringer from './forklaringer.js';
 import forklaringerMere from './forklaringer-mere.js';
@@ -37,6 +42,8 @@ const dao = samlSpor('dao', [algodat, traeer, grafer, dp]);
 const psyk = samlSpor('psykologi', [biases, hukommelse, afhaengighed, vaner, social, stress]);
 const psykiatri = samlSpor('psykiatri', [diagnoser, angst, psykose]);
 const filosofi = samlSpor('filosofi', [stoicisme, ragekniv, eksistens]);
+const ai = samlSpor('ai', [ailaering, sprogmodeller, aibrug]);
+const tek = samlSpor('tek', [internet, krypto]);
 
 // Koblinger på tværs af fag.
 const tvaerfaglige = [
@@ -95,6 +102,31 @@ const tvaerfaglige = [
     hook: 'Casinoet i denne app er bygget på to fund. Nu kender du begge.',
     body: '**Variabel belønning** (afhængighedssporet): du ved ikke, hvornår gevinsten kommer, så hjernen bliver ved med at trykke.\n\n**Hedonisk tilpasning** (eksistenssporet): glæden ved en gevinst falder hurtigt tilbage mod udgangspunktet. Så du vil have **næste** gevinst for at mærke det igen.\n\nSammen er de motoren i spilleautomater, loot boxes og skrabelodder: kort top, hurtig tilpasning, ny indsats.\n\nForskellen her er, at mønterne kun kan tjenes ved at **lære**, og de kan ikke købes for rigtige penge. Oddsene står altid synligt, og husets fordel er ægte: i det lange løb taber du mønter på at spille. Ligesom i et rigtigt casino.\n\nNæste gang et spil føles »lige ved«: det er tredemøllen, der kører.',
   },
+  {
+    id: 'kob-neuron-perceptron', type: 'kobling', kraever: ['ailaering-k2q', 'hukommelse-k1q'],
+    hook: 'En kunstig neuron er opkaldt efter hjernen. Ligheden stopper hurtigt.',
+    body: 'Begge steder: mange små enheder, der hver især gør noget banalt, og som tilsammen kan noget svært.\n\nMen forskellene er store.\n\n**Hjernen** sender spidse elektriske pulser i tid, bruger cirka 20 watt, lærer af få eksempler og ændrer selv sine forbindelser.\n\n**Et netværk** sender tal, træner på millioner af eksempler, bruger enorme mængder strøm og har en fast struktur, hvor kun vægtene ændrer sig.\n\nMetaforen »kunstige neuroner« er nyttig som billede og misvisende som forklaring. Når nogen siger, at en model »tænker som en hjerne«, er det billedsprog, ikke biologi.',
+  },
+  {
+    id: 'kob-overfit-udenad', type: 'kobling', kraever: ['ailaering-k4q', 'hukommelse-k2q'],
+    hook: 'Overfitting er maskinens udgave af at læse til eksamen ved at lære facit udenad.',
+    body: 'I hukommelsessporet: at genlæse føles som læring, men man lærer kun **netop de sider**. Til eksamen skal man bruge noget andet, og så falder det fra hinanden.\n\nI AI: en model, der trænes for længe, rammer perfekt på træningsdata og dumper på nye data.\n\nLøsningen er også den samme:\n• Mennesket skal **testes** på nyt materiale (retrieval practice), ikke genlæse det gamle.\n• Modellen skal **valideres** på data, den ikke har trænet på.\n\nOg begge steder gælder: den, der måler sig selv på det, han allerede har set, måler ingenting.',
+  },
+  {
+    id: 'kob-attention-opmaerksomhed', type: 'kobling', kraever: ['sprogmodeller-k3q', 'biases-b3q'],
+    hook: 'Attention og availability er det samme problem: hvad får lov at tælle med?',
+    body: 'En sprogmodels **attention** afgør, hvilke dele af teksten der vægter, når næste ord skal vælges.\n\nDin **availability-heuristik** afgør, hvilke eksempler der dukker op, når du skal vurdere noget.\n\nBegge er nødvendige. Ingen af dem kan kigge på alt.\n\nOg begge kan tage fejl på samme måde: det, der fylder mest i konteksten, kommer til at tælle mest, uanset om det er det mest relevante.\n\nDerfor virker de samme modtræk. For modellen: giv den de rigtige stykker med (RAG). For dig: spørg »hvad er det, jeg ikke har set?«',
+  },
+  {
+    id: 'kob-hash-cache', type: 'kobling', kraever: ['krypto-k2q', 'algodat-a2q'],
+    hook: 'Samme hashfunktion, to modsatte ønsker.',
+    body: 'I en **hashtabel** vil du have en hurtig hashfunktion, der spreder nøglerne jævnt. Kollisioner er en irritation, der koster opslagstid.\n\nI **kodeordshashing** vil du have det stik modsatte: en funktion, der er **langsom** med vilje, og som bruger hukommelse.\n\nHvorfor? Fordi modstanderen er en anden.\n\nI tabellen er modstanderen et uheldigt datasæt. I kodeord er modstanderen en person med et grafikkort, der gætter milliarder af gange i sekundet.\n\nDet er et godt eksempel på, at »hurtigst muligt« ikke altid er målet. Kravet kommer af trusselsmodellen, ikke af algoritmen.',
+  },
+  {
+    id: 'kob-rag-hukommelse', type: 'kobling', kraever: ['aibrug-k2q', 'sprogmodeller-k4q'],
+    hook: 'En model uden RAG er en eksamen uden bøger. Med RAG er det en åben bogs eksamen.',
+    body: 'Sprogmodellen husker intet mellem samtaler. Alt, den ved om din situation, står i **kontekstvinduet**.\n\n**RAG** er derfor ikke hukommelse. Det er at slå op i bogen og lægge den rigtige side ind i vinduet, hver eneste gang.\n\nDet forklarer også de to typiske fejl:\n• Finder søgningen den forkerte side, svarer modellen sikkert og forkert.\n• Er siden ikke med, findes den ikke. Modellen gætter i stedet.\n\nPointen: kvaliteten af et AI-svar afgøres oftere af **hvad der kom ind i konteksten** end af hvilken model, der svarede.',
+  },
 ];
 
 export const pakker = [
@@ -103,9 +135,11 @@ export const pakker = [
   { id: 'psykologi', navn: 'Psykologi', emoji: '🧠', gradient: 'linear-gradient(135deg, #FCAF45, #F77737 45%, #E1306C)', farve: '#F77737' },
   { id: 'psykiatri', navn: 'Psykiatri', emoji: '🩺', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6' },
   { id: 'filosofi', navn: 'Filosofi', emoji: '🏛️', gradient: 'linear-gradient(135deg, #A18CD1, #FF6A88 60%, #FF99AC)', farve: '#A18CD1' },
+  { id: 'ai', navn: 'AI', emoji: '🤖', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6' },
+  { id: 'tek', navn: 'Teknologi', emoji: '🌐', gradient: 'linear-gradient(135deg, #00C6FF, #0072FF 55%, #8E54E9)', farve: '#0072FF' },
 ];
 
-const spor = [...sw3sys.spor.map((s) => ({ ...s, pakke: 'sw3sys' })), ...dao.spor, ...psyk.spor, ...psykiatri.spor, ...filosofi.spor];
+const spor = [...sw3sys.spor.map((s) => ({ ...s, pakke: 'sw3sys' })), ...dao.spor, ...psyk.spor, ...psykiatri.spor, ...filosofi.spor, ...ai.spor, ...tek.spor];
 const sporPakke = Object.fromEntries(spor.map((s) => [s.id, s.pakke]));
 
 // Koncepter kan have ekstra forklaring (analogi, tegning, trin) i forklaringer.js.
@@ -122,6 +156,8 @@ export default {
     ...psyk.kort,
     ...psykiatri.kort,
     ...filosofi.kort,
+    ...ai.kort,
+    ...tek.kort,
     ...sammenlign.map((k) => ({ ...k, type: 'sammenlign', pakke: sporPakke[k.spor] })),
     ...tvaerfaglige.map((k) => ({ ...k, spor: 'kobling', pakke: 'tvaerfag' })),
   ]),

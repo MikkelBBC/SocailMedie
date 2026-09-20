@@ -13,7 +13,6 @@
   <link rel="stylesheet" href="exam.css">
   <link rel="stylesheet" href="play.css">
   <link rel="stylesheet" href="layout.css">
-  <link rel="stylesheet" href="casino.css">
   <script type="module" src="src/app.js"></script>
 </head>
 <body>
@@ -43,7 +42,6 @@
         <button class="logo" id="logo">Leths super App</button>
         <div class="hud-stats">
           <span class="pill boost" id="boost" title="XP-boost fra case" hidden></span>
-          <button class="pill coins" id="coins" data-go="casino" title="Leth-mønter"><i class="coin"></i><b>100</b></button>
           <span class="pill streak" title="Dage i træk"><i data-icon="flame" data-size="16"></i><b id="streak">0</b></span>
           <span class="ring level-ring" title="Level">
             <svg viewBox="0 0 36 36"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#833AB4"/><stop offset="1" stop-color="#E1306C"/></linearGradient></defs><circle cx="18" cy="18" r="15.9" class="bg" pathLength="100"/><circle id="level-fg" cx="18" cy="18" r="15.9" class="fg" stroke="url(#lg)" pathLength="100"/></svg>
@@ -67,11 +65,6 @@
     <main id="view-eksamen" class="view page" hidden>
       <h1><span>Eksamen</span><small class="h1-sub">SW3SYS · mundtlig</small></h1>
       <div id="exam"></div>
-    </main>
-
-    <main id="view-casino" class="view page casino-page" hidden>
-      <h1><span>Casino</span><small class="h1-sub">Leth-mønter · kun optjent ved at lære</small></h1>
-      <div id="casino"></div>
     </main>
 
     <main id="view-gemt" class="view page" hidden>

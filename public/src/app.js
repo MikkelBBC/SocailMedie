@@ -7,7 +7,6 @@ import { openCase, RARITIES, rewardText } from './cases.js';
 import { renderStats } from './stats.js';
 import { sfx, setMuted } from './sfx.js';
 import { icon, hydrateIcons } from './icons.js';
-import { renderCasino, renderBetCard, renderSkrabCard, renderWheelCard, decorateJackpot, rollJackpot, rollJackpotMult, JACKPOT_BASIS, PRISER } from './casino.js';
 import { ensureMissions, bump, missionEmoji, missionText, isDone, allMissionsDone } from './missions.js';
 
 const DAY = 86_400_000;
@@ -87,84 +86,9 @@ function addXp(n, { learning = false } = {}) {
     sfx.fanfare();
     const nyTitel = levelTitle(after) !== levelTitle(before);
     toast(`🎉 Level ${after}${nyTitel ? ` · ny titel: ${levelTitle(after)}` : ''}!`);
-    if (learning) { feed.queueCase('level'); grantCoins(50, 'level'); }
+    if (learning) feed.queueCase('level');
   }
 }
-
-// ---------- Mønter og casino ----------
-
-// Mønter tjenes kun ved læring og kan ikke købes. coinLog bruges til »i dag optjent/spillet«.
-function coinDay() {
-  state.coinLog ??= {};
-  return (state.coinLog[dayKey()] ??= { ind: 0, ud: 0 });
-}
-
-function grantCoins(n, grund = '') {
-  if (!n) return;
-  state.coins = (state.coins ?? 0) + n;
-  if (!['salg', 'indsats', 'dobbelt', 'hjul', 'skrab'].includes(grund)) coinDay().ind += n;
-  save(state);
-  const pill = document.getElementById('coins');
-  if (pill) {
-    pill.querySelector('b').textContent = state.coins.toLocaleString('da-DK');
-    pill.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], 260);
-  }
-}
-
-function spend(n, silent = false) {
-  if ((state.coins ?? 0) < n) {
-    if (!silent) toast(`Du mangler ${n - (state.coins ?? 0)} mønter. Svar rigtigt for at tjene flere.`);
-    return false;
-  }
-  state.coins -= n;
-  coinDay().ud += n;
-  save(state);
-  updateHud();
-  return true;
-}
-
-const JACKPOT_CHANCE = 0.14;
-const jackpots = new Map(); // kort-id -> multiplikator for det kort, der ligger i feedet
-
-// 5 i træk giver en tilfældig slags belønning – variationen er en del af spændingen.
-function queueComboReward() {
-  const r = Math.random();
-  if (r < 0.45) feed.queueCase('combo');
-  else if (r < 0.75) feed.queueReward('__skrab', 'skrab:combo');
-  else feed.queueReward('__hjul', 'hjul:combo');
-}
-
-// Efter et svar kan der dukke et tilbud op: indsats, skrabelod eller hjul. Mindst 4 svar imellem.
-let sinceOffer = 0;
-function maybeOffer() {
-  if (++sinceOffer < 4 || Math.random() > 0.4 || state.bet) return;
-  const options = [
-    state.coins >= 10 && ['__bet', 'bet', 5],
-    state.coins >= PRISER.skrab && ['__skrab', 'skrab:tilbud', 3],
-    state.coins >= PRISER.spin && ['__hjul', 'hjul:tilbud', 2],
-  ].filter(Boolean);
-  if (!options.length) return;
-  let w = Math.random() * options.reduce((a, o) => a + o[2], 0);
-  const [id, mode] = options.find((o) => (w -= o[2]) < 0) ?? options[0];
-  feed.queueReward(id, mode);
-  sinceOffer = 0;
-}
-
-const casinoApi = {
-  state,
-  host: app,
-  save: () => save(state),
-  toast: (m) => toast(m),
-  confetti: (el, n) => confetti(el, n),
-  updateHud: () => updateHud(),
-  grantCoins,
-  spend,
-  openSheet: (html, then) => openSheet(html, then),
-  closeSheet: () => closeSheet(),
-  openCase: (kilde, minRarity, done) => ctx.openCase(kilde, done, minRarity),
-  freeSpinReady: () => state.daily.answered >= state.goal && state.freeSpinDay !== dayKey(),
-  useFreeSpin: () => { state.freeSpinDay = dayKey(); save(state); },
-};
 
 // ---------- Dagens missioner ----------
 
@@ -182,7 +106,6 @@ function missionEvent(ev, inFeed = true) {
   const give = (kilde) => (inFeed ? feed.queueCase(kilde) : (state.cases = (state.cases ?? 0) + 1));
   done.forEach((m, i) => {
     give('mission');
-    grantCoins(40, 'mission');
     setTimeout(() => {
       sfx.fanfare();
       toast(`${missionEmoji(m)} Mission klaret! 📦 Case på vej`);
@@ -307,7 +230,7 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
     state.bestCombo = Math.max(state.bestCombo, state.combo);
     xp = Math.round(baseXp * (1 + Math.min(state.combo - 1, 10) * 0.1));
     if (Math.random() < 0.12) { xp *= 3; crit = true; }
-    if (state.combo % 5 === 0 && mode !== 'sim') queueComboReward();
+    if (state.combo % 5 === 0 && mode !== 'sim') feed.queueCase('combo');
     sfx.correct(state.combo);
     if (crit) sfx.crit();
   } else {
@@ -330,9 +253,8 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
     state.daily.goalShown = true;
     goalReached = true;
     bumpStreak();
-    if (mode !== 'sim') { feed.queueGoal(); feed.queueReward('__hjul', 'hjul:maal'); }
-    grantCoins(60, 'maal');
-    toast('🔥 Dagens mål er nået! +60 mønter og et gratis spin');
+    if (mode !== 'sim') feed.queueGoal();
+    toast('🔥 Dagens mål er nået!');
   } else if (left === 3 || left === 1) {
     setTimeout(() => toast(left === 1 ? '🔥 Ét svar mere til dagens mål!' : '🔥 Kun 3 svar til dagens mål'), 900);
   }
@@ -347,32 +269,6 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
     const kob = koblingTeaser(card.id);
     if (kob) teasers.push(kob);
   }
-  let coins = 0;
-  const jackpot = jackpots.get(card.id);
-  jackpots.delete(card.id);
-  if (grade > 1) {
-    coins = jackpot ? JACKPOT_BASIS * jackpot : 2 + (state.combo >= 5 ? 1 : 0) + (crit ? 2 : 0);
-    grantCoins(coins, 'svar');
-    if (jackpot) {
-      teasers.unshift(`🎰 Jackpot ×${jackpot}: +${coins} mønter`);
-      setTimeout(() => { sfx.fanfare(); if (jackpot >= 5) confetti(app, 140); }, 300);
-    }
-  } else if (jackpot) {
-    teasers.unshift(`🎰 Jackpot ×${jackpot} glippede`);
-  }
-  if (state.bet && mode !== 'sim') {
-    const { stake } = state.bet;
-    state.bet = null;
-    if (grade > 1) {
-      grantCoins(stake * 2, 'indsats');
-      teasers.unshift(`🎰 Indsatsen vandt: +${stake * 2} mønter`);
-      setTimeout(() => sfx.fanfare(), 350);
-    } else {
-      teasers.unshift(`🎰 Indsatsen på ${stake} er tabt`);
-    }
-  } else if (mode !== 'sim') {
-    maybeOffer();
-  }
   const mission = missionEvent({ kind: 'svar', grade, confidence, type: card.type, spor: card.spor, mode, combo: state.combo }, mode !== 'sim');
   if (mission) teasers.push(mission);
   const lvl = levelInfo(state.xp);
@@ -382,7 +278,7 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
   save(state);
   updateHud();
   if (mode !== 'sim') ensureBuffer();
-  return { xp, coins, crit, combo: state.combo, hyper, goalReached, teasers: teasers.slice(0, 2) };
+  return { xp, crit, combo: state.combo, hyper, goalReached, teasers: teasers.slice(0, 2) };
 }
 
 function logAnswer(card, ok) {
@@ -432,9 +328,6 @@ const ctx = {
     updateHud();
     return 15;
   },
-  renderBet: () => renderBetCard(casinoApi, () => ctx.scrollNext()),
-  renderSkrab: (kind) => renderSkrabCard(casinoApi, kind, () => ctx.scrollNext()),
-  renderWheel: (kind) => renderWheelCard(casinoApi, kind, () => ctx.scrollNext()),
   openCase(kilde, done, minRarity = kilde === 'bonus' ? 'restricted' : null) {
     openCase(app, {
       kilde,
@@ -516,8 +409,6 @@ const observer = new IntersectionObserver(
 
 function setActive(index) {
   app.classList.toggle('compact', index > 0);
-  const now = feedEl.querySelector(`[data-index="${index}"]`);
-  if (now) rollJackpot(now);
   if (index === activeIndex) return;
   const prev = feedEl.querySelector(`[data-index="${activeIndex}"]`);
   const dwell = performance.now() - activeSince;
@@ -539,11 +430,6 @@ function ensureBuffer() {
     if (!pick) break;
     const card = feed.byId[pick.id] ?? { id: pick.id, type: pick.mode };
     const node = renderCard(card, pick.mode, ctx, pick.bro);
-    if (['quiz', 'myte', 'case'].includes(card.type) && pick.mode !== 'pretest' && feed.count > 3 && Math.random() < JACKPOT_CHANCE) {
-      const mult = rollJackpotMult();
-      jackpots.set(card.id, mult);
-      decorateJackpot(node, mult);
-    }
     node.dataset.index = feed.count - 1;
     node.dataset.id = feed.byId[pick.id] ? pick.id : '';
     node.dataset.type = card.type;
@@ -575,9 +461,6 @@ function restartFeed(filter) {
 
 function updateHud() {
   $('#streak').textContent = state.streak.count;
-  $('#coins b').textContent = state.coins.toLocaleString('da-DK');
-  $('#coins').classList.toggle('betting', !!state.bet);
-  $('#coins').title = state.bet ? `Indsats på ${state.bet.stake} mønter er i spil` : 'Leth-mønter · åbn casinoet';
   const lvl = levelInfo(state.xp);
   $('#level').textContent = lvl.level;
   $('#level-fg').style.strokeDashoffset = String(100 - lvl.pct * 100);
@@ -622,7 +505,7 @@ function renderSides() {
       </div>
       <div class="profile-stats">
         <div><span class="fire">${icon('flame', 18)}</span><b>${state.streak.count}</b><small>dage i træk</small></div>
-        <button class="coin-stat" data-go="casino" title="Mønter og inventar"><i class="coin big"></i><b>${state.coins.toLocaleString('da-DK')}</b><small>mønter</small></button>
+        <div><span class="ice">${icon('snow', 18)}</span><b>${state.streak.freezes}</b><small>streak-frys</small></div>
         <div><span class="xp">${icon('bolt', 18)}</span><b>${state.xp}</b><small>XP i alt</small></div>
       </div>
       ${boostActive() ? `<div class="side-boost">${icon('bolt', 16)} XP ×${state.boost.mult} · ${Math.ceil((state.boost.until - Date.now()) / 60_000)} min tilbage</div>` : ''}
@@ -632,7 +515,6 @@ function renderSides() {
       <div class="bar"><div style="width:${(done / state.goal) * 100}%"></div></div>
       <p class="side-note left">${state.daily.answered >= state.goal ? 'Nået. Det sidder bedst, hvis du stopper her og kommer igen i morgen.' : `${state.goal - done} svar mere, så holder din streak.`}</p>
     </div>`;
-  $('#side-profile [data-go="casino"]').addEventListener('click', () => showView('casino'));
 
   if (!wide.matches) return;
   const d = daysToExam();
@@ -758,13 +640,12 @@ function updateHighlightBadges() {
 // ---------- Visninger ----------
 
 function showView(name) {
-  for (const v of ['feed', 'eksamen', 'casino', 'gemt', 'fremskridt']) $(`#view-${v}`).hidden = v !== name;
+  for (const v of ['feed', 'eksamen', 'gemt', 'fremskridt']) $(`#view-${v}`).hidden = v !== name;
   document.querySelectorAll('.nav-btn').forEach((b) => b.classList.toggle('on', b.dataset.view === name));
   $('#hud').hidden = name !== 'feed';
   if (name === 'eksamen') renderExam();
   if (name === 'gemt') renderSaved();
   if (name === 'fremskridt') renderProgress();
-  if (name === 'casino') renderCasino($('#casino'), casinoApi);
   if (name !== 'feed') $(`#view-${name}`).scrollTop = 0;
 }
 
@@ -987,7 +868,6 @@ function simResult() {
   state.simHistory.push({ spor: t.id, dag: dayKey(), disposition: sim.dispo, svar });
   addXp(25);
   missionEvent({ kind: 'sim' }, false);
-  grantCoins(30, 'sim');
   if (total >= 0.75) { state.cases = (state.cases ?? 0) + 1; toast('📦 Stærk simulering – du har fået en case (se Statistik)'); }
   save(state);
   updateHud();
@@ -1057,11 +937,49 @@ function renderSaved() {
 function renderProgress() {
   renderStats($('#progress'), {
     state, seed, readiness, mastered, reviewables, levelInfo, retrievability, RARITIES,
-    openCasino: () => showView('casino'),
+    exportData: buildExport,
+    openSavedCase() {
+      if (!state.cases) return;
+      state.cases--;
+      save(state);
+      ctx.openCase('gemt', () => renderProgress());
+    },
     reset() {
       if (confirm('Slet al fremskridt på denne enhed?')) { reset(); location.reload(); }
     },
   });
+}
+
+// ---------- Eksport af egne data ----------
+
+// En kompakt opsummering, man kan dele i chatten: hvilke kort driller, og hvor godt det går.
+// Kort-id'erne er de samme som i public/data/, så indholdet kan forbedres netop der.
+function buildExport() {
+  const log = Object.entries(state.log ?? {});
+  const n = log.reduce((a, [, d]) => a + d.n, 0);
+  const ok = log.reduce((a, [, d]) => a + d.ok, 0);
+  const kort = {};
+  for (const [id, it] of Object.entries(state.items)) {
+    kort[id] = [it.reps ?? 0, it.lapses ?? 0, it.lastGrade ?? 0, Math.round(retrievability(it) * 100)];
+  }
+  const svaere = Object.entries(state.items)
+    .filter(([, it]) => (it.lapses ?? 0) > 0)
+    .sort((a, b) => (b[1].lapses ?? 0) - (a[1].lapses ?? 0))
+    .slice(0, 15)
+    .map(([id, it]) => `${id} (${it.lapses}× glemt)`);
+  const emner = examTracks().map((t) => `${t.id}:${Math.round(readiness(t.id) * 100)}%`);
+  return JSON.stringify({
+    format: 'leths-app-data v1',
+    forklaring: 'kort = { id: [antal svar, antal gange glemt, sidste karakter 1-4, husker nu i %] }',
+    dato: dayKey(),
+    level: levelInfo(state.xp).level,
+    xp: state.xp,
+    streak: state.streak.count,
+    svar: { i_alt: n, rigtige: ok, procent: n ? Math.round((ok / n) * 100) : null },
+    parathed_pr_emne: emner,
+    svaereste_kort: svaere,
+    kort,
+  }, null, 1);
 }
 
 // ---------- Loot ----------
@@ -1115,7 +1033,6 @@ buildHighlights();
 updateHud();
 ensureBuffer();
 $('#goal-ring').addEventListener('click', openMissions);
-$('#coins').addEventListener('click', () => showView('casino'));
 
 // Nye missioner: vis dem automatisk første gang i dag for brugere, der er i gang; nye brugere får et puf på ringen.
 if (state.missions && !state.missions.shown) {

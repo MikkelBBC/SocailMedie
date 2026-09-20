@@ -36,7 +36,11 @@ der dokumenteret får viden til at sidde.
 | »Tæt på«-teasers under svaret | Goal gradient: »1 rigtigt mere til næste case«, »1 kort fra en ny kobling«, »Mission 4/5« | Gør det tydeligt, at næste kort er værd at hente frem |
 | Level-titler og level-case | Identitet (»Mutex-mester«) og en belønning ved hver level | Kun XP fra svar kan give en level-case, så cases aldrig udløser flere cases |
 | ☀️ Dagens første svar: XP ×2 i 10 min | Grund til at åbne appen hver dag | Daglig spacing i stedet for at klemme det hele ind dagen før |
-| 🎰 Gambling i feedet: jackpot-spørgsmål (×2–×10 mønter), skrabelod og lykkehjul som kort, indsats på næste svar, dobbelt eller intet | Variabel belønning midt i scrollet; 5 i træk giver en tilfældig slags præmie (case, lod eller spin), og dagens mål giver et gratis spin | Alt udløses af rigtige svar, og mønter kan ikke købes. Et forkert jackpot-svar koster intet. Odds og tilbagebetaling vises, feltstørrelsen på hjulet er den ægte chance, og huset vinder i det lange løb |
+| 🖼️ Analogi, tegning og trin på de svære koncepter | Man kan overskue kortet i stedet for at give op | Analogi giver en kendt knage at hænge det nye på (Gentner), tegning + tekst huskes bedre end tekst alene (Mayer), og trin gør en usynlig proces synlig i rækkefølge |
+
+**Fjernet igen:** casinoet (lykkehjul, skrabelod, indsatser og mønter). Det trak
+opmærksomheden væk fra det, appen er til. Tilbage er kun mystery-casen, som
+udløses af rigtige svar i træk.
 
 **Det, vi bevidst ikke gør:** ingen passiv uendelig scroll (der kommer altid en
 quiz efter 2 koncepter), ingen straf for fejl (fejl er læring), og »Dagens mål«

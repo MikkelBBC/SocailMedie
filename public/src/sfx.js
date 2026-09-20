@@ -7,7 +7,7 @@ let muted = false;
 
 export const setMuted = (on) => { muted = on; };
 
-export function tone(freq, { type = 'sine', dur = 0.12, vol = 0.06, at = 0 } = {}) {
+export function tone(freq, { type = 'sine', dur = 0.12, vol = 0.045, at = 0 } = {}) {
   if (muted) return;
   try {
     audio ??= new (globalThis.AudioContext || globalThis.webkitAudioContext)();
@@ -16,7 +16,8 @@ export function tone(freq, { type = 'sine', dur = 0.12, vol = 0.06, at = 0 } = {
     const g = audio.createGain();
     o.type = type;
     o.frequency.value = freq;
-    g.gain.setValueAtTime(vol, t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     o.connect(g).connect(audio.destination);
     o.start(t);

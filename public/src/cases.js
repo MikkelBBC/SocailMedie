@@ -91,8 +91,7 @@ export const rewardText = (r) => [
 
 export const CASE_KILDER = {
   combo: '5 rigtige i træk', maal: 'Dagens mål nået', perfekt: 'Perfekt runde', sim: 'Stærk eksamenssimulering',
-  mission: 'Mission klaret', bonus: 'Alle dagens missioner · mindst Restricted', level: 'Level up',
-  butik: 'Købt i casinoet', premium: 'Premium Case · mindst Classified', tradeup: 'Trade-up kontrakt', gemt: 'Gemt case',
+  mission: 'Mission klaret', bonus: 'Alle dagens missioner · mindst Restricted', level: 'Level up', gemt: 'Gemt case',
 };
 
 const TILE = 112;

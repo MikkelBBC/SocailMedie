@@ -99,7 +99,7 @@ export class Feed {
     this.queueReward('__case', `case:${kilde}`);
   }
 
-  // Belønnings- og casinokort (case, skrabelod, hjul, indsats) spredes ud med mindst to
+  // Belønningskort (cases) spredes ud med mindst to
   // almindelige kort imellem, så de ikke kommer i klump.
   queueReward(id, mode) {
     const REWARD = new Set(['__case', '__skrab', '__hjul', '__bet']);

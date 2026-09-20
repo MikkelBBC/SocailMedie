@@ -33,7 +33,7 @@ blander det hele.
   træne ét emne.
 - **Eksamen**: eksamensdato, parathed pr. emne, modeldispositioner og
   🎲 simulatoren.
-- **Mønter** (tryk på mønt-pillen): saldo, inventar, salg og trade-up. Lykkehjul, skrabelodder, indsatser og jackpot-spørgsmål dukker op direkte i feedet.
+- **Statistik**: grafer, inventar og en knap, der samler dine data (hvilke kort du svarer rigtigt og forkert) til deling.
 - **Gemt**: kort du har dobbelttrykket på.
 - **Fremskridt**: level, streak og mestring pr. emne.
 

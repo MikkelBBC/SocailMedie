@@ -18,6 +18,8 @@ import stoicisme from './filosofi/stoicisme.js';
 import ragekniv from './filosofi/ragekniv.js';
 import eksistens from './filosofi/eksistens.js';
 import sammenlign from './sammenlign.js';
+import forklaringer from './forklaringer.js';
+import forklaringerMere from './forklaringer-mere.js';
 import temaer from './temaer.js';
 
 const prefix = (t, id) => (id ? `${t}-${id}` : id);
@@ -106,11 +108,15 @@ export const pakker = [
 const spor = [...sw3sys.spor.map((s) => ({ ...s, pakke: 'sw3sys' })), ...dao.spor, ...psyk.spor, ...psykiatri.spor, ...filosofi.spor];
 const sporPakke = Object.fromEntries(spor.map((s) => [s.id, s.pakke]));
 
+// Koncepter kan have ekstra forklaring (analogi, tegning, trin) i forklaringer.js.
+const alleForklaringer = { ...forklaringer, ...forklaringerMere };
+const medForklaring = (kort) => kort.map((k) => (alleForklaringer[k.id] ? { ...k, ...alleForklaringer[k.id] } : k));
+
 export default {
   pakker,
   temaer,
   spor,
-  kort: [
+  kort: medForklaring([
     ...sw3sys.kort.map((k) => ({ ...k, pakke: 'sw3sys' })),
     ...dao.kort,
     ...psyk.kort,
@@ -118,5 +124,5 @@ export default {
     ...filosofi.kort,
     ...sammenlign.map((k) => ({ ...k, type: 'sammenlign', pakke: sporPakke[k.spor] })),
     ...tvaerfaglige.map((k) => ({ ...k, spor: 'kobling', pakke: 'tvaerfag' })),
-  ],
+  ]),
 };

@@ -83,6 +83,27 @@ function taps(node, { onSingle, onDouble }) {
   });
 }
 
+// Vandret swipe på et kort. Lodret swipe lades i fred, så feedet stadig kan scrolles.
+function swipe(node, { onLeft, onRight }) {
+  let x0 = null;
+  let y0 = null;
+  node.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'mouse' || e.target.closest('button, textarea, input, a, canvas')) return;
+    x0 = e.clientX;
+    y0 = e.clientY;
+  });
+  node.addEventListener('pointerup', (e) => {
+    if (x0 === null) return;
+    const dx = e.clientX - x0;
+    const dy = e.clientY - y0;
+    x0 = null;
+    if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    navigator.vibrate?.(6);
+    (dx < 0 ? onLeft : onRight)();
+  });
+  node.addEventListener('pointercancel', () => { x0 = null; });
+}
+
 function heartBurst(node, e) {
   const r = node.getBoundingClientRect();
   const h = el('<div class="heart-burst">💖</div>');
@@ -171,21 +192,50 @@ function slidesFrom(body) {
   return slides;
 }
 
+// Rækkefølgen er bevidst: først en analogi at hænge det nye op på, så en tegning,
+// så detaljerne, så trinnene og til sidst hvorfor det overhovedet betyder noget.
+function konceptSlides(card) {
+  const slides = [el(`<div class="slide cover"><h2 class="hook">${esc(card.hook)}</h2><div class="tap-hint">Tryk for at læse ›</div></div>`)];
+  if (card.analogi) {
+    slides.push(el(`<div class="slide" hidden><div class="analogi">
+      <small>Tænk på det som</small><p>${esc(card.analogi)}</p></div></div>`));
+  }
+  if (card.figur) {
+    slides.push(el(`<div class="slide" hidden><figure class="figur">
+      <figcaption>${esc(card.figur.titel)}</figcaption>
+      <div class="figur-svg">${card.figur.svg}</div>
+      ${card.figur.tekst ? `<p>${esc(card.figur.tekst)}</p>` : ''}</figure></div>`));
+  }
+  for (const t of slidesFrom(card.body)) slides.push(el(`<div class="slide" hidden><div class="body">${md(t)}</div></div>`));
+  if (card.hvordan) {
+    slides.push(el(`<div class="slide" hidden><div class="body hvordan">
+      <h3>Sådan sker det, skridt for skridt</h3>
+      <ol>${card.hvordan.map((t) => `<li>${esc(t)}</li>`).join('')}</ol></div></div>`));
+  }
+  if (card.hvorfor) {
+    slides.push(el(`<div class="slide" hidden><div class="hvorfor">
+      <small>Hvorfor det betyder noget</small><p>${esc(card.hvorfor)}</p></div></div>`));
+  }
+  return slides;
+}
+
 function renderKoncept(card, mode, ctx) {
-  const texts = slidesFrom(card.body);
-  const total = texts.length + 1;
-  const slides = [
-    el(`<div class="slide cover"><h2 class="hook">${esc(card.hook)}</h2><div class="tap-hint">Tryk for at læse ›</div></div>`),
-    ...texts.map((t) => el(`<div class="slide" hidden><div class="body">${md(t)}</div></div>`)),
-  ];
+  const slides = konceptSlides(card);
+  const total = slides.length;
   const node = shell(card, mode, ctx, slides, 'story on-cover');
   const bars = el(`<div class="story-bars">${'<i><b></b></i>'.repeat(total)}</div>`);
   node.append(bars);
 
   let i = 0;
-  const show = (n) => {
+  const show = (n, retning = 1) => {
+    const forrige = i;
     i = Math.max(0, Math.min(total - 1, n));
+    node.classList.toggle('tilbage', retning < 0);
     slides.forEach((s, k) => (s.hidden = k !== i));
+    if (i !== forrige) slides[i].animate(
+      [{ opacity: 0, transform: `translateX(${retning * 22}px)` }, { opacity: 1, transform: 'none' }],
+      { duration: 260, easing: 'cubic-bezier(.2,.8,.3,1)' },
+    );
     bars.querySelectorAll('i').forEach((b, k) => b.classList.toggle('done', k <= i));
     node.classList.toggle('on-cover', i === 0);
     node.querySelector('.card-inner').scrollTop = 0;
@@ -193,15 +243,17 @@ function renderKoncept(card, mode, ctx) {
   };
   show(0);
 
+  const frem = () => (i === total - 1 ? ctx.scrollNext() : show(i + 1, 1));
+  const tilbage = () => show(i - 1, -1);
+
   taps(node, {
     onSingle(e) {
       const r = node.getBoundingClientRect();
-      const back = e.clientX - r.left < r.width * 0.3;
-      if (back) return show(i - 1);
-      if (i === total - 1) return ctx.scrollNext();
-      show(i + 1);
+      // Venstre tredjedel = tilbage, som i Instagram-stories.
+      (e.clientX - r.left < r.width * 0.3 ? tilbage : frem)();
     },
   });
+  swipe(node, { onLeft: frem, onRight: tilbage });
   return node;
 }
 
@@ -288,7 +340,7 @@ function renderQuestion(card, mode, ctx) {
       });
     });
 
-    const pop = el(`<div class="xp-pop">+${res.xp} XP${res.coins ? `<small>+${res.coins} mønter</small>` : ''}</div>`);
+    const pop = el(`<div class="xp-pop">+${res.xp} XP</div>`);
     node.append(pop);
     setTimeout(() => pop.remove(), 1200);
     if (correct && (res.crit || res.combo >= 5)) confetti(node, 50);
@@ -493,7 +545,7 @@ function renderRaekkefolge(card, mode, ctx) {
 
 function popXp(node, res) {
   if (!res?.xp) return;
-  const pop = el(`<div class="xp-pop">+${res.xp} XP${res.coins ? `<small>+${res.coins} mønter</small>` : ''}</div>`);
+  const pop = el(`<div class="xp-pop">+${res.xp} XP</div>`);
   node.append(pop);
   setTimeout(() => pop.remove(), 1200);
   if (res.crit || res.combo >= 5) confetti(node, 50);
@@ -646,9 +698,6 @@ function renderTom() {
 
 function renderInner(card, mode, ctx) {
   if (mode === 'maal') return renderMaal(ctx);
-  if (mode === 'bet') return ctx.renderBet();
-  if (mode.startsWith('skrab:')) return ctx.renderSkrab(mode.split(':')[1]);
-  if (mode.startsWith('hjul:')) return ctx.renderWheel(mode.split(':')[1]);
   if (mode.startsWith('case')) return renderCase(mode, ctx);
   if (mode === 'tom') return renderTom();
   if (card.type === 'koncept') return renderKoncept(card, mode, ctx);

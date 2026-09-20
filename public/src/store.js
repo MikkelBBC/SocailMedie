@@ -21,10 +21,6 @@ const fresh = () => ({
   daily: { day: null, answered: 0, goalShown: false },
   missions: null,     // { day, list: [{ id, n, have, arg? }], bonus, shown }
   lyd: true,
-  coins: 100,         // Leth-mønter (kun optjent ved læring)
-  coinLog: {},        // 'YYYY-MM-DD' -> { ind, ud }
-  bet: null,          // { stake } – indsats på næste svar
-  freeSpinDay: null,  // dagen, hvor dagens gratis spin er brugt
 });
 
 export function load() {

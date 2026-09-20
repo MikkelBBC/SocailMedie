@@ -182,3 +182,102 @@
 @media (min-width: 1180px) {
   .shell { grid-template-columns: 250px 440px 300px; }
 }
+
+/* ================================================================
+   Forklaringer: analogi, tegning, trin og hvorfor
+   ================================================================ */
+.analogi, .hvorfor, .figur {
+  background: #ffffffee; border-radius: 24px; padding: 20px 18px;
+  box-shadow: 0 18px 40px #0000002a; animation: pop-in .3s ease-out both;
+}
+.analogi small, .hvorfor small {
+  display: block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 8px; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.analogi p, .hvorfor p { margin: 0; font-size: 17px; line-height: 1.5; color: #2b2b30; }
+.analogi { border-left: 5px solid transparent; border-image: var(--grad) 1; border-radius: 0 24px 24px 0; }
+.hvorfor { border: 2px solid transparent; background: linear-gradient(#fff, #fff) padding-box, var(--grad) border-box; }
+
+.figur { margin: 0; }
+.figur figcaption { font-size: 15px; font-weight: 800; margin-bottom: 10px; color: var(--text); }
+.figur-svg { background: #fff; border-radius: 16px; padding: 4px; }
+.figur-svg svg { display: block; width: 100%; height: auto; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+.figur p { margin: 10px 0 0; font-size: 13.5px; line-height: 1.5; color: #52514e; }
+
+.hvordan h3 { margin: 0 0 10px; font-size: 15px; }
+.hvordan ol { margin: 0; padding: 0; list-style: none; counter-reset: trin; }
+.hvordan li {
+  counter-increment: trin; position: relative; padding: 0 0 14px 38px; font-size: 15px; line-height: 1.45;
+}
+.hvordan li::before {
+  content: counter(trin); position: absolute; left: 0; top: -1px; width: 26px; height: 26px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 13px; font-weight: 800; color: #fff; background: var(--grad);
+}
+.hvordan li:not(:last-child)::after {
+  content: ''; position: absolute; left: 13px; top: 28px; bottom: 4px; width: 2px; background: #0000001a;
+}
+.hvordan li:last-child { padding-bottom: 0; }
+
+/* Eksport af egne data */
+.export-box { background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 14px; margin-top: 14px; }
+.export-box h3 { margin: 0 0 4px; font-size: 15px; }
+.export-box p { margin: 0 0 10px; font-size: 13px; color: var(--muted); line-height: 1.45; }
+.export-box textarea {
+  width: 100%; min-height: 120px; border-radius: 12px; border: 1px solid var(--border); padding: 10px;
+  font: 12px/1.4 ui-monospace, Consolas, monospace; color: var(--text); background: #fafafa; user-select: text;
+}
+.export-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* ================================================================
+   Rolig at læse, rar at trykke på
+   ================================================================ */
+
+/* Baggrunden bag læsetekst dæmpes, så teksten er det, øjet ser først. */
+.story:not(.on-cover)::after { opacity: .48; }
+.story:not(.on-cover)::before { opacity: .22; }
+.story:not(.on-cover) .body,
+.story:not(.on-cover) .analogi,
+.story:not(.on-cover) .hvorfor,
+.story:not(.on-cover) .figur {
+  background: #fffffff5;
+  box-shadow: 0 10px 30px #00000018, 0 2px 6px #0000000d;
+}
+.story .slide:not(.cover) .body { padding: 20px 18px 14px; }
+.body { color: #32323a; }
+.body strong { background: linear-gradient(transparent 60%, color-mix(in srgb, var(--accent) 22%, transparent) 0); }
+
+/* Story-bjælkerne fyldes blødt op */
+.story-bars i { height: 4px; background: #00000012; }
+.story-bars b { transition: width .45s cubic-bezier(.2,.8,.3,1); }
+.story-bars i.done b { width: 100%; }
+
+/* Svarknapper: blød nedtrykning og et rart pop, når det er rigtigt */
+.opt { transition: transform .16s cubic-bezier(.2,.8,.3,1), background .2s, border-color .2s, box-shadow .2s; }
+.opt:active:not(:disabled) { transform: scale(.975); box-shadow: 0 1px 3px #0000000f; }
+.opt.correct { animation: rigtigt .5s cubic-bezier(.2,.8,.3,1); }
+@keyframes rigtigt {
+  30% { transform: scale(1.035); box-shadow: 0 10px 28px #16c17244; }
+  100% { transform: none; }
+}
+.opt.correct::after {
+  content: ''; position: absolute; inset: 0; border-radius: 16px; pointer-events: none;
+  background: linear-gradient(110deg, transparent 35%, #ffffffcc 50%, transparent 65%);
+  background-size: 250% 100%; animation: sweep .7s ease-out;
+}
+@keyframes sweep { from { background-position: 150% 0; } to { background-position: -120% 0; } }
+
+/* Knapper generelt: samme rolige nedtrykning */
+.primary, .ghost, .case-btn, .next-btn, .conf, .seq-item, .vs-buttons button {
+  transition: transform .16s cubic-bezier(.2,.8,.3,1), box-shadow .2s, background .2s;
+}
+.primary:active, .ghost:active, .conf:active, .seq-item:active { transform: scale(.97); }
+
+/* XP-pop lander blødere */
+.xp-pop { animation: float-up 1.35s cubic-bezier(.2,.8,.3,1) forwards; }
+
+/* Toast glider op nedefra i stedet for at blinke frem */
+#toast { animation: toast-ind .32s cubic-bezier(.2,.8,.3,1); box-shadow: 0 12px 34px #00000026; }
+@keyframes toast-ind { from { opacity: 0; transform: translate(-50%, 14px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* Feedet scroller blødere på mobil */
+.feed { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }

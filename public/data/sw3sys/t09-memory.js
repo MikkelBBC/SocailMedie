@@ -3,6 +3,14 @@ export default {
     id: 't09', nr: 9, titel: 'Memory Management and Interrupts', kort: 'Memory', emoji: '🧠',
     farve: '#EE0979', gradient: 'linear-gradient(135deg, #EE0979 0%, #FF6A00 100%)',
     lektion: 'Lektion 10.2 + 9.2',
+    kerne: [
+      'Execution time binding kræver en MMU: programmet bruger virtuelle adresser, som oversættes ved hvert opslag.',
+      'Ekstern fragmentering betyder fri plads, der ikke ligger samlet. Paging løser det med ens sider og rammer.',
+      'En virtuel adresse er sidenummer + offset. Sidetabellen oversætter sidenummeret til en ramme.',
+      'En page fault betyder, at siden ikke er i RAM: kernen henter den fra disken og fortsætter.',
+      'Memory-mapped I/O: enhedens registre ligger i adresserummet, derfor skal pointeren være volatile.',
+      'Polling brænder CPU af. Et interrupt afbryder først, når der faktisk er noget, og DMA flytter hele blokke selv.',
+    ],
     disposition: [
       'Memory model og hardware: CPU, cache, RAM – base/limit og memory protection',
       'Address binding: compile, load og execution time – logisk vs fysisk adresse, MMU',
@@ -22,8 +30,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvilken form for address binding kræver en MMU og tillader, at en proces flyttes under kørsel?',
-      svar: ['Compile time', 'Load time', 'Execution time', 'Link time'],
-      rigtigt: 2,
+      svar: [
+        'Execution time',
+        'Compile time',
+        'Link time',
+        'Load time'
+      ],
+      rigtigt: 0,
       forklaring: 'Kun med oversættelse ved hver adressering (MMU) kan den fysiske placering ændres, mens programmet kører.',
     },
     {
@@ -34,8 +47,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Du beder om 30 bytes og får en blok på 32 bytes. Hvad kaldes de spildte 2 bytes?',
-      svar: ['Ekstern fragmentering', 'Intern fragmentering', 'Memory leak', 'Page fault'],
-      rigtigt: 1,
+      svar: [
+        'Ekstern fragmentering',
+        'Memory leak',
+        'Intern fragmentering',
+        'Page fault'
+      ],
+      rigtigt: 2,
       forklaring: 'Spild inde i en tildelt blok er intern fragmentering. Ekstern er huller mellem blokke.',
     },
     {
@@ -46,8 +64,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Sidestørrelse 4 KB. Hvad er sidenummer og offset for den logiske adresse 0x00003A7F?',
-      svar: ['Side 0x3, offset 0xA7F', 'Side 0x3A, offset 0x7F', 'Side 0x3A7, offset 0xF', 'Side 0, offset 0x3A7F'],
-      rigtigt: 0,
+      svar: [
+        'Side 0x3A, offset 0x7F',
+        'Side 0x3A7, offset 0xF',
+        'Side 0, offset 0x3A7F',
+        'Side 0x3, offset 0xA7F'
+      ],
+      rigtigt: 3,
       forklaring: '4 KB = 0x1000, så offset er de laveste 12 bits (3 hex-cifre): 0xA7F. Resten, 0x3, er sidenummeret.',
     },
     {
@@ -59,12 +82,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad viser /proc/iomem?',
       svar: [
-        'Hvor meget RAM hver proces bruger',
-        'Det fysiske adressekort: System RAM og enheders memory-mapped områder',
-        'Processernes sidetabeller',
-        'Antallet af interrupts pr. CPU',
+        'Antallet af interrupts fordelt pr. CPU-kerne',
+        'Sidetabellerne for alle kørende processer',
+        'Det fysiske adressekort: RAM og enheders områder',
+        'Hvor meget RAM hver enkelt proces bruger'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Interrupt-tællere findes i /proc/interrupts, og hukommelse pr. proces i /proc/<pid>/status. iomem er det fysiske kort.',
     },
     {
@@ -76,12 +99,12 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvorfor bruges DMA til fx disk- og netværksoverførsler?',
       svar: [
-        'For at gøre interrupts hurtigere',
-        'Så controlleren flytter hele blokke direkte til RAM, og CPU\'en kun afbrydes, når blokken er færdig',
-        'For at undgå paging',
-        'Fordi disken ikke kan generere interrupts',
+        'Controlleren flytter blokken selv og afbryder til sidst',
+        'Fordi disken ikke selv kan generere et interrupt',
+        'For at gøre selve interrupt-håndteringen hurtigere',
+        'For at undgå paging, mens overførslen står på'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Uden DMA ville CPU\'en skulle kopiere hver byte (programmed I/O) og få utallige interrupts.',
     },
     {
@@ -106,8 +129,13 @@ export default {
     {
       id: 'kode1', type: 'quiz', efter: 'k3',
       sporgsmal: '32-bit logiske adresser og 4 KB sider. Hvor mange indgange kan en enkelt-niveau sidetabel have?',
-      svar: ['2¹² = 4096', '2²⁰ ≈ 1 million', '2³² ≈ 4 milliarder', '2¹⁶ = 65536'],
-      rigtigt: 1,
+      svar: [
+        '2²⁰ ≈ 1 million',
+        '2¹⁶ = 65536',
+        '2³² ≈ 4 milliarder',
+        '2¹² = 4096'
+      ],
+      rigtigt: 0,
       forklaring: '32 bits − 12 bits offset = 20 bits sidenummer → 2²⁰ indgange. Derfor bruger man flerniveau-sidetabeller.',
     },
     {

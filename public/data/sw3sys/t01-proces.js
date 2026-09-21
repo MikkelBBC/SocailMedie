@@ -3,6 +3,14 @@ export default {
     id: 't01', nr: 1, titel: 'Process Control & IPC', kort: 'Proces', emoji: '🌳',
     farve: '#FC466B', gradient: 'linear-gradient(135deg, #FC466B 0%, #3F5EFB 100%)',
     lektion: 'Lektion 2.1 + 5.2 (sidste halvdel)',
+    kerne: [
+      'Et program er en fil. En proces er programmet i gang med kode, data, heap, stak og en PCB hos kernen.',
+      'PCB\'en indeholder PID, tilstand, program counter, registre, åbne filer og hukommelseskort.',
+      'En proces skifter mellem new, ready, running, waiting og terminated. Et context switch gemmer og genskaber registrene.',
+      'fork() kaldes én gang og returnerer to gange: 0 i barnet og barnets PID i forælderen.',
+      'Zombie = barnet er dødt, men forælderen har ikke kaldt waitpid. Orphan = forælderen døde først, og init adopterer.',
+      'IPC: shared memory er hurtigst (ingen kopiering, men kræver synkronisering), message passing er sikrest.',
+    ],
     disposition: [
       'Program vs proces og memory layout (text, data, bss, heap, stack)',
       'Process Control Block (PCB) – hvad den indeholder',
@@ -22,8 +30,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvor i processens adresserum ligger `static int teller = 5;` erklæret uden for alle funktioner?',
-      svar: ['Stack', 'Heap', 'Data-segmentet', 'Text-segmentet'],
-      rigtigt: 2,
+      svar: [
+        'Heap',
+        'Data-segmentet',
+        'Stack',
+        'Text-segmentet'
+      ],
+      rigtigt: 1,
       forklaring: 'Initialiserede globale og statiske variabler ligger i data. Lokale variabler ligger på stakken, og malloc/new giver heap.',
     },
     {
@@ -34,7 +47,12 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'En kørende proces kalder read() på et tomt pipe. Hvilken tilstand kommer den i?',
-      svar: ['ready', 'waiting', 'terminated', 'new'],
+      svar: [
+        'ready',
+        'waiting',
+        'new',
+        'terminated'
+      ],
       rigtigt: 1,
       forklaring: 'Den blokerer og venter på en hændelse (data i pipen), så den flyttes til waiting. Når data kommer, bliver den ready, ikke running med det samme.',
     },
@@ -46,8 +64,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad returnerer fork() i barneprocessen?',
-      svar: ['Barnets egen PID', 'Forælderens PID', '0', '-1'],
-      rigtigt: 2,
+      svar: [
+        '0',
+        'Barnets egen PID',
+        '-1',
+        'Forælderens PID'
+      ],
+      rigtigt: 0,
       forklaring: 'Barnet får 0, forælderen får barnets PID, og -1 betyder fejl. Barnet kan få forælderens PID med getppid().',
     },
     {
@@ -59,19 +82,24 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvornår er shared memory typisk bedre end message passing?',
       svar: [
-        'Når processerne udveksler store datamængder ofte og kan synkronisere adgangen selv',
-        'Når processerne kører på forskellige maskiner',
-        'Når man vil undgå al synkronisering',
-        'Når der kun sendes få, små beskeder',
+        'Når der kun sendes få og små beskeder med lange mellemrum',
+        'Ved store datamængder ofte, hvis I selv kan synkronisere adgangen',
+        'Når man vil undgå enhver form for synkronisering i koden',
+        'Når processerne kører på hver sin maskine over et netværk'
       ],
-      rigtigt: 0,
+      rigtigt: 1,
       forklaring: 'Shared memory undgår kernen for hver udveksling og er derfor hurtig for store data. Til gengæld skal processerne selv synkronisere. Mellem maskiner kræves message passing (fx sockets).',
     },
     {
       id: 'kode1', type: 'quiz', efter: 'k3',
       sporgsmal: 'Hvor mange gange udskrives "hej"?',
       kode: 'int main() {\n  fork();\n  fork();\n  printf("hej\\n");\n}',
-      svar: ['2', '3', '4', '8'],
+      svar: [
+        '3',
+        '2',
+        '4',
+        '8'
+      ],
       rigtigt: 2,
       forklaring: 'Første fork giver 2 processer. Begge kalder anden fork, så der bliver 4. Alle fire kører printf. Generelt giver n fork-kald i træk 2ⁿ processer.',
     },
@@ -81,12 +109,12 @@ export default {
       kode: 'pid_t pid = fork();\nif (pid == 0) {\n  exit(0);\n}\nsleep(60);',
       sporgsmal: 'Hvad viser `ps` for barnet i de 60 sekunder?',
       svar: [
-        'Barnet er helt væk',
-        'Barnet er en zombie (<defunct>), fordi forælderen ikke har kaldt waitpid',
-        'Barnet er orphan og adopteret af PID 1',
-        'Barnet står i waiting',
+        'Barnet er orphan og bliver adopteret af init (PID 1)',
+        'Barnet er væk fra proces-tabellen med det samme',
+        'Barnet er en zombie (<defunct>), indtil waitpid kaldes',
+        'Barnet står i waiting, mens forælderen sover færdig'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Barnet er terminated, men dets PCB-rest (PID og exit-status) bliver liggende, indtil forælderen kalder waitpid. Orphan ville kræve, at forælderen døde først.',
     },
     {

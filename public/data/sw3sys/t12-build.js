@@ -3,6 +3,14 @@ export default {
     id: 't12', nr: 12, titel: 'Build Systems', kort: 'Build', emoji: '🏗️',
     farve: '#DA4453', gradient: 'linear-gradient(135deg, #DA4453 0%, #89216B 100%)',
     lektion: 'Lektion 2.2 + 4.2 (+ address binding fra 10.2)',
+    kerne: [
+      'Et build system bygger kun det, der er blevet forældet, ud fra en graf af afhængigheder.',
+      'Make sammenligner tidsstempler: er målet ældre end en afhængighed, køres opskriften.',
+      'Glemte header-afhængigheder giver de klassiske fejl, hvor en gammel version bliver brugt.',
+      'CMake genererer selve byggefilerne og gør projektet uafhængigt af platform og compiler.',
+      'PUBLIC, PRIVATE og INTERFACE styrer, om en indstilling også gælder dem, der linker mod targetet.',
+      'Compileren arbejder på én fil ad gangen. Linkeren samler dem og finder symbolerne – derfor »undefined reference«.',
+    ],
     disposition: [
       'Hvad er et build system: afhængighedsgraf og inkrementelle builds',
       'Fra kildekode til program: preprocessor, compiler, assembler, linker, loader',
@@ -22,7 +30,12 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Du får fejlen `undefined reference to foo()`. Hvilket trin fejler?',
-      svar: ['Preprocessoren', 'Compileren', 'Linkeren', 'Loaderen'],
+      svar: [
+        'Preprocessoren',
+        'Compileren',
+        'Linkeren',
+        'Loaderen'
+      ],
       rigtigt: 2,
       forklaring: 'Koden kompilerede (erklæringen fandtes), men linkeren kunne ikke finde definitionen: manglende .o-fil eller bibliotek.',
     },
@@ -34,7 +47,12 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad er $< i en Make-recipe?',
-      svar: ['Target', 'Første prerequisite', 'Alle prerequisites', 'Den nyeste prerequisite'],
+      svar: [
+        'Target',
+        'Første prerequisite',
+        'Den nyeste prerequisite',
+        'Alle prerequisites'
+      ],
       rigtigt: 1,
       forklaring: '$@ = target, $< = første prerequisite, $^ = alle prerequisites (uden dubletter).',
     },
@@ -47,12 +65,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad betyder PUBLIC i `target_include_directories(driver PUBLIC include)`?',
       svar: [
-        'Mappen er kun synlig for driver selv',
-        'Mappen bruges af driver og af alle targets, der linker mod driver',
-        'Mappen installeres offentligt',
-        'Mappen bruges kun af dem, der linker mod driver',
+        'Mappen bruges af driver og af dem, der linker mod den',
+        'Mappen er kun synlig inde i driver-targetet selv',
+        'Mappen bliver installeret offentligt ved make install',
+        'Mappen bruges kun af dem, der linker mod driver'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'PRIVATE = kun mig. INTERFACE = kun mine brugere. PUBLIC = både mig og mine brugere.',
     },
     {
@@ -64,19 +82,24 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad er en fordel ved dynamisk linking frem for statisk?',
       svar: [
-        'Programmet kan køre uden biblioteket installeret',
-        'Mindre eksekverbare filer og biblioteket deles i RAM mellem processer',
-        'Hurtigere opstart altid',
-        'Ingen brug for linker',
+        'Mindre filer, og biblioteket deles i RAM',
+        'Opstarten er altid hurtigere end ved statisk linking',
+        'Programmet kan køre, selvom biblioteket mangler',
+        'Man har slet ikke brug for en linker i byggeriet'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Til gengæld skal den rigtige .so findes på target ved kørsel. Statisk linking er selvstændig, men større.',
     },
     {
       id: 'kode1', type: 'quiz', efter: 'k2',
       sporgsmal: 'Alt er bygget. Du ændrer util.cpp og kører make. Hvad genbygges?',
       kode: 'app: main.o util.o\n\t$(CXX) $^ -o $@\n\n%.o: %.cpp\n\t$(CXX) -c $< -o $@',
-      svar: ['Alt', 'Kun util.o', 'util.o og app', 'main.o og app'],
+      svar: [
+        'main.o og app',
+        'Alt',
+        'util.o og app',
+        'Kun util.o'
+      ],
       rigtigt: 2,
       forklaring: 'util.o er ældre end util.cpp → genbygges. app er nu ældre end util.o → linkes igen. main.o er uændret.',
     },
@@ -86,12 +109,12 @@ export default {
       kode: 'add_executable(app main.cpp)\n\n# fejl: undefined reference to `pthread_create`',
       sporgsmal: 'Hvad er den korrekte rettelse?',
       svar: [
-        'Tilføj #include <pthread.h>',
-        'find_package(Threads REQUIRED) og target_link_libraries(app PRIVATE Threads::Threads)',
-        'Skift til C++20',
-        'Kør make clean',
+        'Tilføj et #include <pthread.h> øverst i filen',
+        'Skift standarden til C++20 i CMakeLists.txt',
+        'Kør make clean og byg hele projektet forfra',
+        'find_package(Threads) og link mod Threads::Threads'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Headeren er der allerede (det kompilerer). Linkeren mangler pthread-biblioteket. Threads::Threads er den portable måde.',
     },
     {

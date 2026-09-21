@@ -3,6 +3,14 @@ export default {
     id: 't06', nr: 6, titel: 'POSIX File I/O', kort: 'File I/O', emoji: '📂',
     farve: '#B91D73', gradient: 'linear-gradient(135deg, #F953C6 0%, #B91D73 100%)',
     lektion: 'Lektion 5.2 (første halvdel) + 6.2',
+    kerne: [
+      'I Linux er næsten alt en fil: en filbeskriver er et tal, kernen slår op i en tabel.',
+      'open, read, write og close virker ens på filer, pipes, terminaler og hardware.',
+      'En blocking read sover uden at bruge CPU. Non-blocking (O_NONBLOCK) returnerer EAGAIN med det samme.',
+      'Sæt flag med F_GETFL efterfulgt af F_SETFL, så du ikke smider de eksisterende flag væk.',
+      'poll() venter på flere filbeskrivere på én gang uden at brænde CPU. Returnerer 0 ved timeout.',
+      'read kan returnere færre bytes end ønsket. Returværdien skal altid tjekkes.',
+    ],
     disposition: [
       '»Everything is a file« og file descriptors',
       'open, read, write, close – returværdier og short reads',
@@ -22,8 +30,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'read(fd, buf, 100) returnerer 0. Hvad betyder det?',
-      svar: ['Fejl – tjek errno', 'End of file', 'Ingen data endnu på en non-blocking fd', 'Der blev læst 100 bytes'],
-      rigtigt: 1,
+      svar: [
+        'End of file',
+        'Fejl – tjek errno',
+        'Ingen data endnu på en non-blocking fd',
+        'Der blev læst 100 bytes'
+      ],
+      rigtigt: 0,
       forklaring: '0 = EOF, fx pipe lukket i skriveenden. Fejl er -1. Ingen data på non-blocking fd er -1 med errno EAGAIN.',
     },
     {
@@ -35,12 +48,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvorfor skal du bruge F_GETFL, før du sætter O_NONBLOCK med F_SETFL?',
       svar: [
-        'Det er ikke nødvendigt',
-        'For at bevare de flag, der allerede er sat (fx O_APPEND)',
-        'F_SETFL virker kun efter F_GETFL',
-        'For at låse filen',
+        'Fordi F_SETFL kun virker lige efter et F_GETFL',
+        'Det er ikke nødvendigt, F_SETFL kan kaldes alene',
+        'For at låse filen, mens flagene bliver ændret',
+        'For at bevare de flag, der allerede er sat'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'F_SETFL erstatter status-flagene. Uden OR med de gamle flag kan du fx miste O_APPEND.',
     },
     {
@@ -51,8 +64,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'poll(fds, 2, 500) returnerer 0. Hvad er sket?',
-      svar: ['Fejl', 'Timeout – ingen af de 2 fd\'er blev klar inden for 500 ms', 'Begge fd\'er er klar', 'Filen er ved EOF'],
-      rigtigt: 1,
+      svar: [
+        'Timeout: ingen af de to fd\'er blev klar',
+        'Der skete en fejl, og errno er blevet sat',
+        'Filen er nået til slutningen, altså EOF',
+        'Begge fd\'er blev klar på nøjagtig samme tid'
+      ],
+      rigtigt: 0,
       forklaring: '0 betyder timeout. Positive tal fortæller, hvor mange fd\'er der har revents.',
     },
     {
@@ -63,7 +81,12 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvilke events bruger du i poll for at vente på en sysfs GPIO-edge?',
-      svar: ['POLLIN', 'POLLOUT', 'POLLPRI | POLLERR', 'POLLHUP'],
+      svar: [
+        'POLLOUT, fordi GPIO er en udgang',
+        'POLLIN, som ved almindelig læsning',
+        'POLLPRI kombineret med POLLERR',
+        'POLLHUP, når forbindelsen lukkes'
+      ],
       rigtigt: 2,
       forklaring: 'sysfs signalerer GPIO-kanter som exceptionelle hændelser (POLLPRI/POLLERR). Husk lseek + read bagefter.',
     },
@@ -71,7 +94,12 @@ export default {
       id: 'kode1', type: 'quiz', efter: 'k2',
       sporgsmal: 'Der er ingen data på seriel-porten. Hvad returnerer read?',
       kode: 'char buf[100];\nint fd = open("/dev/ttyS0", O_RDONLY | O_NONBLOCK);\nssize_t n = read(fd, buf, sizeof buf);',
-      svar: ['0', '-1 med errno EAGAIN', 'Den blokerer, til data kommer', '100'],
+      svar: [
+        '100',
+        '-1 med errno EAGAIN',
+        'Den blokerer, til data kommer',
+        '0'
+      ],
       rigtigt: 1,
       forklaring: 'Non-blocking og ingen data giver -1/EAGAIN. 0 ville betyde EOF.',
     },
@@ -81,12 +109,12 @@ export default {
       kode: 'struct Msg m;\nread(fd, &m, sizeof m);\nhandle(&m);',
       sporgsmal: 'Hvad er det skjulte problem?',
       svar: [
-        'sizeof virker ikke på structs',
-        'read kan returnere færre end 64 bytes, og returværdien tjekkes ikke',
-        'Pipes kan ikke overføre structs',
-        'read skal have O_NONBLOCK',
+        'sizeof kan ikke bruges på en struct som denne',
+        'Pipes kan ikke overføre structs, kun rå bytes',
+        'read kræver, at filen er åbnet med O_NONBLOCK',
+        'read kan returnere færre bytes, og det tjekkes ikke'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Short reads er lovlige. Tjek returværdien og læs i en løkke, til alle bytes er modtaget (og håndtér 0 = EOF og -1 = fejl).',
     },
     {

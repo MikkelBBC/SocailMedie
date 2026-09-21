@@ -24,12 +24,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad er den største forskel på maskinlæring og almindelig programmering?',
       svar: [
-        'Maskinlæring er altid hurtigere',
-        'Reglerne findes ud fra eksempler i stedet for at blive skrevet af et menneske',
-        'Maskinlæring kræver ikke en computer',
+        'At maskinlæring ikke kræver en computer',
         'Der er ingen forskel, det er bare et nyere ord',
+        'At reglerne findes ud fra eksempler i stedet for kode',
+        'At maskinlæring altid er hurtigere end kode'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Du giver data med facit, og modellen justerer sig selv, til den rammer. Reglerne ender som tal, ikke som kode, du kan læse.',
     },
     {
@@ -61,10 +61,10 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvorfor skal der være en aktiveringsfunktion som ReLU mellem lagene?',
       svar: [
-        'For at gøre træningen hurtigere',
-        'Uden den ville mange lag tilsammen kun kunne lære lige sammenhænge',
-        'For at spare hukommelse',
-        'Den er der kun af historiske grunde',
+        'For at spare hukommelse under træningen',
+        'Uden den svarer mange lag til ét enkelt lag',
+        'For at gøre selve træningen hurtigere',
+        'Den er der kun af historiske grunde'
       ],
       rigtigt: 1,
       forklaring: 'Uden et knæk er flere lag matematisk det samme som ét lag. Ikke-lineariteten er det, der gør dybe netværk stærke.',
@@ -101,12 +101,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad sker der, hvis learning rate er alt for stor?',
       svar: [
-        'Modellen lærer bare hurtigere',
-        'Modellen springer frem og tilbage over det gode svar og lærer aldrig',
-        'Der bruges mindre strøm',
-        'Ingenting, det er kun et navn',
+        'Modellen springer over målet og lærer aldrig',
+        'Ingenting, det er kun et navn for skridtet',
+        'Modellen lærer bare tilsvarende hurtigere',
+        'Der bruges mindre strøm på træningen'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'For store skridt hopper over dalen. For små skridt tager evigheder. Derfor justeres learning rate typisk undervejs.',
     },
     {
@@ -134,12 +134,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad er det tydeligste tegn på overfitting?',
       svar: [
+        'Fejlen falder på træning, men stiger på validering',
+        'Modellen bruger meget mere strøm end forventet',
         'Fejlen stiger på både trænings- og valideringsdata',
-        'Fejlen falder på træningsdata, men stiger på valideringsdata',
-        'Modellen bruger for meget strøm',
-        'Træningen går for langsomt',
+        'Træningen går langsommere for hver epoke'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Modellen bliver bedre og bedre til de eksempler, den har set, og dårligere til alt andet. Derfor findes early stopping.',
     },
     {
@@ -153,12 +153,12 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvorfor lærte Amazons rekrutteringsmodel at nedvurdere kvindelige ansøgere?',
       svar: [
-        'Den blev programmeret til det',
-        'Den lærte af historiske data, hvor de fleste ansatte var mænd',
-        'Den var for lille',
-        'Fordi den brugte for lav learning rate',
+        'Fordi den lærte af data, hvor de fleste var mænd',
+        'Fordi modellen var alt for lille til opgaven',
+        'Fordi den blev programmeret til at gøre det',
+        'Fordi den blev trænet med for lav learning rate'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Modellen fandt et ægte mønster i fortidens data. Skævheden lå i data, ikke i koden.',
     },
     {

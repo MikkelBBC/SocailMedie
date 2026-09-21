@@ -13,8 +13,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad skete der med konformiteten i Asch-forsøget, når én anden i gruppen svarede rigtigt?',
-      svar: ['Den steg', 'Den faldt drastisk', 'Den var uændret', 'Deltageren gik ud af forsøget'],
-      rigtigt: 1,
+      svar: [
+        'Den steg',
+        'Deltageren gik ud af forsøget',
+        'Den faldt drastisk',
+        'Den var uændret'
+      ],
+      rigtigt: 2,
       forklaring: 'En enkelt allieret bryder enstemmigheden. Det er en af de mest robuste pointer fra forsøgene.',
     },
     {
@@ -26,12 +31,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad fandt studiet af overvågningsvideoer fra rigtige offentlige konflikter?',
       svar: [
-        'Ingen greb ind, når der var mange tilskuere',
-        'Mindst én greb ind i langt de fleste tilfælde, og oftere jo flere tilskuere',
-        'Kun politiet greb ind',
-        'Tilskuereffekten var dobbelt så stærk som i laboratoriet',
+        'At det kun var politiet, der greb ind i praksis',
+        'At effekten var dobbelt så stærk som i laboratoriet',
+        'At mindst én greb ind i de fleste tilfælde',
+        'At ingen greb ind, når der var mange tilskuere'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Den enkelte hjælper måske mindre i en stor gruppe, men chancen for at nogen hjælper stiger. Laboratoriefund skal efterprøves i virkeligheden.',
     },
     {
@@ -43,12 +48,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvilket hotelskilt gav mest genbrug af håndklæder?',
       svar: [
-        '»Hjælp med at redde miljøet«',
-        '»De fleste gæster genbruger deres håndklæder«',
-        '»De fleste gæster på dette værelse genbruger deres håndklæder«',
-        'Ingen forskel',
+        'Der var ingen forskel på de tre skilte',
+        '»Hjælp os med at redde miljøet for fremtiden«',
+        '»De fleste gæster på hotellet genbruger«',
+        '»De fleste gæster på dette værelse genbruger«'
       ],
-      rigtigt: 2,
+      rigtigt: 3,
       forklaring: 'Normen fra de mest lignende andre (samme værelse) virkede stærkest. Social proof vokser med lighed.',
     },
     {
@@ -60,10 +65,10 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad er den største kritik af Stanford Prison Experiment?',
       svar: [
-        'Der var for mange deltagere',
-        'Vagterne blev coachet og vidste, hvad der forventedes – så grusomheden var ikke spontan',
-        'Det blev lavet i Europa',
-        'Det varede for længe',
+        'At forsøget blev udført i Europa og ikke i USA',
+        'At vagterne blev coachet i, hvad der forventedes',
+        'At der deltog alt for mange forsøgspersoner',
+        'At det varede for længe til at kunne bruges'
       ],
       rigtigt: 1,
       forklaring: 'Arkivmaterialet viser, at forsøgslederne opfordrede vagterne til hårdhed. Det gør den klassiske konklusion om spontan ondskab tvivlsom.',

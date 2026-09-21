@@ -3,6 +3,14 @@ export default {
     id: 't10', nr: 10, titel: 'Automated Resource Management in C++', kort: 'RAII', emoji: '♻️',
     farve: '#185A9D', gradient: 'linear-gradient(135deg, #43CEA2 0%, #185A9D 100%)',
     lektion: 'Lektion 11.1',
+    kerne: [
+      'RAII: ressourcen hentes i konstruktoren og frigives i destruktoren, som altid kører, når scopet forlades.',
+      'Derfor er RAII exception-safe: stack unwinding kalder destruktorerne på vej ud.',
+      'unique_ptr har præcis én ejer, kan ikke kopieres og koster ikke noget ekstra.',
+      'shared_ptr tæller ejere. To, der peger på hinanden, giver en cyklus, som weak_ptr bryder.',
+      'make_unique og make_shared er at foretrække: undtagelsessikre og én allokering ved make_shared.',
+      'Signaturen fortæller ejerskabet: unique_ptr som parameter = jeg overtager, reference = jeg låner.',
+    ],
     disposition: [
       'Problemer: leaks, double free, dangling pointers, exceptions, uklart ejerskab',
       'RAII: erhverv i konstruktør, frigiv i destruktør – stack unwinding',
@@ -23,12 +31,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad er en dangling pointer?',
       svar: [
-        'En pointer, der aldrig er initialiseret',
-        'En pointer til hukommelse, der allerede er frigivet',
-        'En nullptr',
-        'En pointer til stakken',
+        'En pointer med værdien nullptr efter en delete',
+        'En pointer, der peger på et objekt på stakken',
+        'En pointer til hukommelse, der er frigivet',
+        'En pointer, der aldrig er blevet initialiseret'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'At bruge den er udefineret opførsel. Hukommelsen kan være genbrugt til noget helt andet.',
     },
     {
@@ -40,10 +48,10 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvorfor er RAII exception-safe?',
       svar: [
-        'Fordi RAII-objekter fanger exceptions',
-        'Fordi destruktorer for lokale objekter kører under stack unwinding, når en exception forlader scopet',
-        'Fordi RAII forhindrer exceptions',
-        'Fordi garbage collectoren rydder op',
+        'Fordi RAII-objekter fanger exceptions undervejs',
+        'Fordi destruktorer kører under stack unwinding',
+        'Fordi en garbage collector rydder op bagefter',
+        'Fordi RAII forhindrer, at der kastes exceptions'
       ],
       rigtigt: 1,
       forklaring: 'Stack unwinding destruerer alle fuldt konstruerede lokale objekter, så oprydningen sker automatisk.',
@@ -57,12 +65,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad sker der ved `auto a = std::make_unique<Msg>(); auto b = a;`?',
       svar: [
-        'b bliver en kopi af beskeden',
-        'a og b deler objektet',
-        'Kompileringsfejl – unique_ptr kan ikke kopieres',
-        'a bliver nullptr',
+        'Kompileringsfejl: unique_ptr kan ikke kopieres',
+        'a og b kommer til at dele objektet',
+        'a bliver sat til nullptr efter kopien',
+        'b bliver en kopi af hele beskeden'
       ],
-      rigtigt: 2,
+      rigtigt: 0,
       forklaring: 'Copy-konstruktøren er slettet. Brug auto b = std::move(a); for at overdrage ejerskabet.',
     },
     {
@@ -74,10 +82,10 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvordan bryder du en reference-cyklus mellem parent og child, der begge bruger shared_ptr?',
       svar: [
-        'Kald delete manuelt',
-        'Lad child pege på parent med std::weak_ptr',
-        'Brug to unique_ptr',
-        'Brug std::move på begge',
+        'Ved at bruge to unique_ptr i stedet for shared',
+        'Lad child pege tilbage med en std::weak_ptr',
+        'Ved at kalde delete manuelt på den ene ende',
+        'Ved at kalde std::move på begge pointere først'
       ],
       rigtigt: 1,
       forklaring: 'Ejerskab går én vej (parent ejer child). Tilbage-referencen er ikke-ejende (weak_ptr), så parent kan nå count 0.',
@@ -91,10 +99,10 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvad kommunikerer signaturen `void store(std::unique_ptr<Config> cfg)`?',
       svar: [
-        'store læser config uden at eje den',
-        'store overtager ejerskabet – kalderen må std::move ind',
-        'store deler ejerskabet',
-        'store kan ændre kalderens pointer',
+        'At store kan ændre kalderens egen pointer-variabel',
+        'At store overtager ejerskabet: kald med std::move',
+        'At store læser config uden at overtage den',
+        'At store deler ejerskabet med kalderen bagefter'
       ],
       rigtigt: 1,
       forklaring: 'unique_ptr by value = »giv mig den«. Kalderens pointer er nullptr bagefter.',
@@ -105,12 +113,12 @@ export default {
       kode: 'void f() {\n  int* p = new int[100];\n  process(p);   // kan kaste exception\n  delete[] p;\n}',
       sporgsmal: 'Hvad er fejlen, og hvad er den bedste løsning?',
       svar: [
-        'Ingen fejl',
-        'Leak ved exception – brug std::vector<int>(100) eller std::make_unique<int[]>(100)',
-        'delete[] skal være delete',
-        'Brug try/catch og delete i begge grene',
+        'Brug try/catch og kald delete i begge grene',
+        'Ingen fejl, koden rydder op som den skal',
+        'Leak ved exception – brug std::vector<int>(100)',
+        'delete[] skal skrives som et almindeligt delete'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'try/catch virker, men er fejlbehæftet og skalerer dårligt. RAII-typen frigiver automatisk på alle veje ud af funktionen.',
     },
     {
@@ -118,10 +126,10 @@ export default {
       sporgsmal: 'Hvad sker der, når x og y går ud af scope?',
       kode: 'struct Node {\n  std::shared_ptr<Node> next;\n};\nauto x = std::make_shared<Node>();\nauto y = std::make_shared<Node>();\nx->next = y;\ny->next = x;',
       svar: [
-        'Begge noder slettes korrekt',
-        'Memory leak – cyklussen holder begge counts på 1',
-        'Double free',
-        'Kompileringsfejl',
+        'Begge noder bliver slettet helt korrekt',
+        'Memory leak: cyklussen holder begge tællere på 1',
+        'Double free, fordi begge ender sletter noden',
+        'Kompileringsfejl på grund af den cirkulære type'
       ],
       rigtigt: 1,
       forklaring: 'Når x og y forsvinder, falder hver count fra 2 til 1, men aldrig til 0. Gør den ene retning til weak_ptr.',

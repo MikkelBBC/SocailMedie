@@ -13,8 +13,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad giver master-sætningen for T(n) = 2T(n/2) + n?',
-      svar: ['Θ(n)', 'Θ(n log n)', 'Θ(n²)', 'Θ(log n)'],
-      rigtigt: 1,
+      svar: [
+        'Θ(n log n)',
+        'Θ(n)',
+        'Θ(log n)',
+        'Θ(n²)'
+      ],
+      rigtigt: 0,
       forklaring: 'n^(log₂2) = n, og f(n) = n vokser lige så hurtigt. Midter-tilfældet giver Θ(n log n), som merge sort.',
     },
     {
@@ -25,8 +30,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvilken egenskab adskiller et DP-problem fra et typisk del og hersk-problem?',
-      svar: ['Rekursion', 'Overlappende delproblemer', 'At input er sorteret', 'At det kører i O(n log n)'],
-      rigtigt: 1,
+      svar: [
+        'Overlappende delproblemer',
+        'At det kører i O(n log n)',
+        'Rekursion',
+        'At input er sorteret'
+      ],
+      rigtigt: 0,
       forklaring: 'Merge sort deler i uafhængige halvdele. I DP-problemer går de samme delproblemer igen, så det betaler sig at huske svarene.',
     },
     {
@@ -38,12 +48,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvorfor kaldes knapsack-DP\'en O(n·W) for pseudo-polynomiel?',
       svar: [
-        'Fordi den kun virker for små n',
-        'Fordi W er en talværdi, og køretiden er eksponentiel i antallet af bits, der skal til for at skrive W',
-        'Fordi den bruger rekursion',
-        'Fordi den giver et omtrentligt svar',
+        'Fordi W er en talværdi, ikke længden af inputtet',
+        'Fordi den kun giver et omtrentligt svar',
+        'Fordi den bruger rekursion i stedet for en løkke',
+        'Fordi den kun virker, når n er tilstrækkelig lille'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Input-størrelsen for W er log W bits. O(W) = O(2^(bits)). Derfor er knapsack stadig NP-hårdt.',
     },
     {
@@ -54,7 +64,12 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Mønter {1, 3, 4}, beløb 6. Hvor mange mønter bruger den grådige algoritme, og hvad er optimum?',
-      svar: ['Grådig 2, optimum 2', 'Grådig 3, optimum 2', 'Grådig 3, optimum 3', 'Grådig 2, optimum 3'],
+      svar: [
+        'Grådig 3, optimum 3',
+        'Grådig 3, optimum 2',
+        'Grådig 2, optimum 3',
+        'Grådig 2, optimum 2'
+      ],
       rigtigt: 1,
       forklaring: 'Grådig tager 4, derefter 1 + 1. Optimum er 3 + 3. Grådighed virker for danske mønter, men ikke for alle møntsystemer.',
     },
@@ -62,8 +77,13 @@ export default {
       id: 'kode1', type: 'quiz', efter: 'k2',
       sporgsmal: 'Hvad er køretiden?',
       kode: 'std::unordered_map<int, long> memo;\nlong fib(int n) {\n  if (n < 2) return n;\n  if (memo.count(n)) return memo[n];\n  return memo[n] = fib(n - 1) + fib(n - 2);\n}',
-      svar: ['O(2ⁿ)', 'O(n) (forventet)', 'O(n log n)', 'O(1)'],
-      rigtigt: 1,
+      svar: [
+        'O(1)',
+        'O(2ⁿ)',
+        'O(n log n)',
+        'O(n) (forventet)'
+      ],
+      rigtigt: 3,
       forklaring: 'Hvert n beregnes kun én gang og derefter slås op (forventet O(1) i hashmap). Uden memo ville det være eksponentielt.',
     },
     {

@@ -13,8 +13,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvornår glemmer man mest ifølge glemselskurven?',
-      svar: ['Jævnt over flere uger', 'Kort tid efter indlæringen', 'Først efter en måned', 'Kun når man sover'],
-      rigtigt: 1,
+      svar: [
+        'Kun når man sover',
+        'Jævnt over flere uger',
+        'Kort tid efter indlæringen',
+        'Først efter en måned'
+      ],
+      rigtigt: 2,
       forklaring: 'Kurven er stejlest i begyndelsen og flader ud. Derfor er den første gentagelse vigtigst at få tidligt.',
     },
     {
@@ -26,12 +31,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvorfor føles genlæsning mere effektivt, end det er?',
       svar: [
-        'Fordi det faktisk er den bedste metode',
-        'Fordi bekendthed forveksles med at kunne hente det frem (fluency illusion)',
-        'Fordi det tager længere tid',
-        'Fordi hukommelsen virker bedst om aftenen',
+        'Fordi det tager længere tid og derfor føles seriøst',
+        'Fordi hukommelsen arbejder bedst sent om aftenen',
+        'Fordi det faktisk er den bedste metode, der findes',
+        'Fordi bekendthed forveksles med at kunne det'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Teksten foran dig føles let. Til eksamen er teksten der ikke, og det er hentningen, der skal virke.',
     },
     {
@@ -42,8 +47,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Du har eksamen om 30 dage. Omtrent hvor lang pause mellem gentagelserne gav bedst hukommelse i Cepeda-studiet?',
-      svar: ['1 time', '3-6 dage', '25 dage', 'Pausen er ligegyldig'],
-      rigtigt: 1,
+      svar: [
+        '3-6 dage',
+        'Pausen er ligegyldig',
+        '1 time',
+        '25 dage'
+      ],
+      rigtigt: 0,
       forklaring: '10-20 % af 30 dage er 3-6 dage. For kort pause giver tjapperi-effekten, for lang betyder at man starter forfra.',
     },
     {
@@ -55,12 +65,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvordan kan eksperter holde langt mere i hovedet end begyndere?',
       svar: [
-        'De har større arbejdshukommelse',
-        'De samler information i større meningsfulde chunks via viden i langtidshukommelsen',
-        'De bruger kun visuel hukommelse',
-        'De har lært at ignorere Millers regel',
+        'De har en større arbejdshukommelse end andre',
+        'De har trænet sig ud af Millers regel om syv',
+        'De bruger kun den visuelle del af hukommelsen',
+        'De samler det i store, kendte mønstre (chunks)'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Kapaciteten er nogenlunde den samme. Eksperters chunks rummer bare meget mere, fordi langtidshukommelsen giver mønstrene.',
     },
     {
@@ -72,10 +82,10 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvad sker der med nyligt lærte ting under dyb søvn?',
       svar: [
-        'De slettes for at gøre plads',
-        'De genafspilles og konsolideres til mere varig hukommelse',
-        'Ingenting – hukommelsen er slukket',
-        'De flyttes til arbejdshukommelsen',
+        'Ingenting, hukommelsen holder fri om natten',
+        'De genafspilles og bliver til varig hukommelse',
+        'De slettes for at gøre plads til i morgen',
+        'De flyttes tilbage til arbejdshukommelsen'
       ],
       rigtigt: 1,
       forklaring: 'Slow-wave sleep er forbundet med genafspilning og overførsel fra hippocampus til neocortex.',

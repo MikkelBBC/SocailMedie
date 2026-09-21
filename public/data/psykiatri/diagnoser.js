@@ -14,8 +14,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad er de fleste psykiatriske diagnoser primært defineret ud fra?',
-      svar: ['En blodprøve eller hjerneskanning', 'Symptomer, varighed og funktionsnedsættelse', 'Personens gener', 'Hvad personen selv mener'],
-      rigtigt: 1,
+      svar: [
+        'Ud fra symptomer, varighed og funktionsevne',
+        'Ud fra hvad personen selv mener og oplever',
+        'Ud fra personens gener og familiehistorie',
+        'Ud fra en blodprøve eller en hjerneskanning'
+      ],
+      rigtigt: 0,
       forklaring: 'Der findes (endnu) ingen biologisk test for fx depression eller skizofreni. Diagnoserne er kriteriebaserede beskrivelser, som skal gøre det muligt for fagfolk at blive enige.',
     },
     {
@@ -26,7 +31,12 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad afgør typisk, om almindelige symptomer som bekymring bliver til en diagnose?',
-      svar: ['Om man selv synes, man har for mange', 'Om de er vedvarende og giver betydelig funktionsnedsættelse', 'Om man er over 18 år', 'Om en ven har samme diagnose'],
+      svar: [
+        'Om man selv synes, man har for mange af dem',
+        'Om de er vedvarende og nedsætter ens funktion',
+        'Om en ven eller et familiemedlem har samme',
+        'Om man er fyldt 18 år på det tidspunkt'
+      ],
       rigtigt: 1,
       forklaring: 'Kontinuum-tanken: symptomerne findes hos mange. Stregen sættes ved varighed, belastning og funktionsnedsættelse.',
     },
@@ -38,8 +48,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad er idéen bag »p-faktoren«?',
-      svar: ['At psykiske lidelser kun skyldes gener', 'At en fælles faktor forklarer en del af risikoen på tværs af mange lidelser', 'At diagnoser er helt tilfældige', 'At p står for psykose'],
-      rigtigt: 1,
+      svar: [
+        'At p står for psykose i de nyeste systemer',
+        'At psykiske lidelser udelukkende skyldes gener',
+        'At en fælles faktor går igen på tværs af lidelser',
+        'At diagnoser er tilfældige og uden sammenhæng'
+      ],
+      rigtigt: 2,
       forklaring: 'Ligesom g-faktoren i intelligens beskriver p en fælles dimension af sårbarhed, der viser sig som forskellige diagnoser.',
     },
     {
@@ -52,11 +67,11 @@ export default {
       sporgsmal: 'Hvad siger stress-sårbarhedsmodellen?',
       svar: [
         'At kun svage mennesker bliver psykisk syge',
-        'At sygdom opstår, når belastning overstiger det, ens sårbarhed kan bære',
-        'At psykisk sygdom kun skyldes stress',
-        'At sårbarhed ikke kan påvirkes af noget',
+        'At psykisk sygdom kun skyldes ydre belastninger',
+        'At ens sårbarhed ikke kan påvirkes af noget',
+        'At sygdom opstår, når belastning overstiger sårbarheden'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Både sårbarhed og belastning tæller. Man kan ikke ændre alt, men man kan påvirke belastning og ressourcer.',
     },
     {
@@ -76,12 +91,12 @@ export default {
       scenarie: 'Sara har fundet en test på nettet og scorer højt på »ADHD-træk«. Hun glemmer ting og keder sig til forelæsninger, men klarer studiet fint og har det godt socialt.',
       sporgsmal: 'Hvad er den bedste vurdering?',
       svar: [
-        'Hun har ADHD, testen viser det',
-        'Træk findes på et kontinuum; uden betydelig funktionsnedsættelse er en diagnose ikke oplagt',
-        'Nettests er lige så gode som en udredning',
-        'Hun kan ikke have det svært, fordi hun klarer sig godt',
+        'Hun kan ikke have det svært, når hun klarer sig godt',
+        'Nettests er lige så gode som en rigtig udredning',
+        'Træk findes på et kontinuum, og funktionen er intakt',
+        'Hun har ADHD, det viser testen jo tydeligt'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Symptomtjeklister måler træk, ikke hvor meget de fylder i livet. En udredning ser på varighed, sammenhæng og funktion. Og selv under stregen kan man godt have gavn af strategier.',
     },
     {

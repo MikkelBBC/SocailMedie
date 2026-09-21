@@ -36,12 +36,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvorfor har sprogmodeller svært ved at tælle bogstaver i et ord?',
       svar: [
-        'De kan ikke tælle overhovedet',
         'De ser tokens, ikke enkelte bogstaver',
-        'De har for lidt hukommelse',
         'Fordi de er trænet på engelsk',
+        'De har for lidt hukommelse',
+        'De kan ikke tælle overhovedet'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Teksten deles i tokens på flere bogstaver. Bogstaverne er ikke en enhed, modellen ser direkte.',
     },
     {
@@ -67,10 +67,10 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad betyder det, at to embeddings ligger tæt på hinanden?',
       svar: [
-        'Ordene staves næsten ens',
-        'Ordene bruges i lignende sammenhænge og har beslægtet betydning',
-        'De har samme antal bogstaver',
-        'De kommer fra samme sprog',
+        'At ordene har præcis samme antal bogstaver',
+        'At ordene bruges i lignende sammenhænge',
+        'At ordene stammer fra det samme sprog',
+        'At ordene staves næsten ens bogstav for bogstav'
       ],
       rigtigt: 1,
       forklaring: 'Afstand i embedding-rummet afspejler brug og betydning, ikke stavemåde. Det er grundlaget for moderne semantisk søgning.',
@@ -98,7 +98,12 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvordan vokser arbejdet i attention, når teksten bliver dobbelt så lang?',
-      svar: ['Det fordobles', 'Det firedobles', 'Det er det samme', 'Det halveres'],
+      svar: [
+        'Det halveres',
+        'Det firedobles',
+        'Det fordobles',
+        'Det er det samme'
+      ],
       rigtigt: 1,
       forklaring: 'Hvert token kigger på alle andre tokens, så arbejdet er O(n²). Derfor er meget lange kontekstvinduer dyre.',
     },
@@ -113,12 +118,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad sker der, når en samtale bliver længere end kontekstvinduet?',
       svar: [
-        'Modellen komprimerer alt automatisk uden tab',
-        'Noget af teksten, typisk den ældste, falder ud og findes ikke længere for modellen',
-        'Modellen gemmer resten i en database',
-        'Samtalen stopper',
+        'Den ældste tekst falder ud og findes ikke længere',
+        'Samtalen stopper, og man må starte en ny',
+        'Modellen komprimerer det hele automatisk uden tab',
+        'Modellen gemmer resten i en database til senere'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Det, der ikke er i vinduet, eksisterer ikke for modellen. Derfor skal vigtig kontekst gentages eller opsummeres.',
     },
     {
@@ -132,12 +137,12 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvad er hovedgrunden til, at modeller hallucinerer?',
       svar: [
-        'De prøver at narre brugeren',
-        'De vælger sandsynlig tekst og har ikke et indbygget mål for, hvad de faktisk ved',
-        'De har for lav temperatur',
-        'Der er fejl i deres kode',
+        'De er indstillet med alt for lav temperatur',
+        'De prøver bevidst at narre den, der spørger',
+        'De vælger sandsynlig tekst, ikke kendt sandhed',
+        'Der er programmeringsfejl i selve modellen'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Modellen optimerer for sandsynlig tekst, ikke for sandhed. Derfor lyder et gæt lige så sikkert som en viden.',
     },
     {
@@ -157,12 +162,12 @@ export default {
       scenarie: 'Du beder en model om kilder til din opgave. Den svarer med fem referencer i perfekt APA-format, med årstal, tidsskrift og sidetal.',
       sporgsmal: 'Hvad er det klogeste næste skridt?',
       svar: [
-        'Indsætte dem direkte, formatet er jo korrekt',
-        'Slå hver eneste reference op og tjekke, at den findes',
-        'Bede modellen bekræfte, at de er ægte',
         'Bruge dem, hvis mindst tre af dem lyder bekendt',
+        'Bede modellen bekræfte, at de er ægte',
+        'Slå hver eneste reference op og tjekke, at den findes',
+        'Indsætte dem direkte, formatet er jo korrekt'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Korrekt format er præcis det, en sprogmodel er god til at efterligne. At bede den bekræfte hjælper ikke: den har ingen måde at vide det på. Kun et opslag i virkeligheden tæller.',
     },
     {

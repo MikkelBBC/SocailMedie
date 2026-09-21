@@ -37,6 +37,7 @@ der dokumenteret får viden til at sidde.
 | Level-titler og level-case | Identitet (»Mutex-mester«) og en belønning ved hver level | Kun XP fra svar kan give en level-case, så cases aldrig udløser flere cases |
 | ☀️ Dagens første svar: XP ×2 i 10 min | Grund til at åbne appen hver dag | Daglig spacing i stedet for at klemme det hele ind dagen før |
 | 🖼️ Analogi, tegning og trin på de svære koncepter | Man kan overskue kortet i stedet for at give op | Analogi giver en kendt knage at hænge det nye på (Gentner), tegning + tekst huskes bedre end tekst alene (Mayer), og trin gør en usynlig proces synlig i rækkefølge |
+| 🎯 »Kernen i emnet«: de 5-6 sætninger, en censor venter på | Gør et stort emne overskueligt: man kan se, hvor lidt der skal til for at være med | Hentning virker bedst, når man ved, hvad man skal hente. Kernen står i emne-arket og efter hver simulering |
 
 **Fjernet igen:** casinoet (lykkehjul, skrabelod, indsatser og mønter). Det trak
 opmærksomheden væk fra det, appen er til. Tilbage er kun mystery-casen, som
@@ -46,7 +47,20 @@ udløses af rigtige svar i træk.
 quiz efter 2 koncepter), ingen straf for fejl (fejl er læring), og »Dagens mål«
 anbefaler at stoppe.
 
-## 3. Eksamenssimulatoren
+## 3. Ærlige spørgsmål
+
+Et multiple choice-spørgsmål må ikke kunne løses uden viden. To mønstre er
+farlige, fordi de sniger sig ind af sig selv:
+
+| Fælde | Hvorfor den opstår | Sådan holdes den ude |
+|---|---|---|
+| Det rigtige svar er længst | Forfatteren pakker alle forbeholdene ind i det rigtige svar | `node tools/svarlaengde.mjs` måler forskellen. Validatoren fejler, hvis det rigtige svar er mindst 12 tegn og 25 % længere end de andre |
+| Det rigtige svar står samme sted | Man skriver det rigtige først og finder på distraktorer bagefter | Svarene er blandet deterministisk. Validatoren fejler, hvis en plads har over 40 % af de rigtige svar |
+
+Distraktorerne skal desuden være **plausible**: en distraktor, ingen kan vælge,
+gør spørgsmålet til et 3-valg forklædt som et 4-valg.
+
+## 4. Eksamenssimulatoren
 
 1. **Træk emne** (1-12, tilfældigt) med en slot-animation.
 2. **2 minutters forberedelse**: skriv stikord til en disposition.
@@ -54,20 +68,20 @@ anbefaler at stoppe.
 4. **Eksaminator spørger** 3 gange. Spørgsmålene vælges blandt emnets forklar-kort, dem du husker dårligst først.
 5. **Resultat**: disposition %, svar %, parathed før → efter. Svarene går ind i FSRS.
 
-## 4. Parathed
+## 5. Parathed
 
 `parathed(emne)` = gennemsnit over emnets kort af FSRS-retrievability **på eksamensdagen**
 (eller om 7 dage, hvis datoen ikke er sat). Kort, man aldrig har besvaret, tæller som 0.
 Basics vægter halvt i totalen. Svage emner får vægt 0,6–1,8 i feedets valg af nyt stof.
 
-## 5. Fagene
+## 6. Fagene
 
 SW3SYS er eksamensfaget. Resten er der, fordi blandet træning (interleaving)
 virker bedre end at læse ét emne ad gangen, og fordi koblinger på tværs gør
 begge sider lettere at huske: AI og teknologi hænger direkte sammen med
 operativsystemer, algoritmer og psykologi.
 
-## 6. Indhold
+## 7. Indhold
 
 `public/data/sw3sys/` – ét modul pr. emne (t00 basics + t01-t12) plus koblinger.
 205 kort: 58 koncepter, 72 quizzer (inkl. kode), 38 forklar-højt, 13 myter,

@@ -14,10 +14,10 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvorfor kan undgåelse fastholde angst?',
       svar: [
-        'Fordi man bliver fysisk svagere',
-        'Fordi man aldrig får erfaringen af, at det frygtede ikke sker',
-        'Fordi undgåelse øger serotonin',
-        'Det gør den ikke, undgåelse kurerer angst',
+        'Fordi undgåelse øger mængden af serotonin',
+        'Fordi man aldrig opdager, at katastrofen udebliver',
+        'Fordi man langsomt bliver fysisk svagere af det',
+        'Det gør den ikke, undgåelse kurerer angsten'
       ],
       rigtigt: 1,
       forklaring: 'Lettelsen belønner flugten, og frygten bliver aldrig testet mod virkeligheden. Derfor er undgåelse et centralt mål i behandlingen.',
@@ -31,12 +31,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad er ifølge inhibitorisk læring det vigtigste i en eksponeringsøvelse?',
       svar: [
-        'At angsten falder helt til nul hver gang',
-        'At forventningen om katastrofe bliver modbevist',
-        'At man har sin sikkerhedsgenstand med',
-        'At man undgår ubehag',
+        'At man undgår at mærke ubehag undervejs',
+        'At man har sin sikkerhedsgenstand med sig',
+        'At angsten falder helt til nul hver eneste gang',
+        'At forventningen om katastrofe bliver modbevist'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Hjernen lærer mest, når der er en forskel mellem det forventede og det, der sker. Sikkerhedsadfærd kan tage æren og blokere læringen.',
     },
     {
@@ -47,8 +47,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad betyder anhedoni?',
-      svar: ['Angst for sociale situationer', 'Nedsat evne til at føle lyst og glæde ved ting', 'Søvnløshed', 'Overdreven glæde'],
-      rigtigt: 1,
+      svar: [
+        'Angst for sociale situationer med mange mennesker',
+        'Overdreven glæde og opstemthed i perioder',
+        'Søvnløshed og tidlig opvågning om morgenen',
+        'Nedsat evne til at føle lyst og glæde ved ting'
+      ],
+      rigtigt: 3,
       forklaring: 'Anhedoni er et af kernesymptomerne ved depression: det, der plejede at være rart, giver ikke længere noget.',
     },
     {
@@ -60,12 +65,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad er idéen i adfærdsaktivering?',
       svar: [
-        'At vente med aktiviteter, til man har lyst igen',
-        'At planlægge små meningsfulde aktiviteter, før lysten kommer',
-        'At tage mere medicin',
-        'At tale om barndommen',
+        'At tale grundigt om barndommen i terapien',
+        'At øge dosis af medicinen i de svære perioder',
+        'At planlægge små aktiviteter, før lysten kommer',
+        'At vente med aktiviteter, til lysten vender tilbage'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Depression trækker en ud af livet, og tilbagetrækning forstærker depressionen. Handling kommer først, lysten følger ofte bagefter.',
     },
     {

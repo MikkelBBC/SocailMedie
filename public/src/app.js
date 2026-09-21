@@ -730,6 +730,10 @@ function openTopicSheet(trackId) {
   openSheet(`
     <div class="topic-sheet" style="--grad:${t.gradient}">
       <div class="topic-sheet-head"><span>${t.emoji}</span><div><small>Emne ${t.nr} · ${esc(t.lektion)}</small><h2>${esc(t.titel)}</h2></div></div>
+      ${t.kerne ? `<div class="kerne">
+        <h3>Kernen: det du skal kunne sige</h3>
+        <ul>${t.kerne.map((k) => `<li>${esc(k)}</li>`).join('')}</ul>
+      </div>` : ''}
       <p class="hint">Modeldisposition – brug den som rygrad i din fremlæggelse:</p>
       <ol class="dispo">${t.disposition.map((d) => `<li>${esc(d)}</li>`).join('')}</ol>
       <div class="sheet-actions">
@@ -886,6 +890,10 @@ function simResult() {
         <div><b>${pctText(svar)}</b><small>svar</small></div>
         <div><b>${pctText(sim.before)} → ${pctText(after)}</b><small>parathed</small></div>
       </div>
+      ${t.kerne ? `<div class="kerne">
+        <h3>Kernen i ${esc(t.kort)}</h3>
+        <ul>${t.kerne.map((k) => `<li>${esc(k)}</li>`).join('')}</ul>
+      </div>` : ''}
       <p class="hint">+25 XP for simuleringen. De spørgsmål, du manglede, er planlagt til gentagelse i feedet.</p>
       <button class="primary wide" id="sim-again">🎲 Træk nyt emne</button>
       <button class="ghost wide" id="sim-train">Træn ${esc(t.kort)} i feedet</button>

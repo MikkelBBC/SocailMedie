@@ -23,12 +23,12 @@ export default {
       "om": "b1",
       "sporgsmal": "Hvornår klarer en simpel tommelfingerregel sig ofte BEDRE end en detaljeret model?",
       "svar": [
-        "Når der er meget data og lav støj",
-        "Når der er stor usikkerhed og lidt data",
         "Aldrig, modellen vinder altid med nok tid",
-        "Kun når beslutningen er uvigtig"
+        "Kun når beslutningen er uvigtig",
+        "Når der er stor usikkerhed og lidt data",
+        "Når der er meget data og lav støj"
       ],
-      "rigtigt": 1,
+      "rigtigt": 2,
       "forklaring": "Med lidt, støjfyldt data overfitter en kompleks model. En simpel regel har for få frihedsgrader til at lære støjen og generaliserer derfor bedre. Det er Gigerenzers pointe om ›less is more‹."
     },
     {
@@ -44,10 +44,10 @@ export default {
       "om": "b2",
       "sporgsmal": "Hvilken strategi har bedst dokumentation for at dæmpe anchoring?",
       "svar": [
-        "At få at vide, at anchoring findes",
-        "At tænke længere over tallet",
-        "Aktivt at argumentere for, hvorfor ankeret kan være forkert",
-        "At vælge et andet anker selv"
+        "At tænke grundigt og længe over tallet først",
+        "At få at vide på forhånd, at anchoring findes",
+        "Aktivt at argumentere for, at ankeret er forkert",
+        "At vælge sit eget anker, før man hører andres"
       ],
       "rigtigt": 2,
       "forklaring": "Consider-the-opposite tvinger dig til at hente information, der peger væk fra ankeret. Advarsler alene virker svagt, og at tænke længere justerer ofte stadig ud fra samme startpunkt."
@@ -106,12 +106,12 @@ export default {
       "om": "b5",
       "sporgsmal": "Hvilket af disse fund har klaret sig BEDST i store replikationer?",
       "svar": [
-        "Ego depletion",
-        "Power posing og hormoner",
         "Anchoring",
-        "Alderdoms-priming og gangtempo"
+        "Power posing og hormoner",
+        "Alderdoms-priming og gangtempo",
+        "Ego depletion"
       ],
-      "rigtigt": 2,
+      "rigtigt": 0,
       "forklaring": "Anchoring replikerer robust. De tre andre er blandt de mest kendte eksempler, der ikke kunne gentages i større studier."
     },
     {
@@ -135,12 +135,12 @@ export default {
       "scenarie": "Din projektgruppe har brugt tre uger på en løsning, der halter. En ny tilgang ville tage én uge og blive bedre. En i gruppen siger: »Vi kan ikke smide tre ugers arbejde ud nu.«",
       "sporgsmal": "Hvad er fejlen, og hvilket spørgsmål bør gruppen stille?",
       "svar": [
-        "Anchoring – hvad var vores første estimat?",
-        "Sunk cost – hvad giver det bedste resultat herfra og frem?",
-        "Availability – hvad husker vi bedst?",
-        "Confirmation bias – hvem havde ret?"
+        "Availability: hvilke eksempler husker vi bedst?",
+        "Anchoring: hvad var vores allerførste estimat?",
+        "Confirmation bias: hvem af os fik egentlig ret?",
+        "Sunk cost: hvad er bedst herfra og fremefter?"
       ],
-      "rigtigt": 1,
+      "rigtigt": 3,
       "forklaring": "De tre uger er brugt uanset hvad I vælger. Det relevante er kun fremtidig pris og gevinst: én uge til en bedre løsning mod fortsat at slås med en dårlig."
     }
   ]

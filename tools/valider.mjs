@@ -37,6 +37,26 @@ for (const k of pack.kort) {
     if (ord > 260) fejl.push(`${t}: body er ${ord} ord (for lang)`);
   }
 }
+// Et svar må ikke kunne gættes på længden alene. Det er et klassisk testfejl-mønster:
+// forfatteren pakker alle forbeholdene ind i det rigtige svar, og så måler prøven læsning.
+const laengdeTal = [];
+for (const k of pack.kort) {
+  if (!['quiz', 'case'].includes(k.type) || !Array.isArray(k.svar)) continue;
+  const L = k.svar.map((x) => x.length);
+  const rigtig = L[k.rigtigt];
+  const andre = L.filter((_, i) => i !== k.rigtigt);
+  const snit = andre.reduce((a, b) => a + b, 0) / andre.length;
+  laengdeTal.push(k.rigtigt);
+  if (rigtig === Math.max(...L) && rigtig - snit >= 12 && (rigtig - snit) / snit >= 0.25) {
+    fejl.push(`${k.id}: det rigtige svar er ${Math.round(rigtig - snit)} tegn længere end de andre – det kan gættes på længden`);
+  }
+}
+// Og det må heller ikke altid stå samme sted.
+const pladser = [0, 0, 0, 0];
+for (const i of laengdeTal) if (i < 4) pladser[i]++;
+const flest = Math.max(...pladser) / laengdeTal.length;
+if (flest > 0.4) fejl.push(`Det rigtige svar står på samme plads i ${Math.round(flest * 100)} % af spørgsmålene (maks. 40 %)`);
+
 for (const tema of pack.temaer ?? []) {
   for (const id of tema.koncepter) if (!has(id)) fejl.push(`tema ${tema.id}: ukendt koncept ${id}`);
   const spor = new Set(tema.koncepter.map((id) => pack.kort.find((k) => k.id === id)?.pakke));

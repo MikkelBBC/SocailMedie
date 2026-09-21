@@ -14,12 +14,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad siger Occams ragekniv mest præcist?',
       svar: [
-        'Den enkleste forklaring er altid sand',
-        'Blandt forklaringer, der passer lige godt til data, foretræk den med færrest ekstra antagelser',
-        'Komplicerede teorier er altid forkerte',
-        'Man skal altid vælge den første forklaring, man tænker på',
+        'Foretræk den med færrest ekstra antagelser',
+        'At man skal vælge den første forklaring, man får',
+        'At den enkleste forklaring altid er den sande',
+        'At komplicerede teorier næsten altid er forkerte'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Kniven er en tommelfingerregel for valg mellem ligeværdige forklaringer. Den garanterer ikke sandhed.',
     },
     {
@@ -30,8 +30,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvilken bias modvirker Hanlons ragekniv?',
-      svar: ['Anchoring', 'Den fundamentale attributionsfejl', 'Survivorship bias', 'Sunk cost'],
-      rigtigt: 1,
+      svar: [
+        'Sunk cost, altså at holde fast i det brugte',
+        'Anchoring, altså at hænge fast i et tal',
+        'Den fundamentale attributionsfejl',
+        'Survivorship bias, altså kun at se vinderne'
+      ],
+      rigtigt: 2,
       forklaring: 'Vi forklarer andres fejl med deres karakter og vores egne med situationen. Hanlons ragekniv minder dig om de situationelle forklaringer.',
     },
     {
@@ -43,10 +48,10 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad er pointen med Chestertons hegn?',
       svar: [
-        'Man må aldrig ændre noget gammelt',
-        'Før man fjerner en regel eller en ting, skal man forstå, hvorfor den blev indført',
-        'Hegn er altid nyttige',
-        'Man skal altid fjerne det, man ikke forstår',
+        'At gamle regler næsten altid viser sig nyttige',
+        'Forstå hvorfor noget blev indført, før du fjerner det',
+        'At man aldrig må ændre på noget gammelt',
+        'At man altid skal fjerne det, man ikke forstår'
       ],
       rigtigt: 1,
       forklaring: 'Bevisbyrden ligger hos den, der vil fjerne noget. Forstå grunden først, og beslut så.',
@@ -60,10 +65,10 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad er steelmanning?',
       svar: [
+        'At give op, når diskussionen bliver for svær',
+        'At gengive modpartens argument i stærkeste form',
         'At angribe en svag udgave af modpartens argument',
-        'At formulere modpartens argument i dets stærkeste form, før man svarer',
-        'At give op i en diskussion',
-        'At bruge mange kilder',
+        'At bruge så mange kilder som overhovedet muligt'
       ],
       rigtigt: 1,
       forklaring: 'Steelmanning er stråmandens modsætning. Man lærer mere, og ens kritik bliver stærkere, når den rammer den bedste version.',
@@ -79,10 +84,10 @@ export default {
       scenarie: 'Du overtager et gammelt projekt. I en driver står der `usleep(500);` lige efter en skrivning til en I2C-enhed, uden kommentar. Det ser overflødigt ud og gør koden langsommere.',
       sporgsmal: 'Hvad siger Chestertons hegn, at du skal gøre?',
       svar: [
-        'Slette den med det samme',
-        'Finde ud af, hvorfor den er der (git blame, datablad, test), før du fjerner den',
-        'Lade den stå for evigt uden at undersøge noget',
-        'Gøre den dobbelt så lang for en sikkerheds skyld',
+        'Gøre ventetiden dobbelt så lang for en sikkerheds skyld',
+        'Finde grunden (git blame, datablad) før du fjerner',
+        'Slette linjen med det samme og køre videre',
+        'Lade den stå for evigt uden at undersøge noget'
       ],
       rigtigt: 1,
       forklaring: 'Mange enheder kræver en ventetid efter en skrivning. Undersøg grunden, og fjern den kun, hvis den faktisk er overflødig.',

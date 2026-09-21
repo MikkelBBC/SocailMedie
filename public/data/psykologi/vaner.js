@@ -15,9 +15,9 @@ export default {
       sporgsmal: 'Hvad er en vane ifølge vaneforskningen?',
       svar: [
         'En handling, man har besluttet sig for mange gange',
-        'En indlært, automatisk kobling mellem en kontekst og en handling',
-        'En personlighedstræk',
-        'Noget, der kun gælder dårlige handlinger',
+        'En automatisk kobling mellem kontekst og handling',
+        'Et personlighedstræk, man er født med og beholder',
+        'Noget, der kun handler om dårlige handlinger'
       ],
       rigtigt: 1,
       forklaring: 'Konteksten udløser handlingen uden bevidst beslutning. Derfor er det så svært at ændre vaner med gode intentioner alene.',
@@ -31,12 +31,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad fandt Lally-studiet om at springe en dag over?',
       svar: [
-        'Man skal starte forfra',
-        'Det påvirkede ikke vanedannelsen mærkbart',
-        'Det halverede effekten',
-        'Det gjorde vanen stærkere',
+        'At det ikke påvirkede vanedannelsen mærkbart',
+        'At man måtte begynde helt forfra med vanen',
+        'At det faktisk gjorde vanen en smule stærkere',
+        'At det halverede effekten af de foregående dage'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Enkelte smuttere ødelægger ikke processen. Derfor giver det mening med »streak-frys« i apps: målet er kontinuitet, ikke perfektion.',
     },
     {
@@ -48,12 +48,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvilken formulering er en implementation intention?',
       svar: [
-        '»Jeg vil træne mere i år«',
-        '»Når jeg kommer hjem fra skole, så tager jeg løbeskoene på med det samme«',
-        '»Træning er vigtigt for mig«',
-        '»Jeg burde nok løbe«',
+        '»Træning er noget, der er vigtigt for mig«',
+        '»Jeg vil helt sikkert træne noget mere i år«',
+        '»Når jeg kommer hjem, tager jeg løbeskoene på«',
+        '»Jeg burde nok løbe noget mere, end jeg gør«'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Den har en konkret situation (hvis/når) og en konkret handling (så). De andre er intentioner uden trigger.',
     },
     {
@@ -65,12 +65,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvornår risikerer en belønning at underminere indre motivation?',
       svar: [
-        'Når den er uventet',
-        'Når den er forventet, håndgribelig og gives for noget, man allerede synes er sjovt',
-        'Når den er verbal ros',
-        'Aldrig',
+        'Når den er ventet og gives for noget, man kan lide',
+        'Når den kommer helt uventet bagefter',
+        'Når den gives som mundtlig ros fra en anden',
+        'Aldrig, en belønning skader ikke motivationen'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Aktiviteten omdefineres som »noget, jeg gør for belønningen«. Uventede belønninger og feedback om kompetence har ikke samme effekt.',
     },
     {

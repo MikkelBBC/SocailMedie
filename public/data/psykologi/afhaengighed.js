@@ -13,7 +13,12 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'En abe har lært, at et lys betyder juice. Hvornår fyrer dopamin-neuronerne nu mest?',
-      svar: ['Når juicen kommer', 'Når lyset tændes', 'Når aben er mæt', 'Aldrig igen'],
+      svar: [
+        'Når aben er mæt',
+        'Når lyset tændes',
+        'Når juicen kommer',
+        'Aldrig igen'
+      ],
       rigtigt: 1,
       forklaring: 'Signalet flytter sig til det, der forudsiger belønningen. Udebliver juicen efter lyset, falder aktiviteten under normalen, og det er en negativ prediction error.',
     },
@@ -25,8 +30,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvilket belønningsmønster giver adfærd, der er sværest at slukke?',
-      svar: ['Belønning hver gang', 'Belønning efter præcis hvert 10. forsøg', 'Belønning efter et uforudsigeligt antal forsøg', 'Ingen belønning'],
-      rigtigt: 2,
+      svar: [
+        'En belønning hver eneste gang, man gør det',
+        'Slet ingen belønning, kun selve handlingen',
+        'En belønning efter præcis hvert tiende forsøg',
+        'Belønning efter et uforudsigeligt antal gange'
+      ],
+      rigtigt: 3,
       forklaring: 'Variable ratio-forstærkning er mest modstandsdygtig over for extinction. Man kan ikke mærke forskel på »belønningen er stoppet« og »den kommer bare ikke endnu«.',
     },
     {
@@ -38,12 +48,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad er tolerance?',
       svar: [
-        'At man kan tåle stoffet uden at blive afhængig',
-        'At der skal mere til for samme effekt, fordi hjernen har tilpasset sig',
-        'At man bliver mere følsom for hver gang',
-        'At abstinenserne forsvinder',
+        'At abstinenserne forsvinder efter noget tid',
+        'At man bliver mere følsom for hver eneste gang',
+        'At der skal mere til for at opnå samme effekt',
+        'At man kan tåle stoffet uden at blive afhængig'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Hjernen modregulerer, fx med færre receptorer. Det giver mindre effekt af samme dosis og fladere hverdagsbelønninger.',
     },
     {
@@ -55,12 +65,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad fortæller Vietnam-studiet om afhængighed?',
       svar: [
-        'At heroin ikke er vanedannende',
-        'At miljø og signaler har stor betydning – de fleste fik ikke tilbagefald, da konteksten ændrede sig',
-        'At soldater er mere modstandsdygtige',
-        'At afhængighed altid varer livet ud',
+        'At soldater er mere modstandsdygtige end andre',
+        'At heroin ikke er så vanedannende som antaget',
+        'At afhængighed næsten altid varer resten af livet',
+        'At miljø og signaler betyder meget for tilbagefald'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Afhængighed er ikke kun kemi. Kontekst og signaler holder vanen i gang, og når de forsvinder, bliver det lettere at stoppe.',
     },
     {
@@ -72,12 +82,12 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvilken strategi er typisk mest effektiv mod en uønsket telefonvane?',
       svar: [
-        'Stærkere viljestyrke',
-        'At fjerne signaler og lægge friktion ind (fx notifikationer fra, app væk fra hjemskærm)',
-        'At bruge telefonen endnu mere, til man bliver træt af den',
-        'At skamme sig over vanen',
+        'At fjerne signalerne og lægge friktion ind',
+        'Stærkere viljestyrke og flere gode forsætter',
+        'At bruge den mere, til man bliver træt af den',
+        'At skamme sig over vanen, hver gang man gør det'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Vaner udløses af signaler og kører på autopilot. At ændre omgivelserne virker bedre end at kæmpe mod autopiloten hver gang.',
     },
     {

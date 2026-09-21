@@ -3,6 +3,13 @@ export default {
     id: 't00', nr: 0, titel: 'Computing Systems & OS Basics', kort: 'Basics', emoji: '🖥️',
     farve: '#11998E', gradient: 'linear-gradient(135deg, #11998E 0%, #38EF7D 100%)',
     lektion: 'Lektion 1.1 + 1.2 (forudsætning for alle emner)',
+    kerne: [
+      'User mode må ikke røre hardware – alt går gennem et systemkald, som skifter til kernel mode via en trap.',
+      'Hukommelsen er et hierarki: små og hurtige registre og cache øverst, stor og langsom disk nederst.',
+      'Cache virker, fordi programmer har lokalitet: de bruger det samme igen (tid) og naboerne (rum).',
+      'Rettigheder i Linux er tre gange rwx: ejer, gruppe og andre. chmod 640 = rw for ejer, r for gruppe.',
+      'En proces kører altid som en bruger, og kernen tjekker rettighederne ved hvert systemkald.',
+    ],
     disposition: [
       'Computersystemets ressourcer: CPU, hukommelse, I/O – OS som resource allocator',
       'Processorer: single-core, multicore, multiprocessor',
@@ -22,12 +29,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad sker der, når et program i user mode kalder write()?',
       svar: [
-        'Programmet skriver direkte til disk-controlleren',
-        'En trap skifter CPU\'en til kernel mode, kernen udfører skrivningen og vender tilbage til user mode',
-        'OS\'et kopierer programmet ind i kernen',
-        'CPU\'en skifter permanent til kernel mode',
+        'Kernen kopieres ind i programmets eget adresserum og kaldes der',
+        'Programmet skriver direkte til disk-controllerens registre',
+        'En trap skifter til kernel mode, og kernen udfører skrivningen',
+        'CPU\'en skifter permanent til kernel mode resten af programmet'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'System calls er den kontrollerede vej ind i kernen: trap → kernel mode → handler → return-from-trap → user mode.',
     },
     {
@@ -39,12 +46,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvorfor har computere et hukommelseshierarki i stedet for kun den hurtigste hukommelse?',
       svar: [
-        'Hurtig hukommelse er dyr pr. byte, så man kombinerer lidt hurtig med meget langsom og udnytter lokalitet',
-        'Langsom hukommelse er mere pålidelig',
-        'CPU\'en kan kun adressere én type hukommelse ad gangen',
-        'Det er et krav fra operativsystemet',
+        'CPU\'en kan kun adressere én slags hukommelse ad gangen',
+        'Operativsystemet kræver mindst tre niveauer af hukommelse',
+        'Langsom hukommelse er mere pålidelig og taber sjældnere data',
+        'Hurtig hukommelse er dyr pr. byte, og lokalitet redder resten'
       ],
-      rigtigt: 0,
+      rigtigt: 3,
       forklaring: 'Pris, størrelse og hastighed trækker i hver sin retning. Lokalitet gør, at en lille cache giver det meste af hastigheden.',
     },
     {
@@ -56,12 +63,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad giver chmod 640 rapport.txt?',
       svar: [
-        'Ejer: rw, gruppe: r, andre: ingenting',
         'Ejer: rwx, gruppe: r, andre: ingenting',
         'Ejer: r, gruppe: rw, andre: ingenting',
         'Alle kan læse, kun ejer kan skrive',
+        'Ejer: rw, gruppe: r, andre: ingenting'
       ],
-      rigtigt: 0,
+      rigtigt: 3,
       forklaring: '6 = 4+2 = rw, 4 = r, 0 = ingen rettigheder.',
     },
     {
@@ -70,11 +77,11 @@ export default {
       kode: '#!/bin/bash\nfor f in *.log; do\n  [ -s "$f" ] || rm "$f"\ndone',
       svar: [
         'Sletter alle .log-filer',
-        'Sletter tomme .log-filer',
-        'Sletter .log-filer, der ikke er tomme',
         'Udskriver størrelsen på hver .log-fil',
+        'Sletter .log-filer, der ikke er tomme',
+        'Sletter tomme .log-filer'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: '[ -s fil ] er sandt, hvis filen findes og er større end 0 bytes. `||` kører rm kun, når testen fejler, altså når filen er tom.',
     },
     {

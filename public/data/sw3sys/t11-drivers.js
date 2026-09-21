@@ -3,6 +3,14 @@ export default {
     id: 't11', nr: 11, titel: 'Linux Device Drivers', kort: 'Drivers', emoji: '⚙️',
     farve: '#834D9B', gradient: 'linear-gradient(135deg, #834D9B 0%, #D04ED6 100%)',
     lektion: 'Lektion 12.1 + 13.1',
+    kerne: [
+      'Et kernemodul indlæses i en kørende kerne med insmod eller modprobe og har ingen beskyttelse mod sig selv.',
+      'En enhed identificeres med major (hvilken driver) og minor (hvilken enhed).',
+      'Driveren udfylder en file_operations-struct med open, read, write og release.',
+      'Brugerens pointer må aldrig bruges direkte: brug copy_to_user og copy_from_user, som validerer og håndterer page faults.',
+      'En blocking read i en driver lægger processen i en wait queue og sover, indtil et interrupt vækker den.',
+      'I en interrupt handler må man ikke sove. Det tunge arbejde skubbes til en bottom half, fx en workqueue.',
+    ],
     disposition: [
       'Kernel modules: module_init/exit, insmod/rmmod/modprobe, dmesg',
       'Character driver boilerplate: alloc_chrdev_region, cdev, class/device_create',
@@ -23,10 +31,10 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad er forskellen på insmod og modprobe?',
       svar: [
-        'Der er ingen forskel',
-        'modprobe indlæser efter navn og håndterer afhængigheder; insmod indlæser en bestemt .ko-fil',
-        'insmod fjerner moduler',
-        'modprobe kompilerer modulet først',
+        'insmod bruges til at fjerne moduler fra kernen igen',
+        'modprobe slår op efter navn og tager afhængigheder med',
+        'Der er ingen forskel, det er to navne for det samme',
+        'modprobe kompilerer modulet, før det bliver indlæst'
       ],
       rigtigt: 1,
       forklaring: 'modprobe bruger modules.dep til at indlæse afhængigheder først. insmod tager præcis den fil, du giver den.',
@@ -39,8 +47,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad identificerer major-nummeret?',
-      svar: ['Den konkrete enhed', 'Driveren', 'Processen, der har åbnet filen', 'GPIO-pinnen'],
-      rigtigt: 1,
+      svar: [
+        'Processen, der har åbnet filen',
+        'GPIO-pinnen',
+        'Den konkrete enhed',
+        'Driveren'
+      ],
+      rigtigt: 3,
       forklaring: 'Major = driver, minor = enhedsinstans. Kernen bruger major til at finde driverens file_operations.',
     },
     {
@@ -52,12 +65,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvorfor skal en driver bruge copy_to_user i stedet for memcpy?',
       svar: [
-        'copy_to_user er hurtigere',
-        'User space-pointeren kan være ugyldig eller swappet ud – copy_to_user validerer og håndterer page faults sikkert',
-        'memcpy findes ikke i kernen',
-        'Det er kun en stilregel',
+        'Det er kun en stilregel i kernens kodningsstandard',
+        'Fordi copy_to_user er hurtigere end memcpy i kernen',
+        'Fordi pointeren kan være ugyldig eller swappet ud',
+        'Fordi memcpy slet ikke findes inde i kernen'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'En ugyldig user-pointer ville ellers give en kernel oops. copy_to_user tjekker adressen og returnerer fejl i stedet.',
     },
     {
@@ -69,12 +82,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad gør wait_event_interruptible(wq, flag != 0)?',
       svar: [
-        'Busy-waiter, til flag ændres',
-        'Lægger den kaldende proces til at sove i wq, indtil den vækkes og flag != 0 (eller et signal kommer)',
-        'Registrerer et interrupt',
-        'Vækker alle processer i wq',
+        'Lægger processen til at sove, til flag != 0',
+        'Vækker alle processer, der venter i køen wq',
+        'Busy-waiter i en løkke, indtil flag bliver ændret',
+        'Registrerer et nyt interrupt på wait queue-køen'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Makroen tjekker betingelsen, sover og tjekker igen efter hver wake_up. Ligesom en condition variable med prædikat.',
     },
     {
@@ -85,8 +98,13 @@ export default {
     {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvilket kald er FORBUDT i en interrupt handler?',
-      svar: ['wake_up_interruptible', 'gpio_get_value', 'mutex_lock', 'spin_lock_irqsave'],
-      rigtigt: 2,
+      svar: [
+        'gpio_get_value',
+        'mutex_lock',
+        'wake_up_interruptible',
+        'spin_lock_irqsave'
+      ],
+      rigtigt: 1,
       forklaring: 'mutex_lock kan sove, hvis låsen er optaget, og det må man ikke i interrupt context. Spinlocks og wake_up er tilladt.',
     },
     {
@@ -95,10 +113,10 @@ export default {
       kode: 'static ssize_t my_read(struct file *f, char __user *buf,\n                       size_t len, loff_t *off) {\n  char msg[] = "1\\n";\n  memcpy(buf, msg, 2);\n  return 2;\n}',
       sporgsmal: 'Hvad er den alvorlige fejl?',
       svar: [
-        'Den returnerer ikke 0 ved EOF',
-        'memcpy direkte til en user space-pointer – brug copy_to_user og tjek returværdien',
-        'msg burde være static',
-        'len bruges ikke, så intet sker',
+        'msg burde være erklæret static i funktionen',
+        'memcpy til user space – brug copy_to_user',
+        'len bliver aldrig brugt, så der sker intet',
+        'Den returnerer ikke 0, når der er nået EOF'
       ],
       rigtigt: 1,
       forklaring: 'copy_to_user validerer adressen og håndterer page faults. Bonus: uden brug af *off og len returnerer den aldrig 0, så `cat` læser uendeligt.',

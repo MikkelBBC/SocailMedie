@@ -24,12 +24,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad hjælper typisk mest, når en opgave kræver flere tankeskridt?',
       svar: [
-        'At skrive »vær sikker« i prompten',
-        'At bede modellen skrive mellemregningerne, før den svarer',
-        'At bruge store bogstaver',
-        'At stille spørgsmålet flere gange',
+        'At bede om mellemregninger, før den svarer',
+        'At skrive »vær helt sikker« ind i prompten',
+        'At stille det samme spørgsmål flere gange',
+        'At skrive spørgsmålet med store bogstaver'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Mellemregningerne bliver en del af teksten, modellen kigger på, når den vælger næste token. Det giver målbart bedre svar på ræsonnement.',
     },
     {
@@ -65,10 +65,10 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad er den typiske grund til, at et RAG-system svarer forkert?',
       svar: [
-        'Modellen er for lille',
-        'Søgningen fandt de forkerte stykker tekst',
-        'Prompten var for kort',
-        'Vektordatabasen er for hurtig',
+        'At prompten var alt for kort formuleret',
+        'At søgningen fandt de forkerte stykker tekst',
+        'At modellen bag systemet er for lille',
+        'At vektordatabasen svarer for hurtigt'
       ],
       rigtigt: 1,
       forklaring: 'Kvaliteten af svaret kan aldrig blive bedre end kvaliteten af det, der blev fundet. Derfor bruges der meget arbejde på at dele tekst og søge godt.',
@@ -99,8 +99,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Du vil have en model til at kende din virksomheds nyeste produktkatalog. Hvad vælger du?',
-      svar: ['Fine-tuning', 'RAG', 'Højere temperatur', 'Et større kontekstvindue alene'],
-      rigtigt: 1,
+      svar: [
+        'Fine-tuning',
+        'Et større kontekstvindue alene',
+        'Højere temperatur',
+        'RAG'
+      ],
+      rigtigt: 3,
       forklaring: 'Fakta, der ændrer sig, hører til i konteksten. RAG henter det nyeste katalog. Fine-tuning ville skulle laves om ved hver ændring.',
     },
     {
@@ -128,12 +133,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad gør en agent i stand til at rette sine egne fejl?',
       svar: [
-        'Den har en større model',
-        'Den får resultatet af sine handlinger tilbage og kan reagere på det',
-        'Den har højere temperatur',
-        'Den gemmer alt i en database',
+        'At den får resultatet af sine handlinger tilbage',
+        'At den er indstillet med højere temperatur',
+        'At den kører på en større og dyrere model',
+        'At den gemmer hele samtalen i en database'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Feedback fra værktøjerne kommer ind i konteksten. Uden den feedback ville agenten bare gætte videre.',
     },
     {
@@ -147,10 +152,10 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvorfor skal eval-sættet holdes adskilt fra de eksempler, man justerer prompten efter?',
       svar: [
-        'For at spare tokens',
-        'Ellers ender man med at optimere til netop de eksempler – overfitting med prompts',
-        'Fordi modellen husker eksemplerne',
-        'Det behøver man ikke',
+        'For at spare tokens, når man tester',
+        'Ellers optimerer man til testen – overfitting',
+        'Fordi modellen kan huske eksemplerne bagefter',
+        'Det behøver man faktisk slet ikke at gøre'
       ],
       rigtigt: 1,
       forklaring: 'Præcis samme fælde som i maskinlæring: justerer man efter testen, måler testen ikke længere noget ærligt.',
@@ -172,10 +177,10 @@ export default {
       scenarie: 'Du bygger en studieassistent, der kan læse dine noter og svare. Den svarer flot, men finder af og til på ting, der ikke står i noterne.',
       sporgsmal: 'Hvad er det mest effektive første skridt?',
       svar: [
-        'Fine-tune modellen på dine noter',
-        'Tjek, om søgningen faktisk finder de rigtige stykker, og bed om svar kun ud fra dem med kildehenvisning',
-        'Skru temperaturen helt ned til 0',
-        'Skift til en større model',
+        'At fine-tune modellen på alle dine noter',
+        'At tjekke søgningen og kræve svar med kilder',
+        'At skifte til en større og dyrere model',
+        'At skrue temperaturen helt ned til nul'
       ],
       rigtigt: 1,
       forklaring: 'Når RAG opfinder ting, er årsagen næsten altid, at de rigtige stykker ikke blev fundet. Kildehenvisning gør det desuden synligt, når svaret ikke står i materialet.',

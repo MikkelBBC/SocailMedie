@@ -3,6 +3,14 @@ export default {
     id: 't07', nr: 7, titel: 'Message Passing & Queues', kort: 'Queues', emoji: '📬',
     farve: '#6A5AE0', gradient: 'linear-gradient(135deg, #4776E6 0%, #8E54E9 100%)',
     lektion: 'Lektion 8.1 + 9.1 + 10.1',
+    kerne: [
+      'Producer-consumer med en kø udjævner forskelle i tempo. Kø fuld: producer venter. Kø tom: consumer venter.',
+      'Message passing deler kun køen, så trådens egen tilstand behøver ingen låse.',
+      'En trådsikker kø bruger en mutex plus en condition variable for »ikke tom« og »ikke fuld«.',
+      'std::variant er en sum type: værdien er præcis ét af alternativerne, og std::visit håndterer dem alle.',
+      'std::move flytter ingenting – den giver lov til at stjæle indholdet. Bagefter er kilden gyldig, men tom.',
+      'Publish-subscribe via en broker gør afsender og modtager løst koblet: de kender ikke hinanden.',
+    ],
     disposition: [
       'Producer-consumer og bounded buffer',
       'Message passing mellem tråde i stedet for delt tilstand',
@@ -22,7 +30,12 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'I en bounded buffer: hvad skal forbrugeren gøre, efter den har taget et element ud?',
-      svar: ['Kalde notEmpty.notify_one()', 'Kalde notFull.notify_one()', 'Låse bufferen igen', 'Ingenting'],
+      svar: [
+        'Låse bufferen igen',
+        'Kalde notFull.notify_one()',
+        'Ingenting',
+        'Kalde notEmpty.notify_one()'
+      ],
       rigtigt: 1,
       forklaring: 'Der er nu plads, så en producent, der venter på notFull, skal vækkes.',
     },
@@ -35,10 +48,10 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad er den største fordel ved message passing mellem tråde frem for delte variabler med låse?',
       svar: [
-        'Det er altid hurtigere',
-        'Kun køen er delt og synkroniseret – trådens egen tilstand behøver ingen låse',
-        'Man behøver slet ingen synkronisering',
-        'Beskeder kan ikke gå tabt',
+        'Det er altid hurtigere end at dele hukommelse',
+        'Kun køen er delt – trådens egen tilstand er fri',
+        'Beskeder kan under ingen omstændigheder gå tabt',
+        'Man behøver slet ingen synkronisering nogen steder'
       ],
       rigtigt: 1,
       forklaring: 'Synkroniseringen samles ét sted (køen), så resten af koden bliver lettere at ræsonnere om. Køen skal selv stadig have mutex + condition variable.',
@@ -52,12 +65,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad er en sum type?',
       svar: [
-        'En type, der indeholder A og B samtidig',
-        'En type, hvis værdi er præcis ét af flere alternativer – fx std::variant',
-        'En type til at lægge tal sammen',
-        'En template med variabelt antal argumenter',
+        'En template med et variabelt antal argumenter',
+        'En type, der indeholder A og B på samme tid',
+        'En type, der bruges til at lægge tal sammen',
+        'En type, hvis værdi er præcis ét af flere alternativer'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Product = og (struct/tuple). Sum = eller (variant). Antallet af mulige værdier er summen af alternativernes værdier.',
     },
     {
@@ -69,12 +82,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad gælder for `a` efter `std::string b = std::move(a);`?',
       svar: [
-        'a er slettet og må ikke bruges',
-        'a er i en gyldig, men uspecificeret tilstand – typisk tom',
-        'a og b indeholder begge "hej"',
-        'Udefineret opførsel at røre a',
+        'Det er udefineret opførsel overhovedet at røre a',
+        'a og b indeholder nu begge den samme tekst',
+        'a er gyldig, men uspecificeret – typisk tom',
+        'a er slettet og må ikke bruges til noget'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Moved-from objekter er gyldige. Du må destruere dem eller tildele nye værdier, men ikke stole på indholdet.',
     },
     {
@@ -86,12 +99,12 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvad er den vigtigste egenskab ved publish-subscribe via en broker?',
       svar: [
-        'Beskeder leveres hurtigere end direkte kald',
-        'Afsendere og modtagere er løst koblet og kender ikke hinanden',
-        'Der kan kun være én modtager pr. topic',
-        'Man behøver ikke køer',
+        'Afsender og modtager kender ikke hinanden',
+        'Man har ikke brug for køer nogen steder i systemet',
+        'Beskeder leveres hurtigere end ved direkte kald',
+        'Der kan kun være én modtager pr. topic ad gangen'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Afkobling er pointen. Brokeren kender relationerne, ikke afsenderen.',
     },
     {
@@ -99,12 +112,12 @@ export default {
       sporgsmal: 'Hvad sker der?',
       kode: 'using Msg = std::variant<Start, Stop, Temp>;\n\nvoid handle(const Msg& m) {\n  std::visit(overloaded{\n    [](const Start&) { std::cout << "start"; },\n    [](const Temp& t) { std::cout << t.celsius; }\n  }, m);\n}',
       svar: [
-        'Stop-beskeder ignoreres stille',
+        'Stop-beskeder bliver stille og roligt ignoreret',
+        'Der kastes en exception, når en Stop bliver modtaget',
         'Kompileringsfejl: der mangler en overload for Stop',
-        'Runtime exception, når en Stop modtages',
-        'Stop håndteres af den første lambda',
+        'Stop bliver håndteret af den første lambda i listen'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'std::visit kræver, at visitoren kan kaldes med alle alternativer. Det er netop fordelen: glemte beskedtyper fanges ved compile time.',
     },
     {
@@ -112,10 +125,10 @@ export default {
       sporgsmal: 'Hvad sker der?',
       kode: 'auto msg = std::make_unique<Temp>(21.5);\nqueue.send(msg);',
       svar: [
-        'Beskeden kopieres ind i køen',
-        'Kompileringsfejl – unique_ptr kan ikke kopieres; brug std::move(msg)',
-        'msg bliver nullptr',
-        'Der opstår en memory leak',
+        'msg bliver sat til nullptr efter indsættelsen',
+        'Kompileringsfejl: unique_ptr kan ikke kopieres',
+        'Beskeden bliver kopieret ind i køen som den er',
+        'Der opstår en memory leak, når køen bliver tømt'
       ],
       rigtigt: 1,
       forklaring: 'Hvis send tager unique_ptr by value, skal ejerskabet flyttes eksplicit med std::move. Det gør ejerskabsoverdragelsen synlig i koden.',

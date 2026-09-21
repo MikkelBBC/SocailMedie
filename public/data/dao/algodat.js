@@ -23,12 +23,12 @@ export default {
       "om": "a1",
       "sporgsmal": "Hvorfor skifter mange sorteringsbiblioteker til insertion sort for små delarrays?",
       "svar": [
-        "Lille konstant og cache-venlig læsning slår bedre vækst, når n er lille",
-        "Insertion sort er O(n log n), når n er lille",
-        "Store-O gælder ikke under 100 elementer",
-        "Quicksort kan ikke sortere under 64 elementer"
+        "Fordi insertion sort er O(n log n), når n er lille",
+        "Lille konstant og cache-venlig læsning slår vækstraten",
+        "Fordi store-O slet ikke gælder under 100 elementer",
+        "Fordi quicksort ikke kan sortere færre end 64 tal"
       ],
-      "rigtigt": 0,
+      "rigtigt": 1,
       "forklaring": "Store-O skjuler konstanter. For små n dominerer konstanten, og insertion sort har en meget lille én. Store-O ›gælder‹ stadig, den siger bare intet om små n."
     },
     {
@@ -44,12 +44,12 @@ export default {
       "om": "a2",
       "sporgsmal": "En angriber sender n nøgler, der alle hasher til samme bucket (chaining med lister). Hvad koster ét opslag?",
       "svar": [
-        "O(1)",
         "O(log n)",
         "O(n)",
-        "O(n²)"
+        "O(n²)",
+        "O(1)"
       ],
-      "rigtigt": 2,
+      "rigtigt": 1,
       "forklaring": "Alle nøgler ligger i én lang liste, så opslag er lineær søgning: O(n). At indsætte alle n koster O(n²) i alt. Java 8 laver lange buckets om til træer og får O(log n)."
     },
     {
@@ -66,11 +66,11 @@ export default {
       "sporgsmal": "Et dynamisk array vokser med +10 pladser, hver gang det er fuldt. Hvad koster n appends i alt?",
       "svar": [
         "O(n)",
+        "O(1) amortiseret",
         "O(n log n)",
-        "O(n²)",
-        "O(1) amortiseret"
+        "O(n²)"
       ],
-      "rigtigt": 2,
+      "rigtigt": 3,
       "forklaring": "Der kopieres 10 + 20 + 30 + ... ≈ n²/20 elementer, altså O(n²). Kun vækst med en faktor (fx ×2 eller ×1,5) giver amortiseret O(1)."
     },
     {
@@ -86,10 +86,10 @@ export default {
       "om": "a4",
       "sporgsmal": "Hvornår er en linked list reelt det bedste valg?",
       "svar": [
-        "Når du ofte indsætter elementer et tilfældigt sted",
-        "Når du allerede har en pointer til noden og skal flytte eller fjerne den i O(1)",
-        "Når du skal iterere hurtigt over alle elementer",
-        "Når data er små tal"
+        "Når du skal løbe hurtigt gennem alle elementer i rækkefølge",
+        "Når du har pointeren og skal fjerne noden i O(1)",
+        "Når elementerne er små tal, der fylder få bytes",
+        "Når du ofte indsætter et helt tilfældigt sted i rækken"
       ],
       "rigtigt": 1,
       "forklaring": "Uden pointeren skal du søge O(n) med cache-misses. Med pointeren (som i en LRU-cache) får du ægte O(1). Iteration og små elementer er netop dér, hvor arrays vinder mest."
@@ -108,11 +108,11 @@ export default {
       "sporgsmal": "Naiv quicksort (første element er pivot) får et allerede sorteret array med n elementer. Hvad sker der?",
       "svar": [
         "O(n) – den opdager, at det er sorteret",
+        "Den giver et forkert resultat",
         "O(n log n) som altid",
-        "O(n²) og rekursionsdybde n",
-        "Den giver et forkert resultat"
+        "O(n²) og rekursionsdybde n"
       ],
-      "rigtigt": 2,
+      "rigtigt": 3,
       "forklaring": "Pivoten er altid minimum, så hver deling fjerner kun ét element. n + (n-1) + ... = O(n²), og stakken bliver n dyb."
     },
     {
@@ -136,10 +136,10 @@ export default {
       "scenarie": "Din webserver lægger alle query-parametre i en hashmap. Hashfunktionen er fast og offentligt kendt. En dag bruger én enkelt request med 50.000 parametre 40 sekunders CPU.",
       "sporgsmal": "Hvad er den mest sandsynlige årsag?",
       "svar": [
-        "Garbage collection",
+        "Garbage collection på et uheldigt tidspunkt",
         "Hash flooding: parametrene er valgt til at kollidere",
-        "Netværket er langsomt",
-        "En hukommelseslæk"
+        "Netværket er blevet langsomt i netop det tidsrum",
+        "En hukommelseslæk, der får serveren til at swappe"
       ],
       "rigtigt": 1,
       "forklaring": "Kendt hashfunktion + brugerstyrede nøgler = angriberen kan vælge nøgler, der kolliderer. Hver indsættelse bliver O(n) og det hele O(n²). Løsning: tilfældigt seedet hash og et loft over antal parametre."

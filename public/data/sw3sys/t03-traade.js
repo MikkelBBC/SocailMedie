@@ -3,6 +3,14 @@ export default {
     id: 't03', nr: 3, titel: 'Threads & Concurrency', kort: 'Tråde', emoji: '🧵',
     farve: '#C13584', gradient: 'linear-gradient(135deg, #E1306C 0%, #C13584 45%, #5851DB 100%)',
     lektion: 'Lektion 3.2',
+    kerne: [
+      'Tråde i samme proces deler kode, globale data og heap, men har hver sin stak og sine egne registre.',
+      'Tråde er billigere at oprette og skifte mellem end processer, men en fejl i én tråd kan vælte hele processen.',
+      'Amdahls lov: den serielle del sætter loftet. Er 20 % seriel, er maks. speedup 5× uanset antal kerner.',
+      'Brugertråde skal mappes til kernetråde. Kun én-til-én giver ægte parallelitet på flere kerner.',
+      'Scheduling: round robin er fair, SJF giver laveste ventetid, og real-time bruger SCHED_FIFO med fast prioritet.',
+      'std::thread skal join\'es eller detach\'es, ellers kalder destruktoren std::terminate.',
+    ],
     disposition: [
       'Threaded process: hvad tråde deler og ikke deler',
       'Concurrency vs parallelism og multicore programming',
@@ -22,8 +30,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad sker der, hvis et std::thread-objekt går ud af scope uden join() eller detach()?',
-      svar: ['Tråden stoppes pænt', 'Main venter automatisk', 'std::terminate kaldes og programmet afbrydes', 'Tråden bliver detached'],
-      rigtigt: 2,
+      svar: [
+        'Tråden bliver detached og kører videre i baggrunden',
+        'std::terminate kaldes, og programmet afbrydes',
+        'Main venter automatisk på, at tråden bliver færdig',
+        'Tråden stoppes pænt, og ressourcerne ryddes op'
+      ],
+      rigtigt: 1,
       forklaring: 'En joinable std::thread i destruktoren kalder std::terminate. std::jthread (C++20) løser det ved at joine automatisk.',
     },
     {
@@ -34,8 +47,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Et program har 10 % seriel kode. Hvad er den maksimale speedup med uendeligt mange kerner?',
-      svar: ['10×', '90×', '1,1×', 'Uendelig'],
-      rigtigt: 0,
+      svar: [
+        'Uendelig',
+        '1,1×',
+        '90×',
+        '10×'
+      ],
+      rigtigt: 3,
       forklaring: 'Når N → ∞, går (1 − S)/N mod 0, og speedup → 1/S = 1/0,1 = 10.',
     },
     {
@@ -46,8 +64,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvilken threading model bruger Linux?',
-      svar: ['Many-to-one', 'One-to-one', 'Many-to-many', 'Two-level'],
-      rigtigt: 1,
+      svar: [
+        'Two-level',
+        'Many-to-many',
+        'Many-to-one',
+        'One-to-one'
+      ],
+      rigtigt: 3,
       forklaring: 'Linux\' NPTL mapper hver pthread/std::thread til én kernetråd (en task, oprettet med clone).',
     },
     {
@@ -58,8 +81,13 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad sker der med Round Robin, hvis time quantum er meget stort?',
-      svar: ['Den bliver til SJF', 'Den bliver til FCFS', 'Den giver starvation', 'Context switch-overhead eksploderer'],
-      rigtigt: 1,
+      svar: [
+        'Den bliver til SJF',
+        'Context switch-overhead eksploderer',
+        'Den bliver til FCFS',
+        'Den giver starvation'
+      ],
+      rigtigt: 2,
       forklaring: 'Når ingen proces bruger hele sit quantum, kører alle færdig i ankomstrækkefølge, altså FCFS. For lille quantum giver derimod meget overhead.',
     },
     {
@@ -71,10 +99,10 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvordan giver du en std::thread real-time-prioritet på Linux?',
       svar: [
-        'std::thread::set_priority(99)',
-        'pthread_setschedparam(t.native_handle(), SCHED_FIFO, &param)',
-        'nice(-20) inde i tråden',
-        'Det kan ikke lade sig gøre fra C++',
+        'Ved at kalde nice(-20) som det første inde i tråden',
+        'pthread_setschedparam på trådens native_handle()',
+        'Det kan slet ikke lade sig gøre fra C++ på Linux',
+        'Med medlemsfunktionen std::thread::set_priority(99)'
       ],
       rigtigt: 1,
       forklaring: 'std::thread har intet prioritets-API, men native_handle() giver pthread_t. nice påvirker kun normal (CFS) scheduling, ikke real-time.',
@@ -83,16 +111,26 @@ export default {
       id: 'kode1', type: 'quiz', efter: 'k1',
       sporgsmal: 'Hvad udskrives?',
       kode: 'int counter = 0;\nvoid work() {\n  for (int i = 0; i < 100000; ++i) ++counter;\n}\nint main() {\n  std::thread a(work), b(work);\n  a.join(); b.join();\n  std::cout << counter;\n}',
-      svar: ['Altid 200000', 'Et tal ≤ 200000, som kan variere fra kørsel til kørsel', 'Altid 100000', 'Programmet crasher altid'],
-      rigtigt: 1,
+      svar: [
+        'Altid 200000, fordi begge tråde tæller færdig',
+        'Programmet crasher altid med en segmentation fault',
+        'Altid 100000, fordi den ene tråd overskriver',
+        'Et tal ≤ 200000, der varierer fra kørsel til kørsel'
+      ],
+      rigtigt: 3,
       forklaring: '++counter er læs-læg til-skriv. Uden lås kan opdateringer gå tabt. Formelt er det en data race og dermed udefineret opførsel. Løsning: std::mutex eller std::atomic<int>.',
     },
     {
       id: 'kode2', type: 'quiz', efter: 'k3',
       sporgsmal: 'To tråde kører f(1) og f(2) samtidig. Kan tråden med v = 1 udskrive 2?',
       kode: 'thread_local int id = 0;\nvoid f(int v) {\n  id = v;\n  std::this_thread::sleep_for(10ms);\n  std::cout << id;\n}',
-      svar: ['Ja, id er global', 'Nej, hver tråd har sin egen id', 'Kun hvis tråden kører på samme kerne', 'Kompileringsfejl'],
-      rigtigt: 1,
+      svar: [
+        'Kompileringsfejl',
+        'Kun hvis tråden kører på samme kerne',
+        'Ja, id er global',
+        'Nej, hver tråd har sin egen id'
+      ],
+      rigtigt: 3,
       forklaring: 'thread_local giver én instans pr. tråd. Uden thread_local ville det være en race.',
     },
     {

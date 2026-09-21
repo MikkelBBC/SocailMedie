@@ -3,6 +3,14 @@ export default {
     id: 't08', nr: 8, titel: 'Linux User Space Serial I/O', kort: 'Serial', emoji: '🔌',
     farve: '#00B09B', gradient: 'linear-gradient(135deg, #00B09B 0%, #96C93D 100%)',
     lektion: 'Lektion 8.2 + 11.2',
+    kerne: [
+      'I2C bruger to ledninger (SDA og SCL) og adresserer enhederne med 7 bit.',
+      'Linjerne er open-drain: enhederne kan kun trække lav, så der skal pull-up-modstande til.',
+      'Hver overførsel er START, adresse + R/W, ACK, data med ACK, STOP. Manglende ACK betyder ingen enhed.',
+      'Fra user space er en I2C-bus en fil: åbn /dev/i2c-1, sæt adressen med ioctl(I2C_SLAVE), og brug read/write.',
+      'SPI er hurtigere: fire ledninger, ingen adresser, og slaven vælges ved at trække chip select lav.',
+      'SPI sender og modtager samtidig (full duplex) via en ioctl med en spi_ioc_transfer-struct.',
+    ],
     disposition: [
       'I2C: arkitektur (SDA, SCL, pull-ups, adresser, multi-master)',
       'I2C-protokol: START, adresse + R/W, ACK, repeated START, STOP',
@@ -23,12 +31,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvorfor skal I2C-bussen have pull-up-modstande?',
       svar: [
-        'For at begrænse strømmen til slaves',
-        'Fordi linjerne er open-drain: enheder trækker kun lav, og pull-up giver høj',
-        'For at filtrere støj',
-        'For at sætte slaveadressen',
+        'For at filtrere støj fra de lange ledninger væk',
+        'For at bestemme, hvilken adresse slaven svarer på',
+        'Fordi linjerne er open-drain og kun kan trække lav',
+        'For at begrænse strømmen til de tilsluttede slaves'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Open-drain betyder, at ingen enhed driver linjen aktivt høj. Det gør multi-master og ACK muligt uden kortslutning.',
     },
     {
@@ -40,12 +48,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad kendetegner en START-betingelse på I2C?',
       svar: [
-        'SCL går lav, mens SDA er høj',
-        'SDA går lav, mens SCL er høj',
-        'SDA går høj, mens SCL er høj',
         'Masteren sender 0x00',
+        'SDA går høj, mens SCL er høj',
+        'SCL går lav, mens SDA er høj',
+        'SDA går lav, mens SCL er høj'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Normalt skifter SDA kun, når SCL er lav. Skift mens SCL er høj er specielle: høj→lav = START, lav→høj = STOP.',
     },
     {
@@ -57,12 +65,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad gør ioctl(fd, I2C_SLAVE, 0x48) på /dev/i2c-1?',
       svar: [
-        'Sender byten 0x48 på bussen',
-        'Sætter slaveadressen, som efterfølgende read/write bruger',
-        'Gør fd non-blocking',
-        'Scanner bussen for enheden 0x48',
+        'Sætter adressen, som read og write skal bruge',
+        'Scanner bussen igennem for en enhed på 0x48',
+        'Gør fd non-blocking, så read ikke kan blokere',
+        'Sender byten 0x48 ud på bussen med det samme'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Der sendes intet på bussen. Kernen husker blot adressen til de næste transaktioner på fd\'en.',
     },
     {
@@ -73,8 +81,13 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvordan vælger en SPI-master, hvilken slave den taler med?',
-      svar: ['Med en 7-bit adresse', 'Ved at trække den slaves chip select (CS) lav', 'Med SPI mode', 'Slaven svarer med ACK'],
-      rigtigt: 1,
+      svar: [
+        'Med en 7-bit adresse først i overførslen',
+        'Med den SPI mode, der vælges inden overførslen',
+        'Ved at trække slavens chip select (CS) lav',
+        'Slaven melder sig selv ved at svare med et ACK'
+      ],
+      rigtigt: 2,
       forklaring: 'SPI har ingen adressering. Hver slave har sin egen CS-linje.',
     },
     {
@@ -85,8 +98,13 @@ export default {
     {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Du vil læse CHIP_ID (register 0x00) fra en BMI160 over SPI. Hvad sender du som første byte?',
-      svar: ['0x00', '0x80', '0xD1', '0x7F'],
-      rigtigt: 1,
+      svar: [
+        '0x7F',
+        '0x00',
+        '0xD1',
+        '0x80'
+      ],
+      rigtigt: 3,
       forklaring: 'Bit 7 = 1 betyder læs. 0x80 | 0x00 = 0x80. Svaret (0xD1) kommer i næste byte af rx-bufferen.',
     },
     {
@@ -94,12 +112,12 @@ export default {
       sporgsmal: 'Hvad gør koden?',
       kode: 'int fd = open("/dev/i2c-1", O_RDWR);\nioctl(fd, I2C_SLAVE, 0x3C);\nuint8_t cmd[] = {0x00, 0xAF};\nwrite(fd, cmd, 2);',
       svar: [
-        'Læser to bytes fra register 0xAF',
-        'Sender kommandoen 0xAF (display on) til OLED-displayet på 0x3C',
-        'Skriver pixeldata 0xAF til skærmen',
-        'Sætter slaveadressen til 0xAF',
+        'Skriver pixeldata 0xAF til skærmens hukommelse',
+        'Læser to bytes fra register 0xAF på enheden',
+        'Sender kommandoen 0xAF (display on) til displayet',
+        'Sætter slaveadressen på bussen til værdien 0xAF'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Control byte 0x00 betyder kommando. 0xAF er SSD1306\'s »display on«. Med 0x40 ville resten være pixeldata.',
     },
     {

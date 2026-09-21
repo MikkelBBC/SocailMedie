@@ -13,7 +13,12 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Du indsætter tallene 1 til 1000 i rækkefølge i et naivt binært søgetræ. Hvad bliver højden?',
-      svar: ['Ca. 10', '1000', '500', 'Ca. 32'],
+      svar: [
+        'Ca. 32',
+        '1000',
+        '500',
+        'Ca. 10'
+      ],
       rigtigt: 1,
       forklaring: 'Hvert tal er større end alle tidligere, så det lander som højre barn af det forrige. Træet bliver en kæde med højde n.',
     },
@@ -25,8 +30,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'I en array-baseret binær heap: hvor er børnene af elementet på index 3?',
-      svar: ['Index 4 og 5', 'Index 6 og 7', 'Index 7 og 8', 'Index 1 og 2'],
-      rigtigt: 2,
+      svar: [
+        'Index 1 og 2',
+        'Index 6 og 7',
+        'Index 4 og 5',
+        'Index 7 og 8'
+      ],
+      rigtigt: 3,
       forklaring: '2·3 + 1 = 7 og 2·3 + 2 = 8 (0-indekseret).',
     },
     {
@@ -37,8 +47,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad giver `std::priority_queue<int>` som standard ved top()?',
-      svar: ['Det mindste element', 'Det største element', 'Det først indsatte element', 'Et tilfældigt element'],
-      rigtigt: 1,
+      svar: [
+        'Det største element',
+        'Et tilfældigt element',
+        'Det først indsatte element',
+        'Det mindste element'
+      ],
+      rigtigt: 0,
       forklaring: 'Standard er std::less, hvilket giver en max-heap. Brug std::greater<int> for en min-heap.',
     },
     {
@@ -50,10 +65,10 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad gør path compression i union-find?',
       svar: [
-        'Sletter elementer, der ikke bruges',
-        'Lader alle knuder på find-vejen pege direkte på roden',
-        'Sorterer elementerne',
-        'Hænger det største træ under det mindste',
+        'Sletter de elementer, der ikke længere bruges',
+        'Lader knuderne på find-vejen pege direkte på roden',
+        'Hænger det største træ ind under det mindste',
+        'Sorterer elementerne efter deres rang i træet'
       ],
       rigtigt: 1,
       forklaring: 'Næste find på de knuder bliver O(1). Kombineret med union by rank giver det nær-konstant amortiseret tid.',
@@ -62,8 +77,13 @@ export default {
       id: 'kode1', type: 'quiz', efter: 'k2',
       sporgsmal: 'Min-heap som array. Du kalder extract-min. Hvordan ser arrayet ud bagefter?',
       kode: '[1, 3, 2, 7, 4, 5]',
-      svar: ['[2, 3, 5, 7, 4]', '[3, 2, 5, 7, 4]', '[2, 3, 4, 7, 5]', '[5, 3, 2, 7, 4]'],
-      rigtigt: 0,
+      svar: [
+        '[5, 3, 2, 7, 4]',
+        '[3, 2, 5, 7, 4]',
+        '[2, 3, 5, 7, 4]',
+        '[2, 3, 4, 7, 5]'
+      ],
+      rigtigt: 2,
       forklaring: 'Fjern 1, flyt sidste (5) til roden: [5,3,2,7,4]. Sift down: byt med mindste barn (2) → [2,3,5,7,4]. 5 har ingen børn nu (index 2 → 5 og 6 findes ikke). Færdig.',
     },
     {

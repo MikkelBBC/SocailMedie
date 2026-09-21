@@ -13,8 +13,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad er ifølge Epiktet »op til os«?',
-      svar: ['Vores omdømme', 'Hvad andre mener om os', 'Vores vurderinger og valg', 'Om vi bliver syge'],
-      rigtigt: 2,
+      svar: [
+        'Vores vurderinger og valg',
+        'Vores omdømme',
+        'Hvad andre mener om os',
+        'Om vi bliver syge'
+      ],
+      rigtigt: 0,
       forklaring: 'Kontroldikotomien: vurderinger, valg og handlinger er vores. Krop, omdømme og udfald er ikke fuldt op til os.',
     },
     {
@@ -26,12 +31,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad adskiller premeditatio malorum fra almindelig bekymring?',
       svar: [
-        'Den varer længere',
-        'Den er kort, konkret og ender med en plan og mere taknemmelighed',
-        'Den handler kun om andre mennesker',
-        'Der er ingen forskel',
+        'At den kun handler om andre mennesker end en selv',
+        'Der er reelt ingen forskel på de to ting',
+        'At den varer betydeligt længere ad gangen',
+        'At den er kort, konkret og ender med en plan'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Øvelsen forbereder og giver perspektiv. Grubleri kører i ring uden handling.',
     },
     {
@@ -42,8 +47,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvilken moderne behandlingsform er direkte inspireret af Epiktets idé om domme?',
-      svar: ['Psykoanalyse', 'Kognitiv (adfærds)terapi og REBT', 'Elektrochok', 'Hypnose'],
-      rigtigt: 1,
+      svar: [
+        'Kognitiv adfærdsterapi og REBT',
+        'Hypnose og suggestionsbehandling',
+        'Elektrochokbehandling ved svær depression',
+        'Psykoanalysen, som Freud grundlagde'
+      ],
+      rigtigt: 0,
       forklaring: 'Både Ellis og Beck nævner stoikerne. Modellen hændelse → tolkning → følelse er kernen i kognitiv terapi.',
     },
     {
@@ -54,8 +64,13 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad er det praktiske formål med memento mori?',
-      svar: ['At blive bange for døden', 'At prioritere det vigtige, fordi tiden er begrænset', 'At tro på et liv efter døden', 'At undgå at planlægge'],
-      rigtigt: 1,
+      svar: [
+        'At tro på, at der findes et liv efter døden',
+        'At blive bange for døden og undgå risiko',
+        'At undgå at planlægge for langt ud i fremtiden',
+        'At prioritere, fordi tiden er begrænset'
+      ],
+      rigtigt: 3,
       forklaring: 'Bevidstheden om, at tiden er begrænset, gør det lettere at vælge det meningsfulde og droppe det ligegyldige.',
     },
     {
@@ -69,12 +84,12 @@ export default {
       scenarie: 'Det er dagen før mundtlig eksamen. Mads ligger vågen og tænker: »Hvad hvis jeg trækker det emne, jeg er dårligst til, og censor er streng?«',
       sporgsmal: 'Hvad ville Epiktet råde ham til?',
       svar: [
-        'At bekymre sig mere, så han er klar',
-        'At skelne: emnet og censor er ikke op til ham, men søvn og en kort gennemgang af dispositionerne er',
-        'At lade som om eksamen ikke findes',
-        'At aflyse eksamen',
+        'At bekymre sig endnu mere, så han er klar',
+        'At aflyse eksamen og tage den en anden gang',
+        'At skelne: censor er ikke op til ham, søvnen er',
+        'At lade som om eksamen slet ikke findes'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Kontroldikotomien i praksis: flyt energien fra det, man ikke styrer (emne, censor), til det, man styrer (søvn, forberedelse, tolkning).',
     },
     {

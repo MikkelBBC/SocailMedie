@@ -41,12 +41,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad bruges den private nøgle til?',
       svar: [
-        'At kryptere beskeder til andre',
-        'At åbne det, der er krypteret til dig, og at skrive under',
-        'At dele med dem, du stoler på',
-        'At lave hashes',
-      ],
-      rigtigt: 1,
+      'Til at kryptere beskeder til andre modtagere',
+      'Til at dele med dem, man stoler allermest på',
+      'Til at åbne det, der er sendt til dig, og underskrive',
+      'Til at lave hashes af kodeord og filer',
+    ],
+      rigtigt: 2,
       forklaring: 'Den private nøgle skal aldrig deles. Den låser op for det, andre har krypteret til dig, og den kan bruges til at underskrive.',
     },
     {
@@ -73,12 +73,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvorfor bruger man bcrypt eller Argon2 i stedet for SHA-256 til kodeord?',
       svar: [
-        'De er mere sikre matematisk',
-        'De er langsomme med vilje, hvilket gør gætteri i stor skala dyrt',
-        'De fylder mindre',
-        'De kan krypteres baglæns',
+        'Fordi de er matematisk mere sikre funktioner',
+        'Fordi de fylder mindre i databasen',
+        'Fordi de kan regnes baglæns ved behov',
+        'Fordi de er langsomme med vilje'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Hastighed er en fordel for angriberen. Kodeordshashing er designet til at koste tid og hukommelse.',
     },
     {
@@ -108,12 +108,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad er forward secrecy?',
       svar: [
-        'At nøglen er ekstra lang',
-        'At der laves en ny nøgle pr. forbindelse, så gamle samtaler ikke kan åbnes, hvis en nøgle senere stjæles',
-        'At beskeder sendes videre til modtageren automatisk',
-        'At serveren gemmer alle nøgler sikkert',
+        'At beskeder videresendes automatisk til modtager',
+        'At selve nøglen er gjort ekstra lang',
+        'At hver forbindelse får sin egen nye nøgle',
+        'At serveren gemmer alle nøgler forsvarligt'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Hver session får sin egen midlertidige nøgle. Derfor giver en stjålet servernøgle ikke adgang til fortiden.',
     },
     {
@@ -127,12 +127,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvorfor er passkeys stærkere end en SMS-kode mod phishing?',
       svar: [
-        'De er længere',
-        'De er bundet til det rigtige domæne og kan derfor ikke bruges på en falsk side',
-        'De skifter hvert sekund',
-        'De sendes krypteret',
+        'Fordi de er bundet til det rigtige domæne',
+        'Fordi de skifter værdi hvert eneste sekund',
+        'Fordi de består af flere tegn end en SMS-kode',
+        'Fordi de bliver sendt over en krypteret linje'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'En kode kan du narres til at skrive ind et forkert sted. En passkey virker kun på det domæne, den hører til.',
     },
     {

@@ -14,12 +14,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad er Lukrets\' symmetri-argument?',
       svar: [
-        'Livet og døden varer lige længe',
-        'Vi bekymrer os ikke om tiden før fødslen, så hvorfor om tiden efter døden?',
-        'Alle dør på samme alder',
-        'Døden er smertefuld for både krop og sjæl',
+        'At døden er smertefuld for både krop og sjæl',
+        'At livet og døden varer nøjagtig lige længe',
+        'At alle mennesker dør i nogenlunde samme alder',
+        'Vi frygter ikke tiden før fødslen – hvorfor så efter?'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Ikke-eksistens før fødslen og efter døden er symmetriske. Hvis den første ikke er skræmmende, hvorfor skulle den anden være det?',
     },
     {
@@ -31,12 +31,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad er Camus\' svar på det absurde?',
       svar: [
-        'At give op',
-        'At finde en religion, der giver svaret',
-        'Oprør: at leve fuldt, bevidst om at universet ikke giver mening af sig selv',
-        'At ignorere spørgsmålet',
+        'At ignorere spørgsmålet og tænke på noget andet',
+        'Oprør: at leve fuldt uden en færdig mening',
+        'At give op og holde op med at lede efter mening',
+        'At finde en religion, der leverer svaret'
       ],
-      rigtigt: 2,
+      rigtigt: 1,
       forklaring: 'Camus afviser både at give op og at »springe« til en færdig mening. Oprøret er at leve intenst med det absurde.',
     },
     {
@@ -48,12 +48,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad mener Sartre med »ond tro«?',
       svar: [
-        'At tro på noget forkert',
-        'At lade som om man ikke er fri, fx ved at gemme sig bag en rolle',
-        'At være et ondt menneske',
-        'At have religiøs tro',
+        'At have en religiøs tro på noget højere',
+        'At tro på noget, der viser sig at være forkert',
+        'At være et ondt menneske over for andre',
+        'At lade som om man ikke er fri, fx bag en rolle'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Ond tro er selvbedrag om egen frihed: »sådan er jeg bare«, som om man var en ting med en fast essens.',
     },
     {
@@ -64,8 +64,13 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad knyttede John Locke personlig identitet til?',
-      svar: ['Kroppens stof', 'Hukommelse og bevidsthed', 'Navnet', 'Sjælens substans'],
-      rigtigt: 1,
+      svar: [
+        'Til hukommelse og bevidsthed',
+        'Til kroppens stof og de samme atomer',
+        'Til sjælens uforanderlige substans',
+        'Til navnet og den rolle, man har'
+      ],
+      rigtigt: 0,
       forklaring: 'For Locke er du den samme person, så langt din bevidsthed og hukommelse rækker tilbage. Stoffet kan skifte.',
     },
     {
@@ -77,12 +82,12 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvad fandt de store svenske lotteristudier (Lindqvist m.fl. 2020)?',
       svar: [
-        'Gevinster gjorde ingen forskel overhovedet',
-        'Varig højere livstilfredshed, men lille effekt på den daglige stemning',
-        'Vinderne blev mere deprimerede',
-        'Vinderne blev lykkeligere hver eneste dag i resten af livet',
+        'At gevinster ikke gjorde nogen forskel overhovedet',
+        'At vinderne endte med at blive mere deprimerede',
+        'Varig højere livstilfredshed, men samme daglige humør',
+        'At vinderne var lykkeligere hver dag resten af livet'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Livsvurdering og daglig følelse er to forskellige ting. Den daglige glæde tilpasser sig, vurderingen af livet ændrede sig mere varigt.',
     },
     {

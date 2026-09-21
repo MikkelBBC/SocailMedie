@@ -3,6 +3,13 @@ export default {
     id: 't02', nr: 2, titel: 'Higher-Order Functions & Lambdas', kort: 'Lambda', emoji: '🧩',
     farve: '#FF512F', gradient: 'linear-gradient(135deg, #FF512F 0%, #F09819 100%)',
     lektion: 'Lektion 3.1',
+    kerne: [
+      'En højereordens funktion tager en funktion som argument eller returnerer en funktion.',
+      'En functor er et objekt med operator(). Compileren kender typen og kan inline kaldet – derfor er det hurtigere end en funktionspointer.',
+      'En lambda er en functor, compileren skriver for dig. Capture-listen bliver til medlemsvariabler.',
+      '[=] fanger by value (const uden mutable), [&] fanger by reference – og reference til en lokal variabel kan dangle.',
+      'std::function kan holde hvad som helst kaldbart, men koster en indirekte kald og måske en allokering.',
+    ],
     disposition: [
       'Higher-order functions: tager eller returnerer funktioner',
       'Funktionspointere i C (fx qsort-comparator)',
@@ -22,8 +29,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvilken erklæring er en pointer til en funktion, der tager to int og returnerer int?',
-      svar: ['int *fp(int, int);', 'int (*fp)(int, int);', 'int fp*(int, int);', '(int*) fp(int, int);'],
-      rigtigt: 1,
+      svar: [
+        'int *fp(int, int);',
+        '(int*) fp(int, int);',
+        'int (*fp)(int, int);',
+        'int fp*(int, int);'
+      ],
+      rigtigt: 2,
       forklaring: 'Parentesen omkring *fp er afgørende. Uden den er det en funktion, der returnerer int*.',
     },
     {
@@ -35,12 +47,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvorfor kan std::sort være hurtigere med en functor end med en funktionspointer?',
       svar: [
-        'Functoren kører i en separat tråd',
-        'Compileren kender functorens præcise type og kan inline kaldet',
-        'Funktionspointere kopierer data',
-        'Functors bruger ikke stakken',
+        'Functoren kører sammenligningen i sin egen separate tråd',
+        'Funktionspointere kopierer hele datasættet ved hvert kald',
+        'Compileren kender functorens type og kan inline kaldet',
+        'Functors bruger heapen i stedet for stakken til kaldet'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Hver functor-type giver sin egen template-instans, hvor operator() kan inlines. En pointer er en værdi, der først kendes ved runtime.',
     },
     {
@@ -52,10 +64,10 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad sker der med `int x = 0; auto f = [x]() { x++; };`?',
       svar: [
-        'x i main bliver 1, når f kaldes',
-        'Kompileringsfejl: by-value captures er const uden mutable',
-        'Den kopierede x bliver 1, men x i main forbliver 0',
-        'Udefineret opførsel',
+        'x i main bliver 1, første gang f() kaldes i programmet',
+        'Kompileringsfejl: by-value capture er const uden mutable',
+        'Udefineret opførsel, fordi x fanges uden at være static',
+        'Den kopierede x bliver 1, mens x i main forbliver 0'
       ],
       rigtigt: 1,
       forklaring: 'operator() er const som standard. Med `mutable` kompilerer den, og så ændres kun closure-objektets egen kopi.',
@@ -69,28 +81,38 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad er problemet med denne funktion?\n\nstd::function<int()> lav() { int n = 5; return [&n]() { return n; }; }',
       svar: [
-        'Lambdaen kan ikke returneres',
         'n er død, når lambdaen kaldes – dangling reference',
-        'std::function kan ikke holde en lambda',
-        'Intet, den returnerer altid 5',
+        'std::function kan ikke gemme en lambda med captures',
+        'En lambda kan slet ikke returneres fra en funktion i C++',
+        'Intet er galt: lambdaen returnerer altid værdien 5'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'n lever kun i lav(). Brug [n] i stedet, så closure-objektet har sin egen kopi.',
     },
     {
       id: 'kode1', type: 'quiz', efter: 'k4',
       sporgsmal: 'Hvad udskrives?',
       kode: 'int n = 1;\nauto f = [n]() { return n * 10; };\nn = 5;\nstd::cout << f();',
-      svar: ['10', '50', '0', 'Kompileringsfejl'],
-      rigtigt: 0,
+      svar: [
+        '50',
+        '0',
+        'Kompileringsfejl',
+        '10'
+      ],
+      rigtigt: 3,
       forklaring: 'By-value capture kopierer n, da lambdaen oprettes (n = 1). Senere ændringer af n påvirker ikke kopien.',
     },
     {
       id: 'kode2', type: 'quiz', efter: 'k3',
       sporgsmal: 'Hvad udskrives? (C++17)',
       kode: 'int c = 0;\nauto g = [c]() mutable { return ++c; };\ng();\ng();\nstd::cout << c << " " << g();',
-      svar: ['2 3', '0 3', '0 1', '3 3'],
-      rigtigt: 1,
+      svar: [
+        '3 3',
+        '2 3',
+        '0 1',
+        '0 3'
+      ],
+      rigtigt: 3,
       forklaring: 'mutable ændrer closure-objektets egen kopi, som bliver 1, 2 og så 3. Den ydre c er stadig 0.',
     },
     {
@@ -99,10 +121,10 @@ export default {
       kode: 'void start() {\n  int x = 42;\n  std::thread t([&] {\n    std::this_thread::sleep_for(1s);\n    std::cout << x;\n  });\n  t.detach();\n}',
       sporgsmal: 'Hvad er fejlen?',
       svar: [
-        'detach er ikke tilladt på lambdas',
-        'x er død, når tråden læser den – capture by value [x] i stedet',
-        'sleep_for blokerer hele programmet',
-        'cout er ikke trådsikker, så intet udskrives',
+        'sleep_for blokerer hele programmet og ikke kun tråden',
+        'x er død, når tråden læser den – fang med [x] i stedet',
+        'cout er ikke trådsikker, så der udskrives aldrig noget',
+        'detach() er ikke tilladt på en tråd, der kører en lambda'
       ],
       rigtigt: 1,
       forklaring: 'start() returnerer, og x forsvinder fra stakken, mens tråden stadig sover. [&] giver en dangling reference. [x] kopierer værdien ind i closure-objektet.',

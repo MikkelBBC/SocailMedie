@@ -3,6 +3,14 @@ export default {
     id: 't04', nr: 4, titel: 'Synchronization Tools', kort: 'Sync', emoji: '🔒',
     farve: '#0072FF', gradient: 'linear-gradient(135deg, #00C6FF 0%, #0072FF 100%)',
     lektion: 'Lektion 4.1 + 5.1 (conditionals)',
+    kerne: [
+      'En race condition opstår, når to tråde rører samme data, og mindst én skriver. counter++ er læs, læg til, skriv.',
+      'Et kritisk afsnit skal opfylde mutual exclusion, progress og bounded waiting.',
+      'Alle låse bygger på en atomar hardware-instruktion som test-and-set eller compare-and-swap.',
+      'En mutex er en aftale: den virker kun, hvis alle kodestier, der rører dataene, bruger den.',
+      'En semafor er en tæller: wait() trækker fra og sover ved nul, post() lægger til og vækker.',
+      'En condition variable skal altid bruges i en while-løkke på grund af spurious wakeups og tabte signaler.',
+    ],
     disposition: [
       'Motivation: race condition med counter++',
       'Critical section problem og de tre krav',
@@ -22,8 +30,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvilket krav brydes, hvis én tråd kan blive ved med at blive overhalet af andre og aldrig kommer ind?',
-      svar: ['Mutual exclusion', 'Progress', 'Bounded waiting', 'Ingen'],
-      rigtigt: 2,
+      svar: [
+        'Mutual exclusion',
+        'Bounded waiting',
+        'Ingen',
+        'Progress'
+      ],
+      rigtigt: 1,
       forklaring: 'Bounded waiting kræver en øvre grænse for, hvor længe man kan blive overhalet. Progress handler om, at systemet ikke går i stå, når sektionen er fri.',
     },
     {
@@ -35,12 +48,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad gør compare_and_swap(&v, expected, nyVærdi)?',
       svar: [
-        'Bytter altid v og nyVærdi',
-        'Sætter v = nyVærdi, kun hvis v stadig er expected, i ét atomisk skridt',
-        'Låser v, indtil unlock kaldes',
-        'Sammenligner v og expected og venter, til de er ens',
+        'Bytter altid indholdet af v og nyVærdi rundt',
+        'Låser v, indtil der bliver kaldt unlock på den',
+        'Venter, indtil v og expected er blevet ens',
+        'Sætter v = nyVærdi, kun hvis v stadig er expected'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'CAS lykkes kun, hvis ingen andre har ændret værdien i mellemtiden. Ellers prøver man typisk igen.',
     },
     {
@@ -52,12 +65,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Tråd A skriver til en delt struct under en mutex. Tråd B læser den UDEN lås. Er det OK?',
       svar: [
-        'Ja, kun skrivninger kræver lås',
-        'Nej, B kan læse en halvt opdateret struct – al adgang skal bruge samme lås',
-        'Ja, hvis B kun læser én gang',
-        'Kun på en CPU med én kerne',
+        'Nej, B kan læse en halvt opdateret struct',
+        'Ja, hvis bare B nøjes med at læse den én gang',
+        'Kun på en maskine med mere end én CPU-kerne',
+        'Ja, det er kun skrivninger, der kræver en lås'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Når mindst én skriver, skal alle adgange være synkroniseret. Ellers er det en data race og udefineret opførsel. Én kerne redder dig ikke, for tråden kan afbrydes midt i opdateringen.',
     },
     {
@@ -68,8 +81,13 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Du vil tillade højst 4 tråde at bruge en pulje af GPU-buffere samtidig. Hvad passer bedst?',
-      svar: ['En mutex', 'En counting semaphore initialiseret til 4', 'En condition variable uden lås', 'std::atomic<bool>'],
-      rigtigt: 1,
+      svar: [
+        'En std::atomic<bool> pr. buffer i puljen',
+        'En mutex, der låses op fire gange i træk',
+        'En condition variable helt uden en mutex',
+        'En counting semaphore initialiseret til 4'
+      ],
+      rigtigt: 3,
       forklaring: 'Counting semaforen tæller frie ressourcer. Den femte tråd blokerer i wait(), indtil en anden kalder signal().',
     },
     {
@@ -81,12 +99,12 @@ export default {
       id: 'k5q', type: 'quiz', om: 'k5',
       sporgsmal: 'Hvorfor skal cv.wait altid bruges med et prædikat eller en while-løkke?',
       svar: [
-        'For at gøre koden hurtigere',
-        'Fordi tråden kan vågne uden grund (spurious wakeup), eller betingelsen kan være ændret igen',
-        'Fordi notify_one ellers vækker alle',
-        'Fordi mutexen ellers ikke frigives',
+        'Fordi mutexen ellers aldrig bliver frigivet igen',
+        'Fordi koden ellers bliver unødvendigt langsom',
+        'Fordi tråden kan vågne uden grund (spurious wakeup)',
+        'Fordi notify_one ellers kommer til at vække alle tråde'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'At vågne betyder kun »måske er betingelsen sand«. Tjek den altid igen under lås.',
     },
     {
@@ -95,12 +113,12 @@ export default {
       kode: 'std::mutex m;\nstd::condition_variable cv;\nbool ready = false;\n\nvoid worker() {\n  std::unique_lock<std::mutex> lk(m);\n  cv.wait(lk);\n  process(data);\n}',
       sporgsmal: 'Hvad er problemet?',
       svar: [
-        'unique_lock kan ikke bruges med condition variables',
-        'wait uden prædikat: notify før wait går tabt, og spurious wakeups kører process for tidligt',
-        'Der mangler lk.unlock() før wait',
-        'ready skal være std::atomic',
+        'Der mangler et kald til lk.unlock() lige før wait',
+        'ready skal erklæres som std::atomic for at virke',
+        'wait uden prædikat: et notify før wait går tabt',
+        'unique_lock kan slet ikke bruges med en condition variable'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Brug cv.wait(lk, []{ return ready; }). Så tjekkes ready under lås både før og efter hver opvågning.',
     },
     {

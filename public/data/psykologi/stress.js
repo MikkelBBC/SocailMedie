@@ -13,8 +13,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvilket stresshormon virker hurtigst?',
-      svar: ['Kortisol', 'Adrenalin', 'Melatonin', 'Insulin'],
-      rigtigt: 1,
+      svar: [
+        'Melatonin',
+        'Insulin',
+        'Adrenalin',
+        'Kortisol'
+      ],
+      rigtigt: 2,
       forklaring: 'Adrenalin (sympatisk nervesystem) virker på sekunder. Kortisol via HPA-aksen topper først efter 20-30 minutter.',
     },
     {
@@ -25,8 +30,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad beskyttede hukommelsen mod stress i Smith m.fl. (2016)?',
-      svar: ['At genlæse materialet flere gange', 'At lære ved retrieval practice (teste sig selv)', 'At sove mindre', 'At drikke kaffe'],
-      rigtigt: 1,
+      svar: [
+        'At lære ved at teste sig selv (retrieval)',
+        'At sove mindre natten før selve testen',
+        'At genlæse materialet rigtig mange gange',
+        'At drikke kaffe umiddelbart inden testen'
+      ],
+      rigtigt: 0,
       forklaring: 'Materiale lært ved hentning var robust over for stress. Genlæst materiale var ikke.',
     },
     {
@@ -38,12 +48,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad er bedst at gøre med nervøsitet lige før eksamen ifølge forskningen i stress reappraisal?',
       svar: [
-        'Prøve at undertrykke den helt',
-        'Omtolke kroppens signaler som energi, der hjælper præstationen',
-        'Tænke på alt, der kan gå galt, så man er forberedt',
-        'Ignorere eksamen til sidste øjeblik',
+        'At ignorere eksamen indtil sidste øjeblik',
+        'At prøve at undertrykke nervøsiteten helt',
+        'At omtolke signalerne som nyttig energi',
+        'At tænke alt det igennem, der kan gå galt'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Kroppen er allerede aktiveret. Omtolkning skifter mod et udfordringsmønster. Undertrykkelse modarbejder kroppen.',
     },
     {
@@ -54,8 +64,13 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad handlede det originale Yerkes-Dodson-studie (1908) om?',
-      svar: ['Studerendes eksamensresultater', 'Mus, der lærte at skelne kasser under forskellige stødstyrker', 'Soldater i krig', 'Sportsudøveres præstation'],
-      rigtigt: 1,
+      svar: [
+        'Soldater under pres i krig og kampsituationer',
+        'Studerendes resultater til en rigtig eksamen',
+        'Sportsudøveres præstation under konkurrence',
+        'Mus, der lærte at skelne kasser under stød'
+      ],
+      rigtigt: 3,
       forklaring: 'Kurven er blevet generaliseret langt ud over det oprindelige dyreforsøg. Brug den som løs idé, ikke som præcis lov.',
     },
     {

@@ -3,6 +3,14 @@ export default {
     id: 't05', nr: 5, titel: 'Deadlocks', kort: 'Deadlock', emoji: '🍝',
     farve: '#FF416C', gradient: 'linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%)',
     lektion: 'Lektion 5.1',
+    kerne: [
+      'Deadlock kræver fire ting samtidig: mutual exclusion, hold og vent, ingen fratagelse og cirkulær venten.',
+      'Bryder man bare én af de fire betingelser, kan deadlock ikke opstå.',
+      'I en ressourcegraf med én instans pr. type betyder en cyklus deadlock. Med flere instanser er en cyklus kun en mulighed.',
+      'Prevention bryder en betingelse strukturelt, fx ved altid at tage låse i samme rækkefølge.',
+      'Avoidance (bankers algoritme) tjekker hver tildeling mod en safe state og kræver kendskab til maksimale behov.',
+      'De spisende filosoffer: løs det ved højst fire ved bordet, én der tager modsat, eller alt-eller-intet.',
+    ],
     disposition: [
       'Definition og eksempel med to tråde og to låse',
       'De fire nødvendige betingelser (Coffman)',
@@ -22,8 +30,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvilken betingelse brydes ved altid at tage låse i samme globale rækkefølge?',
-      svar: ['Mutual exclusion', 'Hold and wait', 'No preemption', 'Circular wait'],
-      rigtigt: 3,
+      svar: [
+        'Hold and wait',
+        'Circular wait',
+        'Mutual exclusion',
+        'No preemption'
+      ],
+      rigtigt: 1,
       forklaring: 'Med en global rækkefølge venter man kun på låse »højere oppe« end dem, man holder. En cyklus ville kræve, at nogen venter »nedad«.',
     },
     {
@@ -34,8 +47,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'En RAG har en cyklus, men ressourcetyperne har flere instanser. Hvad kan du konkludere?',
-      svar: ['Der er deadlock', 'Der er ikke deadlock', 'Der er muligvis deadlock', 'Grafen er ugyldig'],
-      rigtigt: 2,
+      svar: [
+        'Der er muligvis deadlock',
+        'Grafen er ugyldig',
+        'Der er ikke deadlock',
+        'Der er deadlock'
+      ],
+      rigtigt: 0,
       forklaring: 'Med flere instanser er en cyklus nødvendig, men ikke tilstrækkelig. En tråd uden for cyklussen kan frigive en instans.',
     },
     {
@@ -47,12 +65,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad er forskellen på deadlock prevention og deadlock avoidance?',
       svar: [
-        'Prevention bryder en af de fire betingelser strukturelt; avoidance tjekker hver tildeling mod en safe state',
-        'Det er det samme',
-        'Avoidance afbryder processer; prevention genstarter systemet',
-        'Prevention kræver kendskab til maksimale behov; avoidance gør ikke',
+        'Prevention kræver kendskab til maksimale behov',
+        'Der er ingen forskel, det er to ord for det samme',
+        'Prevention bryder en af de fire betingelser strukturelt',
+        'Avoidance afbryder processer, prevention genstarter'
       ],
-      rigtigt: 0,
+      rigtigt: 2,
       forklaring: 'Avoidance (Banker\'s) kræver, at maksimale behov kendes på forhånd, og beslutter dynamisk. Prevention er en designregel.',
     },
     {
@@ -64,10 +82,10 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvorfor fjerner »højst fire filosoffer ved bordet« deadlock?',
       svar: [
-        'Fordi der så er flere pinde end filosoffer',
-        'Fordi mindst én filosof altid kan få begge pinde, så circular wait ikke kan lukkes',
-        'Fordi filosofferne skiftes til at spise i rækkefølge',
-        'Fordi mutual exclusion forsvinder',
+        'Fordi der så er flere pinde tilbage end filosoffer',
+        'Fordi mindst én altid kan få begge pinde',
+        'Fordi mutual exclusion på pindene forsvinder',
+        'Fordi filosofferne så skiftes til at spise i rækkefølge'
       ],
       rigtigt: 1,
       forklaring: 'Med 4 filosoffer og 5 pinde siger dueslagsprincippet, at mindst én får to pinde. Cyklussen af fem ventende kan ikke opstå.',
@@ -77,12 +95,12 @@ export default {
       sporgsmal: 'Hvad er den mindste ændring, der fjerner deadlock-risikoen?',
       kode: 'void eat(std::mutex& left, std::mutex& right) {\n  std::lock_guard<std::mutex> a(left);\n  std::lock_guard<std::mutex> b(right);\n  // spis\n}',
       svar: [
-        'Byt de to linjer om',
         'std::scoped_lock lk(left, right);',
         'Brug std::unique_lock i stedet for lock_guard',
         'Tilføj en sleep mellem de to låse',
+        'Byt de to linjer om'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'scoped_lock tager begge låse med en deadlock-undgående algoritme. At bytte linjerne hjælper ikke, fordi naboen så gør det samme omvendt.',
     },
     {
@@ -91,11 +109,11 @@ export default {
       sporgsmal: 'Hvad sker der, og hvad er en god løsning?',
       svar: [
         'Race condition – tilføj en global lås omkring alt',
-        'Deadlock – lås altid kontoen med lavest id først',
-        'Starvation – giv tråd 1 højere prioritet',
         'Intet – hver konto har sin egen lås',
+        'Deadlock – lås altid kontoen med lavest id først',
+        'Starvation – giv tråd 1 højere prioritet'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Circular wait mellem de to tråde. Sortering efter id giver en global låserækkefølge. En global lås virker også, men gør alle overførsler serielle.',
     },
     {

@@ -13,8 +13,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'En graf har 1.000.000 knuder og 5.000.000 kanter. Hvilken repræsentation?',
-      svar: ['Adjacency matrix – O(1) opslag', 'Adjacency list – grafen er sparse, O(V+E) hukommelse', 'Det er ligegyldigt', 'En sorteret liste af knuder'],
-      rigtigt: 1,
+      svar: [
+        'En sorteret liste over alle knuderne i grafen',
+        'Det er ligegyldigt ved den størrelse graf',
+        'Adjacency list, fordi grafen er sparse',
+        'Adjacency matrix, fordi opslag så er O(1)'
+      ],
+      rigtigt: 2,
       forklaring: 'En matrix ville bruge 10¹² celler. Listen bruger plads proportionalt med knuder + kanter.',
     },
     {
@@ -25,8 +30,13 @@ export default {
     {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvilken algoritme finder den korteste vej (færrest kanter) i en uvægtet graf?',
-      svar: ['DFS', 'BFS', 'Topologisk sortering', 'Kruskal'],
-      rigtigt: 1,
+      svar: [
+        'BFS',
+        'DFS',
+        'Kruskal',
+        'Topologisk sortering'
+      ],
+      rigtigt: 0,
       forklaring: 'BFS besøger knuder i lag efter afstand, så første gang en knude nås, er det via færrest mulige kanter.',
     },
     {
@@ -37,8 +47,13 @@ export default {
     {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvornår kan Dijkstra give et forkert resultat?',
-      svar: ['Når grafen er rettet', 'Når der er kanter med negativ vægt', 'Når grafen er meget stor', 'Når der er cykler med positive vægte'],
-      rigtigt: 1,
+      svar: [
+        'Når der er kanter med negativ vægt',
+        'Når grafen er rettet',
+        'Når der er cykler med positive vægte',
+        'Når grafen er meget stor'
+      ],
+      rigtigt: 0,
       forklaring: 'Det grådige valg forudsætter, at en vej aldrig bliver kortere ved at gå længere. Negative kanter bryder det, og så skal man bruge Bellman-Ford.',
     },
     {
@@ -49,7 +64,12 @@ export default {
     {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad bruger Kruskal til effektivt at tjekke, om en kant laver en cyklus?',
-      svar: ['BFS', 'En prioritetskø', 'Union-find (disjoint sets)', 'En adjacency matrix'],
+      svar: [
+        'En prioritetskø over alle kanter',
+        'En BFS fra hver ende af kanten',
+        'Union-find (disjoint sets)',
+        'En adjacency matrix over grafen'
+      ],
       rigtigt: 2,
       forklaring: 'Union-find holder styr på komponenter. Er begge endepunkter i samme komponent, ville kanten lave en cyklus.',
     },
@@ -57,8 +77,13 @@ export default {
       id: 'kode1', type: 'quiz', efter: 'k2',
       sporgsmal: 'Hvilken rækkefølge besøger BFS knuderne i, startende i A (naboer i alfabetisk orden)?',
       kode: 'A: B, C\nB: D\nC: D, E\nD: F\nE: F\nF: -',
-      svar: ['A B D F C E', 'A B C D E F', 'A C E F B D', 'A B C F D E'],
-      rigtigt: 1,
+      svar: [
+        'A C E F B D',
+        'A B C F D E',
+        'A B C D E F',
+        'A B D F C E'
+      ],
+      rigtigt: 2,
       forklaring: 'Lag 0: A. Lag 1: B, C. Lag 2: D (fra B), E (fra C). Lag 3: F. DFS ville give A B D F C E.',
     },
     {

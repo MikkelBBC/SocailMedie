@@ -13,8 +13,13 @@ export default {
     {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvilket er et NEGATIVT symptom ved skizofreni?',
-      svar: ['At høre stemmer', 'At tro man bliver overvåget', 'Nedsat initiativ og affladet følelsesudtryk', 'Hurtig tale'],
-      rigtigt: 2,
+      svar: [
+        'At tro, man bliver overvåget eller forfulgt',
+        'Nedsat initiativ og affladet følelsesudtryk',
+        'At høre stemmer, som andre ikke kan høre',
+        'Meget hurtig tale, der er svær at afbryde'
+      ],
+      rigtigt: 1,
       forklaring: '»Negativ« betyder, at noget mangler, ikke at det er dårligt. Hallucinationer og vrangforestillinger er positive symptomer.',
     },
     {
@@ -26,10 +31,10 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvad betyder »aberrant salience« i Kapurs model?',
       svar: [
-        'At man mister al hukommelse',
-        'At ligegyldige ting fejlagtigt føles ladet med betydning, og hjernen forklarer det med vrangforestillinger',
-        'At dopamin gør en glad',
-        'At man har for lidt serotonin',
+        'At der er for lidt serotonin i bestemte hjernebaner',
+        'At ligegyldige ting pludselig føles ladet med betydning',
+        'At dopamin er hjernens stof for velvære og glæde',
+        'At man mister hukommelsen for det, der lige er sket'
       ],
       rigtigt: 1,
       forklaring: 'Dopamin markerer, hvad der er vigtigt. Når markeringen går i stykker, forsøger hjernen at forklare de mærkelige oplevelser.',
@@ -43,12 +48,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvad er mest korrekt om skizofreni og vold?',
       svar: [
-        'De fleste med skizofreni er voldelige',
-        'Mennesker med skizofreni er oftere ofre for vold, end de er voldsudøvere',
-        'Der er ingen sammenhæng overhovedet med noget',
-        'Skizofreni betyder flere personligheder, som kan være voldelige',
+        'At de oftere er ofre for vold end udøvere',
+        'At der slet ingen sammenhæng er overhovedet',
+        'At flere personligheder gør dem uforudsigelige',
+        'At de fleste med skizofreni bliver voldelige'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Risikoen er lidt forhøjet, især med misbrug og uden behandling, men langt de fleste er aldrig voldelige og er i højere risiko for selv at blive udsat for vold.',
     },
     {
@@ -60,10 +65,10 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad er kernen i OPUS?',
       svar: [
-        'Indlæggelse i mindst et år',
-        'Tidlig, intensiv og samlet indsats med medicin, psykoedukation, familie og sociale færdigheder',
-        'Kun høje doser medicin',
-        'At vente og se, om psykosen går over',
+        'Indlæggelse i mindst et år efter første psykose',
+        'Tidlig og samlet indsats omkring den unge',
+        'At vente og se, om psykosen går over af sig selv',
+        'Høje doser antipsykotisk medicin fra starten'
       ],
       rigtigt: 1,
       forklaring: 'OPUS samler behandlingen omkring den unge tidligt i forløbet. Forsøget viste bedre symptomer og funktion efter to år.',

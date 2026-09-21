@@ -51,7 +51,8 @@ public/
   src/fsrs.js                FSRS-5 spaced repetition
   src/render.js              korttyper
   src/store.js               localStorage
-tools/valider.mjs            tjekker indholdet for fejl
+tools/valider.mjs            tjekker indholdet for fejl (også skæve svarmuligheder)
+tools/svarlaengde.mjs        måler, om det rigtige svar kan gættes på længden
 tools/simuler-feed.mjs       viser feed-mixet
 DESIGN.md                    forskningen bag hvert valg
 ```

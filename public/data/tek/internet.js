@@ -41,12 +41,12 @@ export default {
       id: 'k1q', type: 'quiz', om: 'k1',
       sporgsmal: 'Hvad kigger en router på, når den sender en pakke videre?',
       svar: [
-        'Hele indholdet af pakken',
-        'Modtagerens IP-adresse og sin egen tabel over næste skridt',
-        'Afsenderens adgangskode',
-        'Hvor stor pakken er',
+        'På afsenderens adgangskode og rettigheder',
+        'På hele indholdet af pakken, byte for byte',
+        'På modtagerens IP og sin egen routing-tabel',
+        'På hvor stor pakken er i forhold til resten'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'Routeren kender ikke hele ruten. Den sender bare videre mod den nabo, der ifølge tabellen er tættest på målet.',
     },
     {
@@ -75,12 +75,12 @@ export default {
       id: 'k2q', type: 'quiz', om: 'k2',
       sporgsmal: 'Hvorfor kan en flyttet hjemmeside stadig være »det gamle sted« for nogle brugere?',
       svar: [
-        'Fordi routere er langsomme',
-        'Fordi det gamle DNS-svar stadig ligger i caches, indtil TTL udløber',
-        'Fordi HTTPS blokerer flytninger',
-        'Fordi IP-adresser ikke kan ændres',
+        'Fordi HTTPS blokerer for, at sider kan flytte',
+        'Fordi routerne undervejs er blevet langsomme',
+        'Fordi det gamle DNS-svar stadig ligger i caches',
+        'Fordi en IP-adresse aldrig kan laves om'
       ],
-      rigtigt: 1,
+      rigtigt: 2,
       forklaring: 'DNS-svar caches med en udløbstid. Derfor sætter man ofte TTL lavt før en planlagt flytning.',
     },
     {
@@ -112,12 +112,12 @@ export default {
       id: 'k3q', type: 'quiz', om: 'k3',
       sporgsmal: 'Hvorfor bruger live video og online spil typisk UDP?',
       svar: [
-        'UDP er krypteret',
-        'Det er bedre at miste et enkelt billede end at vente på en gensendelse',
-        'UDP kan sende større pakker',
-        'TCP virker ikke på mobilnet',
+        'Fordi et tabt billede er bedre end ventetid',
+        'Fordi UDP krypterer indholdet automatisk',
+        'Fordi UDP kan sende meget større pakker',
+        'Fordi TCP slet ikke virker på mobilnetværk'
       ],
-      rigtigt: 1,
+      rigtigt: 0,
       forklaring: 'Gammel data har ingen værdi i realtid. Forsinkelse gør mere skade end et tabt billede.',
     },
     {
@@ -131,12 +131,12 @@ export default {
       id: 'k4q', type: 'quiz', om: 'k4',
       sporgsmal: 'Hvad garanterer hængelåsen i browseren?',
       svar: [
-        'At hjemmesiden er troværdig',
-        'At forbindelsen er krypteret, og at domænet matcher certifikatet',
-        'At siden ikke indeholder virus',
-        'At ejeren er registreret i Danmark',
+        'At hjemmesiden bag den er til at stole på',
+        'At ejeren er et registreret dansk selskab',
+        'At siden er tjekket og ikke indeholder virus',
+        'At forbindelsen er krypteret til netop det domæne'
       ],
-      rigtigt: 1,
+      rigtigt: 3,
       forklaring: 'Den siger noget om forbindelsen og navnet, ikke om indholdet eller hensigten bag siden.',
     },
     {

@@ -98,7 +98,6 @@ function swipe(node, { onLeft, onRight }) {
     const dy = e.clientY - y0;
     x0 = null;
     if (Math.abs(dx) < 45 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    navigator.vibrate?.(6);
     (dx < 0 ? onLeft : onRight)();
   });
   node.addEventListener('pointercancel', () => { x0 = null; });
@@ -292,10 +291,19 @@ function renderQuestion(card, mode, ctx) {
   const finish = (confidence) => {
     done = true;
     const correct = chosen === card.rigtigt;
+    // Hak eller kryds, der tegner sig selv: øjeblikkelig, aflæselig kvittering.
+    const HAK = 'M4 9.5 L7.8 13.3 L16 5';
+    const KRYDS = 'M5 5 L15 15 M15 5 L5 15';
+    const maerke = (d) => `<span class="mark"><svg viewBox="0 0 20 20"><path d="${d}"/></svg></span>`;
     options.querySelectorAll('.opt').forEach((b, i) => {
       b.disabled = true;
-      if (i === card.rigtigt) b.classList.add('correct');
-      else if (i === chosen) b.classList.add('wrong');
+      if (i === card.rigtigt) {
+        b.classList.add('correct');
+        b.insertAdjacentHTML('beforeend', maerke(HAK));
+      } else if (i === chosen) {
+        b.classList.add('wrong');
+        b.insertAdjacentHTML('beforeend', maerke(KRYDS));
+      }
     });
     conf.hidden = true;
 

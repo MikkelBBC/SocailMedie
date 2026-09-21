@@ -353,3 +353,46 @@
 .kerne li { position: relative; padding-left: 20px; font-size: 14.5px; line-height: 1.45; }
 .kerne li::before { content: ''; position: absolute; left: 0; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--grad); }
 .sim-center .kerne { text-align: left; }
+
+/* ================================================================
+   Bevægelse: ét sæt tider og én kurve i hele appen
+   100 ms = tryk-respons · 200 ms = skift · 320 ms = noget der fejres.
+   Kilde: microinteractions bør ligge i 100-300 ms, ellers føles de
+   enten uset eller langsomme.
+   ================================================================ */
+:root {
+  --t-tryk: 110ms;
+  --t-skift: 200ms;
+  --t-fejr: 320ms;
+  --fjeder: cubic-bezier(.2, .8, .3, 1);
+  --fjeder-pop: cubic-bezier(.2, .9, .3, 1.35);
+}
+
+.opt, .primary, .ghost, .case-btn, .next-btn, .conf, .seq-item, .vs-buttons button, .rail-btn span, .nav-btn, .hl-ring {
+  transition: transform var(--t-tryk) var(--fjeder), box-shadow var(--t-skift) var(--fjeder),
+              background var(--t-skift) ease, border-color var(--t-skift) ease;
+}
+.slide, .reveal, .teasers span, .analogi, .figur, .hvorfor { animation-timing-function: var(--fjeder); }
+.ring .fg { transition: stroke-dashoffset var(--t-fejr) var(--fjeder-pop); }
+.bar > div { transition: width var(--t-fejr) var(--fjeder-pop); }
+
+/* ---- Det rigtige svar får et hak, der tegner sig selv ---- */
+.opt .mark {
+  position: absolute; right: 12px; top: 50%; width: 22px; height: 22px; margin-top: -11px;
+  display: grid; place-items: center; border-radius: 50%;
+}
+.opt.correct .mark { background: var(--good); }
+.opt.wrong .mark { background: var(--bad); }
+.opt .mark svg { width: 14px; height: 14px; }
+.opt .mark path {
+  fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 26; stroke-dashoffset: 26;
+  animation: tegn-hak 260ms var(--fjeder) 60ms forwards;
+}
+@keyframes tegn-hak { to { stroke-dashoffset: 0; } }
+.opt.correct, .opt.wrong { padding-right: 42px; }
+.options.binary .opt.correct, .options.binary .opt.wrong { padding-right: 42px; }
+
+/* Dagens mål-ringen mærker, at den bliver fyldt */
+#goal-ring.fyldt { animation: ring-fyldt 420ms var(--fjeder-pop); }
+@keyframes ring-fyldt { 40% { transform: scale(1.18); } }

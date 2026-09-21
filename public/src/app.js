@@ -230,8 +230,9 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
     state.bestCombo = Math.max(state.bestCombo, state.combo);
     xp = Math.round(baseXp * (1 + Math.min(state.combo - 1, 10) * 0.1));
     if (Math.random() < 0.12) { xp *= 3; crit = true; }
-    if (state.combo % 5 === 0 && mode !== 'sim') feed.queueCase('combo');
-    sfx.correct(state.combo);
+    const milepael = state.combo % 5 === 0;
+    if (milepael && mode !== 'sim') feed.queueCase('combo');
+    milepael ? sfx.milepael() : sfx.correct(state.combo);
     if (crit) sfx.crit();
   } else {
     state.combo = 0;
@@ -253,6 +254,9 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
     state.daily.goalShown = true;
     goalReached = true;
     bumpStreak();
+    const ring = $('#goal-ring');
+    ring?.classList.add('fyldt');
+    setTimeout(() => ring?.classList.remove('fyldt'), 500);
     if (mode !== 'sim') feed.queueGoal();
     toast('🔥 Dagens mål er nået!');
   } else if (left === 3 || left === 1) {

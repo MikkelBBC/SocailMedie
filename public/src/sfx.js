@@ -31,11 +31,18 @@ const note = (step) => 523.25 * 2 ** ((Math.floor(step / 5) * 12 + SCALE[step % 
 const buzz = (pattern) => { if (!muted && navigator.userActivation?.hasBeenActive !== false) navigator.vibrate?.(pattern); };
 
 export const sfx = {
+  // Almindeligt rigtigt svar: kun lyd. Vibration gemmes til fejl og milepæle,
+  // ellers holder man op med at lægge mærke til den.
   correct(combo = 1) {
     const s = Math.min(Math.max(combo - 1, 0), 14);
     tone(note(s), { dur: 0.12 });
     tone(note(s + 2), { dur: 0.18, at: 0.07 });
-    buzz(10);
+  },
+  // Noget, der er værd at mærke: 5 i træk, en klaret mission, et level.
+  milepael() {
+    tone(note(7), { dur: 0.14, vol: 0.05 });
+    tone(note(11), { dur: 0.22, at: 0.09, vol: 0.05 });
+    buzz([14, 44, 14]);
   },
   crit() {
     [5, 7, 9, 10].forEach((s, i) => tone(note(s), { dur: 0.1, at: i * 0.05, vol: 0.05 }));
@@ -50,7 +57,6 @@ export const sfx = {
     buzz([15, 30, 15, 30, 40]);
   },
   tick(pitch = 1) {
-    tone(900 * pitch, { type: 'square', dur: 0.04, vol: 0.04 });
-    buzz(4);
+    tone(900 * pitch, { type: 'square', dur: 0.04, vol: 0.035 });
   },
 };

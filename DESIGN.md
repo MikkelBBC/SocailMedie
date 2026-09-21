@@ -39,6 +39,14 @@ der dokumenteret får viden til at sidde.
 | 🖼️ Analogi, tegning og trin på de svære koncepter | Man kan overskue kortet i stedet for at give op | Analogi giver en kendt knage at hænge det nye på (Gentner), tegning + tekst huskes bedre end tekst alene (Mayer), og trin gør en usynlig proces synlig i rækkefølge |
 | 🎯 »Kernen i emnet«: de 5-6 sætninger, en censor venter på | Gør et stort emne overskueligt: man kan se, hvor lidt der skal til for at være med | Hentning virker bedst, når man ved, hvad man skal hente. Kernen står i emne-arket og efter hver simulering |
 
+**Sådan føles det rart at bruge** (ud fra almindelige anbefalinger for
+mikrointeraktioner): ét sæt animationstider i hele appen (110 ms til tryk,
+200 ms til skift, 320 ms til noget, der fejres) med samme fjeder-kurve, fordi
+under 100 ms ikke opfattes og over 300 ms føles langsomt. Det rigtige svar
+kvitterer med et hak, der tegner sig selv. Vibration er reserveret til fejl og
+milepæle: vibrerer man ved hvert eneste rigtige svar, holder man op med at
+mærke det. Alt respekterer `prefers-reduced-motion`.
+
 **Fjernet igen:** casinoet (lykkehjul, skrabelod, indsatser og mønter). Det trak
 opmærksomheden væk fra det, appen er til. Tilbage er kun mystery-casen, som
 udløses af rigtige svar i træk.

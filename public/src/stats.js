@@ -324,10 +324,11 @@ export function renderStats(el, d) {
 
     <section class="export-box">
       <h3>Del dine data med Claude</h3>
-      <p>En kort opsummering af, hvilke kort du svarer rigtigt og forkert. Kopiér den ind i chatten, så kan indholdet forbedres der, hvor det driller.</p>
+      <p>En kort opsummering af, hvilke kort du svarer rigtigt og forkert. Hent den som fil og læg den i mappen <code>fremskridt/</code> i projektet – så kan den læses igen senere og bruges til at forbedre det, der driller.</p>
       <div class="export-row">
         <button class="primary small" id="export-copy">Kopiér</button>
         <button class="ghost" id="export-file">Hent som fil</button>
+        ${navigator.share ? '<button class="ghost" id="export-share">Del …</button>' : ''}
       </div>
       <textarea id="export-text" readonly hidden></textarea>
     </section>
@@ -349,6 +350,16 @@ export function renderStats(el, d) {
       ta.select();
       el.querySelector('#export-copy').textContent = 'Markér og kopiér';
     }
+  });
+  el.querySelector('#export-share')?.addEventListener('click', async () => {
+    const data = exportData();
+    const navn = `leths-app-data-${dayKey(new Date())}.json`;
+    const fil = new File([data], navn, { type: 'application/json' });
+    try {
+      // Del filen, hvis telefonen kan (så kan den sendes til dig selv). Ellers del teksten.
+      if (navigator.canShare?.({ files: [fil] })) await navigator.share({ files: [fil], title: navn });
+      else await navigator.share({ title: navn, text: data });
+    } catch {}
   });
   el.querySelector('#export-file').addEventListener('click', () => {
     const blob = new Blob([exportData()], { type: 'application/json' });

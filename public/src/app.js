@@ -985,6 +985,20 @@ function buildExport() {
     .slice(0, 15)
     .map(([id, it]) => `${id} (${it.lapses}× glemt)`);
   const emner = examTracks().map((t) => `${t.id}:${Math.round(readiness(t.id) * 100)}%`);
+  // Træfsikkerhed pr. korttype og pr. fag, lagt sammen på tværs af dage.
+  const saml = (vaelger) => {
+    const ud = {};
+    for (const [, d] of log) {
+      for (const [k, v] of Object.entries(d[vaelger] ?? {})) {
+        ud[k] ??= { n: 0, ok: 0 };
+        ud[k].n += v.n;
+        ud[k].ok += v.ok;
+      }
+    }
+    return Object.fromEntries(Object.entries(ud).map(([k, v]) => [k, `${v.ok}/${v.n}`]));
+  };
+  const roert = new Set(Object.keys(state.items));
+  const uberoert = seed.kort.filter((k) => REVIEWABLE.has(k.type) && !roert.has(k.id));
   return JSON.stringify({
     format: 'leths-app-data v1',
     forklaring: 'kort = { id: [antal svar, antal gange glemt, sidste karakter 1-4, husker nu i %] }',
@@ -994,6 +1008,10 @@ function buildExport() {
     streak: state.streak.count,
     svar: { i_alt: n, rigtige: ok, procent: n ? Math.round((ok / n) * 100) : null },
     parathed_pr_emne: emner,
+    rigtige_pr_korttype: saml('typer'),
+    rigtige_pr_fag: saml('pakker'),
+    dage_med_aktivitet: log.length,
+    aldrig_besvaret: uberoert.length,
     svaereste_kort: svaere,
     kort,
   }, null, 1);

@@ -53,9 +53,28 @@ public/
   src/store.js               localStorage
 tools/valider.mjs            tjekker indholdet for fejl (også skæve svarmuligheder)
 tools/svarlaengde.mjs        måler, om det rigtige svar kan gættes på længden
+tools/fremskridt.mjs         læser dine eksporter i fremskridt/
+fremskridt/                  dine gemte eksporter (ligger uden for public/)
 tools/simuler-feed.mjs       viser feed-mixet
 DESIGN.md                    forskningen bag hvert valg
 ```
+
+## Gem dit fremskridt
+
+Appen gemmer kun i browserens egen hukommelse. Vil du have dine data med videre,
+så de kan læses igen senere:
+
+1. **Statistik** → nederst: **Del dine data med Claude** → **Hent som fil**
+   (på telefonen: **Del …** og send den til dig selv).
+2. Læg filen i mappen `fremskridt/`.
+3. Læs den med:
+
+```bash
+node tools/fremskridt.mjs
+```
+
+Den skriver, hvilke kort der driller, hvilke emner der er svagest, og
+udviklingen, hvis der ligger flere filer. Se `fremskridt/LÆS-MIG.md`.
 
 ## Tilføj eller ret indhold
 

@@ -74,7 +74,15 @@ export function lavPlan(d) {
     }
   }
 
-  // 3. Simulering: producere frem for genkende. Det er formatet, eksamen har.
+  // 3. Sidste tjek står højt tæt på eksamen: det er selve eksamenssituationen i lille format.
+  if (dage !== null && dage <= 7) {
+    const punkter = emner.reduce((a, e) => a + (e.kerne ?? 0), 0);
+    tilf('🎤', 'Tag Sidste tjek',
+      `Kan du sige de ${punkter || 'fem-seks'} ting, en censor venter på, uden at kigge? Det er præcis det, du skal på dagen – og det er lettere at opdage hullerne i dag end i morgen.`,
+      { type: 'tjek', tekst: 'Start tjekket' });
+  }
+
+  // 4. Simulering: producere frem for genkende. Det er formatet, eksamen har.
   if (dage !== null && dage <= 21 && usimulerede.length) {
     const u = usimulerede[0];
     tilf('🎤', `Simulér ${u.t.emoji} ${u.t.nr}. ${u.t.titel}`,
@@ -82,14 +90,14 @@ export function lavPlan(d) {
       { type: 'sim', spor: u.t.id, tekst: 'Træk emnet' });
   }
 
-  // 4. Kalibrering: overmod er den dyreste tilstand at gå til eksamen i.
+  // 5. Kalibrering: overmod er den dyreste tilstand at gå til eksamen i.
   if (d.kalibrering && d.kalibrering.pct < 0.85) {
     tilf('🎲', `»Sikker« holder kun ${pct(d.kalibrering.pct)} af gangene`,
       'Du er mere sikker, end du er god. Brug »Tror det« oftere – så lægger appen de kort tættere, og du opdager hullerne i tide.',
       null);
   }
 
-  // 5. Dagens mål.
+  // 6. Dagens mål.
   const mangler = Math.max(0, maal - svarIdag);
   if (mangler > 0) {
     tilf('🔥', `${mangler} svar til dagens mål`,
@@ -101,7 +109,7 @@ export function lavPlan(d) {
       null);
   }
 
-  // 6. Det sidste døgn har sin egen regel.
+  // 7. Det sidste døgn har sin egen regel.
   if (fase === 'finale') {
     tilf('😴', 'Sov nok i nat',
       'Under dyb søvn flyttes det lærte fra hippocampus til varig lagring. En nat uden søvn koster dobbelt: du er træt, og det, du læste, blev aldrig skrevet ordentligt ned.',
@@ -112,7 +120,7 @@ export function lavPlan(d) {
     fase,
     titel: faser[fase].titel,
     hvorfor: faser[fase].hvorfor,
-    trin: trin.slice(0, 5),
+    trin: trin.slice(0, 6),
     svage: svage.slice(0, 3),
   };
 }

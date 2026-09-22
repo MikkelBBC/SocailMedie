@@ -273,3 +273,58 @@ svg.viz rect[rx].hot { stroke: #0b0b0b; stroke-width: 1.5; }
   background: #ffffff26; color: #fff; font-weight: 800; font-size: 12.5px;
 }
 .toast-btn:active { transform: scale(.96); }
+
+/* ================= Sidste tjek ================= */
+/* Ligger i sim-overlayet, som har en lys baggrund – derfor mørk tekst. */
+.tjek { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.tjek-top { margin-bottom: 18px; }
+.tjek-top small {
+  font-size: 10.5px; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: #a3a29e;
+}
+.tjek-emne { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.tjek-emne span { font-size: 38px; line-height: 1; }
+.tjek-emne h2 { margin: 0; font-size: 25px; line-height: 1.15; }
+.tjek-emne.lille span { font-size: 24px; }
+.tjek-emne.lille h2 { font-size: 17px; }
+.tjek-opgave { margin: 0 0 8px; font-size: 16px; line-height: 1.45; }
+.tjek-opgave b { font-size: 19px; color: #0f766e; }
+.tjek-hint { margin: 0 0 auto; font-size: 13.5px; line-height: 1.5; color: #52514e; }
+.tjek .primary.wide { margin-top: 18px; background: linear-gradient(135deg, #0F766E, #14B8A6); }
+.tjek .ghost.wide { margin-top: 8px; }
+
+.tjek-liste { list-style: none; margin: 0 0 auto; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.tjek-liste button {
+  width: 100%; display: flex; gap: 11px; align-items: flex-start; text-align: left;
+  background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 13px;
+  font-size: 14px; line-height: 1.45; color: #3a3a3f;
+  transition: background var(--t-skift) var(--fjeder), border-color var(--t-skift) var(--fjeder);
+}
+.tjek-liste button i {
+  flex: none; width: 21px; height: 21px; border-radius: 7px; margin-top: 1px;
+  border: 2px solid #d9d8d4; transition: all var(--t-tryk) var(--fjeder);
+}
+.tjek-liste button.ramt { background: #e8faf1; border-color: #7fd6ab; color: #10312c; }
+.tjek-liste button.ramt i { background: #0fae66; border-color: #0fae66; }
+.tjek-liste button.ramt i::after {
+  content: '✓'; display: block; text-align: center; color: #fff;
+  font-size: 13px; font-weight: 900; line-height: 17px;
+}
+
+.tjek-score { text-align: center; margin: 10px 0 16px; }
+.tjek-score b {
+  display: block; font-size: 62px; font-weight: 900; line-height: 1;
+  background: linear-gradient(135deg, #0F766E, #14B8A6);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.tjek-score span { font-size: 14px; color: #52514e; }
+.tjek-resultat { list-style: none; margin: 4px 0 auto; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.tjek-resultat li {
+  display: flex; align-items: center; gap: 11px;
+  background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px;
+  border-left: 4px solid var(--f);
+}
+.tjek-resultat li span { font-size: 19px; }
+.tjek-resultat li b { display: block; font-size: 13.5px; line-height: 1.25; }
+.tjek-resultat li small { font-size: 11px; color: var(--f); font-weight: 800; }
+.tjek-resultat li i { margin-left: auto; font-style: normal; font-weight: 900; font-size: 14px; }

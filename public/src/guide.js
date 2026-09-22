@@ -7,7 +7,7 @@
 //
 // Hvert punkt er bygget ens: hvad det er, et konkret eksempel, og hvorfor det virker.
 
-export const GUIDE_VERSION = 3;
+export const GUIDE_VERSION = 4;
 
 const AFSNIT = [
   {
@@ -72,6 +72,14 @@ const AFSNIT = [
         hvad: 'Øverst under Eksamen. Fortæller, hvad der giver mest lige nu – ikke bare hvor du står.',
         eksempel: '»Finale · 2 dage tilbage. Start med 4. Synkronisering, 31 % parat. Simulér 7. Queues, du har aldrig trukket det. Sov nok i nat.« Hvert trin har en knap, der fører direkte derhen.',
         hvorfor: 'En graf siger, hvor du er. En plan siger, hvad du gør. Konkrete »når X, så Y«-planer er langt mere effektive end gode forsætter.',
+      },
+      {
+        emoji: '✅',
+        navn: 'Sidste tjek',
+        hvad: 'Under Eksamen. Du får kun emnets navn og skal sige kernen højt, før du ser facit.',
+        eksempel: '»Synkronisering – sig de 6 ting, en censor venter på.« Du siger dem højt, trykker »vis facit«, og markerer dem, du fik med. Til sidst står der, hvilke emner der stadig halter.',
+        hvorfor: 'Forsøget på at hente frem er selve læringen – også når du ikke rammer. Bagefter viser sammenligningen præcis, hvad der manglede.',
+        xp: '+5 XP pr. punkt',
       },
       {
         emoji: '🎓',

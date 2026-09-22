@@ -10,6 +10,7 @@ import { icon, hydrateIcons } from './icons.js';
 import { ensureMissions, bump, missionEmoji, missionText, isDone, allMissionsDone } from './missions.js';
 import { guideHtml, GUIDE_VERSION } from './guide.js';
 import { lavPlan } from './plan.js';
+import * as tjek from './sidstetjek.js';
 
 const DAY = 86_400_000;
 const state = load();
@@ -737,7 +738,7 @@ function renderExam() {
   const roert = new Set(Object.keys(state.items));
   const plan = lavPlan({
     dageTilEksamen: d,
-    emner: topics.map(({ t, r }) => ({ t, r, mestret: mastered(t.id), i_alt: reviewables(t.id).length, simuleret: simulerede.has(t.id) })),
+    emner: topics.map(({ t, r }) => ({ t, r, kerne: t.kerne?.length ?? 0, mestret: mastered(t.id), i_alt: reviewables(t.id).length, simuleret: simulerede.has(t.id) })),
     forfaldne: feed.dueCount(null),
     uberoerte: seed.kort.filter((k) => k.pakke === 'sw3sys' && REVIEWABLE.has(k.type) && !roert.has(k.id)).length,
     svarIdag: state.daily.answered,
@@ -778,6 +779,7 @@ function renderExam() {
     </section>
 
     <button class="primary big" id="draw">🎲 Træk et eksamensemne</button>
+    <button class="ghost wide" id="sidste-tjek">✅ Sidste tjek · kan du sige kernen i alle ${topics.length} emner?</button>
     <button class="ghost wide weakest" id="weakest" style="--grad:${weakest.t.gradient}">
       <span>Træn dit svageste emne</span><b>${weakest.t.emoji} ${weakest.t.nr}. ${esc(weakest.t.titel)} · ${pctText(weakest.r)}</b>
     </button>
@@ -818,10 +820,12 @@ function renderExam() {
     const h = plan.trin[Number(b.dataset.i)]?.handling;
     if (!h) return;
     if (h.type === 'sim') return startSim(h.spor);
+    if (h.type === 'tjek') return startTjek();
     showView('feed');
     restartFeed(h.type === 'spor' ? { spor: h.spor } : null);
   }));
   $('#draw').addEventListener('click', () => startSim());
+  $('#sidste-tjek').addEventListener('click', () => startTjek());
   $('#weakest').addEventListener('click', () => { showView('feed'); restartFeed({ spor: weakest.t.id }); });
   $('#basics').addEventListener('click', () => { showView('feed'); restartFeed({ spor: 't00' }); });
   document.querySelectorAll('.topic').forEach((b) => b.addEventListener('click', () => openTopicSheet(b.dataset.track)));
@@ -852,6 +856,88 @@ function openTopicSheet(trackId) {
 const PREP_SECONDS = 120;
 let sim = null;
 
+// ---------- Sidste tjek ----------
+//
+// Kun emnets navn, og så skal kernen siges højt fra hukommelsen. Det er svært
+// med vilje: forsøget på at hente frem er dét, der styrker sporet – ikke facit.
+
+let tjekState = null;
+
+function startTjek() {
+  const emner = examTracks().filter((t) => t.kerne?.length);
+  if (!emner.length) return;
+  // Svagest først: der er størst chance for, at der mangler noget.
+  emner.sort((a, b) => readiness(a.id) - readiness(b.id));
+  tjekState = { emner, i: 0, raekker: [], xp: 0 };
+  $('#sim').hidden = false;
+  $('#sim').style.setProperty('--grad', 'linear-gradient(135deg, #0F766E, #5EEAD4)');
+  tjekHusk();
+}
+
+const tjekSkaerm = (html) => {
+  const body = $('#sim-body');
+  body.innerHTML = html;
+  body.scrollTop = 0;
+  return body;
+};
+
+function tjekHusk() {
+  const s = tjekState;
+  if (s.i >= s.emner.length) return tjekResultat();
+  const emne = s.emner[s.i];
+  const body = tjekSkaerm(tjek.husk(emne, s.i + 1, s.emner.length));
+  body.querySelector('[data-act="vis"]').addEventListener('click', () => tjekFacit());
+  body.querySelector('[data-act="spring"]').addEventListener('click', () => {
+    s.raekker.push({ emne, ramt: 0, i_alt: emne.kerne.length });
+    s.i++;
+    tjekHusk();
+  });
+}
+
+function tjekFacit() {
+  const s = tjekState;
+  const emne = s.emner[s.i];
+  const ramt = new Set();
+  const body = tjekSkaerm(tjek.facit(emne, s.i + 1, s.emner.length));
+  body.querySelectorAll('.tjek-liste button').forEach((b) => b.addEventListener('click', () => {
+    const i = Number(b.dataset.i);
+    ramt.has(i) ? ramt.delete(i) : ramt.add(i);
+    b.classList.toggle('ramt', ramt.has(i));
+    sfx.correct(ramt.size);
+  }));
+  body.querySelector('[data-act="naeste"]').addEventListener('click', () => {
+    s.raekker.push({ emne, ramt: ramt.size, i_alt: emne.kerne.length });
+    s.xp += ramt.size * 5;
+    s.i++;
+    tjekHusk();
+  });
+}
+
+function tjekResultat() {
+  const s = tjekState;
+  // Gemmes, så planen og statistikken kan bruge det bagefter.
+  (state.kerneTjek ??= {})[dayKey()] = Object.fromEntries(s.raekker.map((r) => [r.emne.id, [r.ramt, r.i_alt]]));
+  addXp(s.xp);
+  save(state);
+  updateHud();
+  const body = tjekSkaerm(tjek.resultat(s.raekker, s.xp));
+  const ialt = s.raekker.reduce((a, r) => a + r.i_alt, 0);
+  const ramt = s.raekker.reduce((a, r) => a + r.ramt, 0);
+  if (ialt && ramt / ialt >= 0.8) { confetti($('#sim'), 140); sfx.fanfare(); }
+  body.querySelector('[data-act="luk"]').addEventListener('click', closeTjek);
+  body.querySelector('[data-act="traen"]')?.addEventListener('click', (e) => {
+    closeTjek();
+    showView('feed');
+    restartFeed({ spor: e.currentTarget.dataset.spor });
+  });
+}
+
+function closeTjek() {
+  tjekState = null;
+  $('#sim').hidden = true;
+  if (!$('#view-eksamen').hidden) renderExam();
+}
+
 function startSim(fixedTrack = null) {
   clearInterval(sim?.timer);
   const pool = examTracks();
@@ -862,6 +948,7 @@ function startSim(fixedTrack = null) {
 }
 
 function closeSim() {
+  if (tjekState) return closeTjek();
   clearInterval(sim?.timer);
   sim = null;
   $('#sim').hidden = true;
@@ -1104,6 +1191,7 @@ function buildExport() {
     rigtige_pr_korttype: saml('typer'),
     rigtige_pr_fag: saml('pakker'),
     kalibrering: saml('konf'),
+    sidste_tjek: Object.fromEntries(Object.entries(state.kerneTjek ?? {}).slice(-3)),
     dage_med_aktivitet: log.length,
     aldrig_besvaret: uberoert.length,
     svaereste_kort: svaere,

@@ -19,6 +19,7 @@ const fresh = () => ({
   daily: { day: null, answered: 0, goalShown: false },
   missions: null,     // { day, list: [{ id, n, have, arg? }], bonus, shown }
   guideSet: 0,        // versionen af »Sådan virker appen«, brugeren har set
+  kerneTjek: {},      // 'YYYY-MM-DD' -> { spor-id: [ramt, i_alt] } fra Sidste tjek
   lyd: true,
 });
 

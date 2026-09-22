@@ -4,7 +4,7 @@
 // der udskiftes under ét, når indholdet ændrer sig: versionen nedenfor er et
 // hash af filernes indhold, så en ny udgivelse altid giver et nyt cache-navn.
 
-const VERSION = '6bc93dbd0714';
+const VERSION = '1c0a0a7a45b0';
 const SKAL = `leths-${VERSION}`;         // appens filer, udskiftes samlet
 const MEDIE = 'leths-medie-v1';            // videoer, hentet efterhånden
 const EKSTERN = 'leths-ekstern-v1';        // skrifttyper
@@ -86,6 +86,7 @@ const FILER = [
   "./src/plan.js",
   "./src/render.js",
   "./src/sfx.js",
+  "./src/sidstetjek.js",
   "./src/stats.js",
   "./src/store.js",
   "./styles.css"

@@ -205,7 +205,7 @@ const legend = (items) => `<div class="viz-legend">${items.map(([c, t]) => `<spa
 // ---------- Siden ----------
 
 export function renderStats(el, d) {
-  const { state, seed, readiness, mastered, reviewables, levelInfo, retrievability, kalibrering, exportData, reset } = d;
+  const { state, seed, readiness, mastered, reviewables, levelInfo, retrievability, kalibrering, exportData, openGuide, reset } = d;
   const log = state.log ?? {};
   const days14 = lastDays(14);
   const sum = (keys, f) => keys.reduce((a, k) => a + (log[k]?.[f] ?? 0), 0);
@@ -320,6 +320,11 @@ export function renderStats(el, d) {
       <p class="kal-dom"><b>${kal.dom}</b> · ${Math.round(kal.pct * 100)} % rigtige ud af ${kal.n} gange, hvor du sagde »Sikker«.</p>
       <p class="kal-raad">${kal.raad}</p>`) : ''}
 
+    <section class="viz-card guide-kort">
+      <header><h3>Sådan virker appen</h3><p>Otte funktioner, der er lette at overse – med eksempler</p></header>
+      <button class="ghost wide" id="open-guide">📖 Læs gennemgangen</button>
+    </section>
+
     <section class="export-box">
       <h3>Del dine data med Claude</h3>
       <p>En kort opsummering af, hvilke kort du svarer rigtigt og forkert. Hent den som fil og læg den i mappen <code>fremskridt/</code> i projektet – så kan den læses igen senere og bruges til at forbedre det, der driller.</p>
@@ -335,6 +340,7 @@ export function renderStats(el, d) {
 
   el.querySelectorAll('.viz-root').forEach(wireTooltip);
   const ta = el.querySelector('#export-text');
+  el.querySelector('#open-guide')?.addEventListener('click', openGuide);
   el.querySelector('#export-copy').addEventListener('click', async () => {
     const data = exportData();
     ta.value = data;

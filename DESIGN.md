@@ -60,6 +60,17 @@ egen FSRS-tilstand. Dertil én sætning om, hvorfor det, du lige gjorde, virker.
 De er rate-limited til højst én pr. otte svar, for en milepæl, der kommer hvert
 andet kort, er ikke en milepæl.
 
+**Sådan finder man funktionerne:** »Sådan virker appen« vises automatisk første
+gang og ligger derefter i missions-arket og under Statistik. Hvert punkt er
+bygget ens: hvad det er, et konkret eksempel, og hvorfor det virker. En funktion,
+ingen kan finde, er det samme som ingen funktion – og folk bruger en studieteknik
+mere konsekvent, når de ved, hvad den gør.
+
+**Topbjælken:** ét blikfang i stedet for fem. To rolige tal (streak og level,
+hvor level-fremdriften er en tynd streg frem for endnu en ring) og én ring til
+dagens mål, som er det eneste, man kan trykke på. XP-boosten er midlertidig og
+får sin egen smalle linje i stedet for at skubbe til resten.
+
 **Det, vi bevidst ikke gør:** ingen passiv uendelig scroll (der kommer altid en
 quiz efter 2 koncepter), ingen straf for fejl (fejl er læring), og »Dagens mål«
 anbefaler at stoppe.

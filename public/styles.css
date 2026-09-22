@@ -47,25 +47,34 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
   -webkit-backdrop-filter: blur(16px) saturate(1.6);
   border-bottom: 1px solid #0000000d;
 }
-.topbar { height: 52px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between; }
+.topbar { height: 54px; padding: 0 12px 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .logo {
   font-family: 'Grand Hotel', 'Brush Script MT', cursive;
-  font-size: 28px; line-height: 1; padding-top: 4px; white-space: nowrap;
+  font-size: 23px; line-height: 1; padding-top: 3px; white-space: nowrap; letter-spacing: .01em;
   background: var(--ig); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.hud-stats { display: flex; align-items: center; gap: 8px; }
-.pill {
-  display: flex; align-items: center; gap: 4px;
-  background: #fff; border: 1px solid var(--border); border-radius: 99px; padding: 5px 10px;
-  font-size: 13px; font-weight: 700;
+
+/* Status: to rolige tal og én ring. Ringen er det eneste, man skal kigge på. */
+.hud-stats { display: flex; align-items: center; gap: 6px; }
+.stat {
+  display: flex; align-items: center; gap: 3px; position: relative;
+  height: 30px; padding: 0 9px; border-radius: 10px;
+  background: #00000008; font-size: 14px; font-weight: 800; color: var(--ink, #1a1a1a);
 }
-.pill.streak b { background: linear-gradient(90deg, #F77737, #FD1D1D); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.stat small { font-size: 9.5px; font-weight: 800; letter-spacing: .06em; color: #8a8a86; }
+.stat .ic { width: 15px; height: 15px; }
+#stat-streak .ic { fill: url(#fire-grad); stroke: none; }
+#stat-streak b { background: linear-gradient(90deg, #F77737, #FD1D1D); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* Level-fremdrift som en tynd streg i bunden af feltet frem for endnu en ring. */
+.stat-bar { position: absolute; left: 8px; right: 8px; bottom: 4px; height: 2px; border-radius: 2px; background: #00000012; overflow: hidden; }
+.stat-bar u { display: block; height: 100%; width: 0; border-radius: 2px; background: linear-gradient(90deg, #833AB4, #E1306C); transition: width var(--t-fejr, .32s) var(--fjeder, cubic-bezier(.2,.8,.3,1)); }
 .ring { position: relative; width: 36px; height: 36px; display: grid; place-items: center; }
 .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
 .ring circle { fill: none; stroke-width: 3.4; }
 .ring .bg { stroke: #0000000f; }
 .ring .fg { stroke-dasharray: 100; stroke-dashoffset: 100; stroke-linecap: round; transition: stroke-dashoffset .6s cubic-bezier(.2,.9,.3,1.2); }
-.ring small { font-size: 9px; font-weight: 800; }
+.ring small { font-size: 10px; font-weight: 800; letter-spacing: -.02em; }
+#goal-ring.naaet small { font-size: 15px; color: #0fae66; }
 .ring b { font-size: 12px; font-weight: 800; }
 
 .highlights {
@@ -385,7 +394,6 @@ html, body { background: linear-gradient(135deg, #ffe1ec, #e7e3ff 50%, #d9f4ff);
 .nav-btn.on span { color: initial; -webkit-text-fill-color: initial; }
 .headline.good { color: #0fae66; }
 .headline.bad { color: #ff4e50; }
-.pill:nth-child(1) { background: #fff4e6; border-color: #ffd8a8; }
 
 /* Tekst-slides: fuld gradient bag et hvidt glaskort */
 .story:not(.on-cover) { background: var(--grad); }

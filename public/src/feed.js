@@ -113,6 +113,25 @@ export class Feed {
     return this.seed.kort.filter((k) => REVIEWABLE.has(k.type) && this.matches(k, filter) && this.state.items[k.id]?.due <= now).length;
   }
 
+  // Alle badge-tal i ét gennemløb i stedet for ét gennemløb pr. story-ring.
+  // Nøglerne matcher filterKey i app.js: 'spor:t04', 'pakke:dao', 'tema:...'.
+  dueCounts(now = Date.now()) {
+    const tal = { __alle: 0 };
+    const tael = (nøgle) => { tal[nøgle] = (tal[nøgle] ?? 0) + 1; };
+    for (const k of this.seed.kort) {
+      if (!REVIEWABLE.has(k.type) || !(this.state.items[k.id]?.due <= now)) continue;
+      tal.__alle++;
+      // En kobling tæller med i de spor og fag, dens for-kort kommer fra.
+      const kilder = k.type === 'kobling'
+        ? (k.kraever ?? []).map((id) => this.byId[id]).filter(Boolean)
+        : [k];
+      for (const spor of new Set(kilder.map((x) => x.spor))) tael(`spor:${spor}`);
+      for (const pakke of new Set(kilder.map((x) => x.pakke))) tael(`pakke:${pakke}`);
+      for (const tema of this.themesOf(k.id)) tael(`tema:${tema}`);
+    }
+    return tal;
+  }
+
   next() {
     const pick = this.pickNext();
     if (pick) {

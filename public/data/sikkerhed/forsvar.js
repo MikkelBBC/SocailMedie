@@ -66,7 +66,7 @@ export default {
         'At filtrere farlige tegn som apostrof fra',
         'Parameteriserede forespørgsler (prepared statements)',
         'At kryptere hele databasen med en stærk nøgle',
-        'At skjule fejlbeskeder for brugeren',
+        'At skjule databasens fejlbeskeder for brugeren',
       ],
       rigtigt: 1,
       forklaring: 'Filtrering kan altid omgås. Med parametre får databasen kommandoen og værdierne hver for sig, og værdien kan ikke blive til kode.',

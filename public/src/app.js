@@ -8,6 +8,7 @@ import { renderStats } from './stats.js';
 import { sfx, setMuted } from './sfx.js';
 import { icon, hydrateIcons } from './icons.js';
 import { ensureMissions, bump, missionEmoji, missionText, isDone, allMissionsDone } from './missions.js';
+import { guideHtml, GUIDE_VERSION } from './guide.js';
 
 const DAY = 86_400_000;
 const state = load();
@@ -159,7 +160,10 @@ function openMissions() {
         <span>${left ? `${left} svar til dagens mål` : '✓ Dagens mål nået'}</span>
       </div>
       <p class="hint center">Nye missioner om ${hoursToMidnight()}</p>
-      <div class="sheet-actions"><button class="ghost" data-act="lyd">${state.lyd ? '🔊 Lyd og vibration til' : '🔇 Lyd og vibration fra'}</button></div>
+      <div class="sheet-actions">
+        <button class="ghost" data-act="lyd">${state.lyd ? '🔊 Lyd og vibration til' : '🔇 Lyd og vibration fra'}</button>
+        <button class="ghost" data-act="guide">📖 Sådan virker appen</button>
+      </div>
     </div>`);
   $('#sheet [data-act="lyd"]').addEventListener('click', (e) => {
     state.lyd = !state.lyd;
@@ -168,6 +172,7 @@ function openMissions() {
     e.currentTarget.textContent = state.lyd ? '🔊 Lyd og vibration til' : '🔇 Lyd og vibration fra';
     sfx.correct(3);
   });
+  $('#sheet [data-act="guide"]').addEventListener('click', aabnGuide);
 }
 
 // Kobling, som dette kort er en af forudsætningerne for, og som man ikke har set endnu.
@@ -473,14 +478,20 @@ function updateHud() {
   sæt('#streak', state.streak.count);
   const lvl = levelInfo(state.xp);
   sæt('#level', lvl.level);
-  if ($('#level-fg')) $('#level-fg').style.strokeDashoffset = String(100 - lvl.pct * 100);
+  if ($('#level-fg')) $('#level-fg').style.width = `${Math.round(lvl.pct * 100)}%`;
   const pct = Math.min(1, state.daily.answered / state.goal);
   if ($('#goal-fg')) $('#goal-fg').style.strokeDashoffset = String(100 - pct * 100);
-  sæt('#goal-label', `${Math.min(state.daily.answered, state.goal)}/${state.goal}`);
+  // Ringen er nået: et hak siger mere end »10/10«, og teksten får plads igen.
+  const naaet = state.daily.answered >= state.goal;
+  sæt('#goal-label', naaet ? '✓' : `${state.daily.answered}/${state.goal}`);
+  $('#goal-ring')?.classList.toggle('naaet', naaet);
   if ($('#level')) $('#level').parentElement.title = `Level ${lvl.level} · ${levelTitle(lvl.level)} · ${lvl.toNext} XP til næste`;
+  // Boosten er midlertidig, så den får sin egen smalle linje i stedet for at skubbe til resten.
   const boost = $('#boost');
-  if (boost) boost.hidden = !boostActive();
-  if (boost && boostActive()) boost.textContent = `⚡×${state.boost.mult} ${Math.ceil((state.boost.until - Date.now()) / 60_000)}m`;
+  if (boost) {
+    boost.hidden = !boostActive();
+    if (boostActive()) boost.innerHTML = `<span>⚡ XP ×${state.boost.mult}</span><small>${Math.ceil((state.boost.until - Date.now()) / 60_000)} min tilbage</small>`;
+  }
   const missionsLeft = state.missions?.list.filter((m) => !isDone(m)).length ?? 0;
   const badge = $('#mission-badge');
   if (badge) {
@@ -633,6 +644,17 @@ function buildHighlights() {
   bar.querySelector('.hl.on')?.scrollIntoView({ inline: 'center', block: 'nearest' });
 }
 
+// Guiden: hvad knapperne gør, med et eksempel og en grund til hver.
+function aabnGuide() {
+  openSheet(guideHtml(), (node) => {
+    node.querySelector('[data-act="guide-luk"]')?.addEventListener('click', closeSheet);
+  });
+  if (state.guideSet !== GUIDE_VERSION) {
+    state.guideSet = GUIDE_VERSION;
+    save(state);
+  }
+}
+
 function initLogo() {
   $('#logo').addEventListener('click', () => {
     feedEl.scrollTo({ top: 0, behavior: 'smooth' });
@@ -641,10 +663,14 @@ function initLogo() {
 }
 
 function updateHighlightBadges() {
-  document.querySelectorAll('.hl').forEach((b) => {
+  const ringe = document.querySelectorAll('.hl');
+  if (!ringe.length) return;
+  // Ét gennemløb af kortene i stedet for ét pr. ring: det her kører efter hvert svar.
+  const tal = feed.dueCounts();
+  ringe.forEach((b) => {
     const badge = b.querySelector('.badge');
-    if (b.classList.contains('back') || b.filter?.tema === '__alle') return;
-    const n = feed.dueCount(b.filter);
+    if (!badge || b.classList.contains('back') || b.filter?.tema === '__alle') return;
+    const n = b.filter ? (tal[filterKey(b.filter)] ?? 0) : tal.__alle;
     badge.hidden = n === 0;
     badge.textContent = n > 99 ? '99+' : n;
   });
@@ -959,6 +985,7 @@ function renderProgress() {
   renderStats($('#progress'), {
     state, seed, readiness, mastered, reviewables, levelInfo, retrievability, kalibrering,
     exportData: buildExport,
+    openGuide: aabnGuide,
     reset() {
       if (confirm('Slet al fremskridt på denne enhed?')) { reset(); location.reload(); }
     },
@@ -1091,8 +1118,12 @@ updateHud();
 ensureBuffer();
 $('#goal-ring').addEventListener('click', openMissions);
 
+// Første gang – og når guiden har fået nyt indhold – vises den af sig selv.
+// En funktion, ingen kan finde, er det samme som ingen funktion.
+if (state.guideSet !== GUIDE_VERSION) setTimeout(aabnGuide, 1200);
+
 // Nye missioner: vis dem automatisk første gang i dag for brugere, der er i gang; nye brugere får et puf på ringen.
-if (state.missions && !state.missions.shown) {
+else if (state.missions && !state.missions.shown) {
   state.missions.shown = true;
   save(state);
   if (state.xp > 0) setTimeout(openMissions, 600);

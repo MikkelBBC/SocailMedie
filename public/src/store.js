@@ -18,6 +18,7 @@ const fresh = () => ({
   streak: { count: 0, lastDay: null, freezes: 0 },
   daily: { day: null, answered: 0, goalShown: false },
   missions: null,     // { day, list: [{ id, n, have, arg? }], bonus, shown }
+  guideSet: 0,        // versionen af »Sådan virker appen«, brugeren har set
   lyd: true,
 });
 

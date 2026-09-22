@@ -41,11 +41,12 @@
       <div class="topbar">
         <button class="logo" id="logo">Leths super App</button>
         <div class="hud-stats">
-          <span class="pill boost" id="boost" title="XP-boost fra case" hidden></span>
-          <span class="pill streak" title="Dage i træk"><i data-icon="flame" data-size="16"></i><b id="streak">0</b></span>
-          <span class="ring level-ring" title="Level">
-            <svg viewBox="0 0 36 36"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#833AB4"/><stop offset="1" stop-color="#E1306C"/></linearGradient></defs><circle cx="18" cy="18" r="15.9" class="bg" pathLength="100"/><circle id="level-fg" cx="18" cy="18" r="15.9" class="fg" stroke="url(#lg)" pathLength="100"/></svg>
-            <b id="level">1</b>
+          <span class="stat" id="stat-streak" title="Dage i træk">
+            <i data-icon="flame" data-size="15"></i><b id="streak">0</b>
+          </span>
+          <span class="stat" id="stat-level" title="Level">
+            <small>LV</small><b id="level">1</b>
+            <i class="stat-bar"><u id="level-fg"></u></i>
           </span>
           <button class="ring" id="goal-ring" title="Dagens mål og missioner">
             <svg viewBox="0 0 36 36"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCAF45"/><stop offset="1" stop-color="#FD1D1D"/></linearGradient></defs><circle cx="18" cy="18" r="15.9" class="bg" pathLength="100"/><circle id="goal-fg" cx="18" cy="18" r="15.9" class="fg" stroke="url(#gg)" pathLength="100"/></svg>
@@ -54,6 +55,7 @@
           </button>
         </div>
       </div>
+      <div class="boostbar" id="boost" hidden></div>
       <div id="highlights" class="highlights"></div>
     </header>
 

@@ -8,7 +8,16 @@
 .story.on-cover .bro { background: #ffffff33; box-shadow: none; }
 .bro-quote { margin: 8px 0; padding: 10px 12px; border-left: 4px solid; border-image: var(--grad) 1; background: #f6f5fb; border-radius: 0 12px 12px 0; font-weight: 700; }
 
-.pill.boost { background: linear-gradient(135deg, #e4ae39, #eb4b4b); color: #fff; border: 0; font-weight: 800; animation: pulse 2s ease-in-out infinite; }
+/* Boosten er midlertidig info. Den får sin egen smalle linje, så den ikke skubber til status. */
+.boostbar {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 5px 14px; font-size: 12px; font-weight: 800; color: #8a5a00;
+  background: linear-gradient(90deg, #fff3d6, #ffe6c7);
+  border-top: 1px solid #f6dcae;
+  animation: boost-ind .28s var(--fjeder, cubic-bezier(.2,.8,.3,1)) both;
+}
+.boostbar small { font-weight: 600; color: #a8803c; }
+@keyframes boost-ind { from { opacity: 0; transform: translateY(-6px); } }
 
 /* ================= Sammenlign ================= */
 .versus { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; }
@@ -144,9 +153,10 @@ svg.viz rect[rx].hot { stroke: #0b0b0b; stroke-width: 1.5; }
 @keyframes combo-break { 20% { transform: scale(1.2) rotate(-8deg); } 100% { transform: scale(.4) translateY(30px) rotate(20deg); opacity: 0; filter: grayscale(1); } }
 
 /* ================= Dagens mål-ring og missioner ================= */
-#goal-ring { padding: 0; }
+#goal-ring { padding: 0; margin-left: 2px; }
+#goal-ring.naaet .fg { stroke: #0fae66; }
 .ring-badge {
-  position: absolute; right: -5px; top: -5px; min-width: 17px; height: 17px; padding: 0 4px;
+  position: absolute; right: -3px; top: -3px; min-width: 16px; height: 16px; padding: 0 4px;
   border-radius: 99px; background: #FD1D1D; color: #fff; font-size: 10px; font-weight: 800; font-style: normal;
   display: grid; place-items: center; border: 2px solid #fff;
 }
@@ -190,3 +200,38 @@ svg.viz rect[rx].hot { stroke: #0b0b0b; stroke-width: 1.5; }
   box-shadow: 0 4px 12px #e1306c22; animation: pop-in .35s ease-out .15s both;
 }
 .teasers span:nth-child(2) { animation-delay: .3s; }
+
+/* ================= »Sådan virker appen« ================= */
+.guide h2 { margin: 0 44px 6px 0; font-size: 22px; line-height: 1.2; }
+.guide-intro { margin: 0 0 18px; font-size: 14px; line-height: 1.5; color: #52514e; }
+.guide-h {
+  margin: 22px 0 10px; font-size: 11px; font-weight: 800; letter-spacing: .1em;
+  text-transform: uppercase; color: #8a8a86;
+}
+.guide-h:first-of-type { margin-top: 14px; }
+.guide-punkt {
+  background: #faf9f7; border: 1px solid var(--border); border-radius: 16px;
+  padding: 14px; margin-bottom: 10px;
+}
+.guide-punkt header { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.guide-emoji { font-size: 20px; line-height: 1; }
+.guide-punkt header b { font-size: 16px; }
+.guide-punkt header i {
+  margin-left: auto; font-style: normal; font-size: 11px; font-weight: 800;
+  color: #0fae66; background: #e8faf1; border-radius: 99px; padding: 3px 8px;
+}
+.guide-hvad { margin: 0 0 10px; font-size: 14.5px; line-height: 1.45; }
+.guide-eks, .guide-hvorfor {
+  margin: 0 0 8px; font-size: 13px; line-height: 1.45; color: #52514e;
+  padding-left: 11px; border-left: 3px solid var(--border);
+}
+.guide-hvorfor { border-left-color: #c5cdf7; margin-bottom: 0; }
+.guide-eks small, .guide-hvorfor small {
+  display: block; font-size: 10px; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; color: #a3a29e; margin-bottom: 2px;
+}
+.guide-eks code, .guide-hvad code {
+  background: #eceae5; border-radius: 5px; padding: 1px 5px; font-size: 12px;
+}
+.guide .primary.wide { margin-top: 20px; }
+.guide-kort .ghost.wide { width: 100%; margin-top: 4px; }

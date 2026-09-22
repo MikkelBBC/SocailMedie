@@ -28,6 +28,10 @@ import firma from './business/firma.js';
 import forretning from './business/forretning.js';
 import invbasis from './invest/basis.js';
 import invdk from './invest/danskskat.js';
+import design from './arkitektur/design.js';
+import test from './arkitektur/test.js';
+import skalering from './drift/skalering.js';
+import fejl from './drift/fejl.js';
 import relation from './db/relation.js';
 import ydelse from './db/ydelse.js';
 import git from './vaerktoj/git.js';
@@ -50,18 +54,29 @@ const prefix = (t, id) => (id ? `${t}-${id}` : id);
 // de to linjer ud, du skal indsætte.
 // ---------------------------------------------------------------------------
 export const FAG = [
-  { id: 'sw3sys', navn: 'SW3SYS', emoji: '🎓', gradient: 'linear-gradient(135deg, #5851DB, #833AB4 45%, #E1306C)', farve: '#833AB4', eksamen: true, samlet: sw3sys },
-  { id: 'dao', navn: 'AlgoDat', emoji: '🧮', gradient: 'linear-gradient(135deg, #00C6FF, #405DE6 50%, #833AB4)', farve: '#405DE6', moduler: [algodat, traeer, grafer, dp] },
-  { id: 'psykologi', navn: 'Psykologi', emoji: '🧠', gradient: 'linear-gradient(135deg, #FCAF45, #F77737 45%, #E1306C)', farve: '#F77737', moduler: [biases, hukommelse, afhaengighed, vaner, social, stress] },
-  { id: 'psykiatri', navn: 'Psykiatri', emoji: '🩺', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6', moduler: [diagnoser, angst, psykose] },
-  { id: 'filosofi', navn: 'Filosofi', emoji: '🏛️', gradient: 'linear-gradient(135deg, #A18CD1, #FF6A88 60%, #FF99AC)', farve: '#A18CD1', moduler: [stoicisme, ragekniv, eksistens] },
-  { id: 'ai', navn: 'AI', emoji: '🤖', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6', moduler: [ailaering, sprogmodeller, aibrug] },
-  { id: 'tek', navn: 'Teknologi', emoji: '🌐', gradient: 'linear-gradient(135deg, #00C6FF, #0072FF 55%, #8E54E9)', farve: '#0072FF', moduler: [internet, krypto] },
-  { id: 'sikkerhed', navn: 'Cybersikkerhed', emoji: '🔐', gradient: 'linear-gradient(135deg, #FF512F, #DD2476 60%, #8E54E9)', farve: '#DD2476', moduler: [angreb, forsvar] },
-  { id: 'business', navn: 'Business', emoji: '🏗️', gradient: 'linear-gradient(135deg, #F7971E, #FFD200 55%, #F77737)', farve: '#F7971E', moduler: [firma, forretning] },
-  { id: 'invest', navn: 'Investering', emoji: '📈', gradient: 'linear-gradient(135deg, #11998E, #38EF7D 60%, #5EEAD4)', farve: '#11998E', moduler: [invbasis, invdk] },
-  { id: 'db', navn: 'Databaser', emoji: '🗄️', gradient: 'linear-gradient(135deg, #2563EB, #7C3AED 55%, #F472B6)', farve: '#2563EB', moduler: [relation, ydelse] },
-  { id: 'vaerktoj', navn: 'Værktøj', emoji: '🛠️', gradient: 'linear-gradient(135deg, #F05133, #FCAF45 60%, #FFD200)', farve: '#F05133', moduler: [git] },
+  { id: 'sw3sys', gruppe: 'kode', navn: 'SW3SYS', emoji: '🎓', gradient: 'linear-gradient(135deg, #5851DB, #833AB4 45%, #E1306C)', farve: '#833AB4', eksamen: true, samlet: sw3sys },
+  { id: 'dao', gruppe: 'kode', navn: 'AlgoDat', emoji: '🧮', gradient: 'linear-gradient(135deg, #00C6FF, #405DE6 50%, #833AB4)', farve: '#405DE6', moduler: [algodat, traeer, grafer, dp] },
+  { id: 'psykologi', gruppe: 'menneske', navn: 'Psykologi', emoji: '🧠', gradient: 'linear-gradient(135deg, #FCAF45, #F77737 45%, #E1306C)', farve: '#F77737', moduler: [biases, hukommelse, afhaengighed, vaner, social, stress] },
+  { id: 'psykiatri', gruppe: 'menneske', navn: 'Psykiatri', emoji: '🩺', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6', moduler: [diagnoser, angst, psykose] },
+  { id: 'filosofi', gruppe: 'menneske', navn: 'Filosofi', emoji: '🏛️', gradient: 'linear-gradient(135deg, #A18CD1, #FF6A88 60%, #FF99AC)', farve: '#A18CD1', moduler: [stoicisme, ragekniv, eksistens] },
+  { id: 'ai', gruppe: 'kode', navn: 'AI', emoji: '🤖', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6', moduler: [ailaering, sprogmodeller, aibrug] },
+  { id: 'tek', gruppe: 'kode', navn: 'Teknologi', emoji: '🌐', gradient: 'linear-gradient(135deg, #00C6FF, #0072FF 55%, #8E54E9)', farve: '#0072FF', moduler: [internet, krypto] },
+  { id: 'sikkerhed', gruppe: 'kode', navn: 'Cybersikkerhed', emoji: '🔐', gradient: 'linear-gradient(135deg, #FF512F, #DD2476 60%, #8E54E9)', farve: '#DD2476', moduler: [angreb, forsvar] },
+  { id: 'business', gruppe: 'penge', navn: 'Business', emoji: '🏗️', gradient: 'linear-gradient(135deg, #F7971E, #FFD200 55%, #F77737)', farve: '#F7971E', moduler: [firma, forretning] },
+  { id: 'invest', gruppe: 'penge', navn: 'Investering', emoji: '📈', gradient: 'linear-gradient(135deg, #11998E, #38EF7D 60%, #5EEAD4)', farve: '#11998E', moduler: [invbasis, invdk] },
+  { id: 'db', gruppe: 'kode', navn: 'Databaser', emoji: '🗄️', gradient: 'linear-gradient(135deg, #2563EB, #7C3AED 55%, #F472B6)', farve: '#2563EB', moduler: [relation, ydelse] },
+  { id: 'vaerktoj', gruppe: 'kode', navn: 'Værktøj', emoji: '🛠️', gradient: 'linear-gradient(135deg, #F05133, #FCAF45 60%, #FFD200)', farve: '#F05133', moduler: [git] },
+  { id: 'arkitektur', gruppe: 'kode', navn: 'Arkitektur', emoji: '🧱', gradient: 'linear-gradient(135deg, #4338CA, #A5B4FC 55%, #BEF264)', farve: '#4338CA', moduler: [design, test] },
+  { id: 'drift', gruppe: 'kode', navn: 'Drift', emoji: '📶', gradient: 'linear-gradient(135deg, #0EA5E9, #A78BFA 55%, #FB923C)', farve: '#0EA5E9', moduler: [skalering, fejl] },
+];
+
+// Grupper samler fagene, så ringene i toppen ikke vokser i det uendelige.
+// Et nyt fag uden gruppe havner automatisk i »Andet«.
+export const grupper = [
+  { id: 'kode', navn: 'Kode', emoji: '💻', gradient: 'linear-gradient(135deg, #5851DB, #405DE6 45%, #00C6FF)', farve: '#405DE6' },
+  { id: 'menneske', navn: 'Mennesker', emoji: '🧠', gradient: 'linear-gradient(135deg, #FCAF45, #F77737 45%, #E1306C)', farve: '#F77737' },
+  { id: 'penge', navn: 'Penge', emoji: '💰', gradient: 'linear-gradient(135deg, #F7971E, #FFD200 50%, #38EF7D)', farve: '#F7971E' },
+  { id: 'andet', navn: 'Andet', emoji: '📦', gradient: 'linear-gradient(135deg, #8E54E9, #4776E6)', farve: '#8E54E9' },
 ];
 
 // Et spor giver sine kort sit eget id som præfiks, så lokale id'er må gerne gentages.
@@ -198,9 +213,34 @@ const tvaerfaglige = [
     hook: 'Gits objekter og en unique_ptr bygger på hver sin halvdel af den samme idé om ejerskab.',
     body: '**Git**: et objekt navngives efter hashen af sit indhold. Ændrer indholdet sig, er det et **andet objekt**. Derfor kan en commit aldrig ændre sig – man kan kun lave en ny.\n\n**unique_ptr**: der findes præcis **én** ejer. Kopiering er slettet, så to kan aldrig tro, de bestemmer over det samme.\n\nBegge dele fjerner en hel klasse af fejl ved at gøre den umulig i stedet for at advare mod den.\n\n• Fordi Git-objekter er uforanderlige, kan to personer arbejde på den samme historie uden at overskrive hinandens fortid. Det værste, der kan ske, er en konflikt, du kan se.\n• Fordi der kun er én ejer, kan der ikke ske double free. Compileren siger fra, før programmet kører.\n\nDet er det samme designgreb, som ligger bag parameteriserede forespørgsler og bag RAII: gør den forkerte tilstand **urepræsentabel**, i stedet for at bede folk om at huske reglen.',
   },
+  {
+    id: 'kob-flaky-race', type: 'kobling', kraever: ['test-k3q', 't04-k1q'],
+    hook: 'En flaky test er ofte ikke en dårlig test. Det er en race condition, der melder sig.',
+    body: 'I synkroniseringssporet: en race condition rammer kun ved uheldig timing. Den kan være der i månedsvis, uden at nogen ser den.\n\nI testsporet: en flaky test fejler nogle gange på uændret kode.\n\nSæt de to ved siden af hinanden, og det springer i øjnene: **en fejl, der afhænger af timing, kan kun vise sig som noget, der fejler nogle gange**. Det er præcis den signatur, en race condition har.\n\nDerfor er »kør den igen« den farligste reaktion, der findes. Den er confirmation bias sat i system: du bliver ved, indtil du får det svar, du gerne vil have – og undervejs sletter du den eneste melding, du fik.\n\nDen rigtige rækkefølge:\n• Tag testen i karantæne, så den ikke lærer folk at ignorere rødt.\n• Kig efter delt tilstand, `sleep` i stedet for at vente på en betingelse, og rækkefølgeafhængighed.\n• Kør med ThreadSanitizer, hvis det er tråde.\n\nSpørg til sidst: hvis den her fejler én ud af ti gange i CI, hvor tit sker det så i produktion med tusind brugere?',
+  },
+  {
+    id: 'kob-cascading-deadlock', type: 'kobling', kraever: ['fejl-k1q', 't05-k1q'],
+    hook: 'Et deadlock og et cascading failure er den samme situation i to størrelser.',
+    body: '**Deadlock** (SW3SYS): to tråde venter på hinanden i en ring, og ingen af dem kan komme videre. Ingen af dem har fejlet – de venter bare for altid.\n\n**Cascading failure** (drift): dine tråde venter alle sammen på en langsom tjeneste, og imens kan din egen tjeneste ikke svare nogen. Heller ikke dem, der slet ikke havde brug for den langsomme.\n\nI begge tilfælde er problemet ikke en fejl, men **ubegrænset venten**.\n\nDerfor ligner modtrækkene hinanden:\n• **Timeout** er `pthread_mutex_timedlock`: giv op i stedet for at vente for evigt.\n• **Circuit breaker** er en variant af »frigiv alt, hvis du ikke kan få resten«: hold op med at prøve, når det åbenlyst ikke går.\n• **Bulkhead** er adskilte ressourcepuljer, ligesom man deler låse op, så to opgaver ikke konkurrerer om det samme.\n\nDen fælles lektie: alt, der venter, skal have en øvre grænse. Et kald uden timeout er en tråd, der kan blive væk for altid.',
+  },
+  {
+    id: 'kob-blameless-hanlon', type: 'kobling', kraever: ['fejl-k4q', 'ragekniv-k2q'],
+    hook: 'En blameless postmortem er Hanlons ragekniv gjort til en arbejdsgang.',
+    body: '**Hanlons ragekniv**: tilskriv ikke ondskab det, der kan forklares med travlhed eller uvidenhed.\n\n**Blameless postmortem**: led efter, hvad der gjorde fejlen mulig, ikke efter hvem der trykkede.\n\nDet er den samme regel. Forskellen er, at den ene er et personligt tankeværktøj, og den anden er skrevet ind i, hvordan en organisation arbejder.\n\nOg begrundelsen er praktisk, ikke moralsk. Er der en skyldig at finde, bliver forklaringerne forsigtige – og så forsvinder netop de detaljer, der skulle bruges. Den, der trykkede på knappen, er også den eneste, der ved, hvorfor det lige dér så ud som det rigtige at gøre.\n\nLuftfarten er det store eksempel. Havarikommissioner leder ikke efter en pilot at fyre, men efter hvorfor systemet tillod det: to kontakter, der sad for tæt, en advarsel der druknede i støj.\n\nDet er også hele grunden til, at gode handlingspunkter handler om **rækværk** frem for om at være mere omhyggelig næste gang. »Vær mere forsigtig« har aldrig forhindret noget.',
+  },
+  {
+    id: 'kob-abstraktion-chunk', type: 'kobling', kraever: ['design-k2q', 'hukommelse-k4q'],
+    hook: 'En god abstraktion er chunking for din arbejdshukommelse.',
+    body: '**Arbejdshukommelsen** har plads til omkring fire ting ad gangen. **Chunking** er at pakke flere ting i én: »1-9-8-9« fylder fire pladser, »1989« fylder én.\n\nEn **abstraktion** gør nøjagtig det samme med kode. `gemBruger(bruger)` er én ting at holde i hovedet. De tyve linjer, den dækker over, er tyve.\n\nDet forklarer, hvorfor en **lækkende** abstraktion er så dyr. Skal du forstå både abstraktionen og det, den skjuler, har du ikke pakket fire ting sammen til én – du har fået fem.\n\nOg det forklarer noget andet: hvorfor koden, du selv skrev for et halvt år siden, føles uoverskuelig. Dine chunks er gået i opløsning. En erfaren udvikler er ikke klogere; hun har større chunks for netop det område.\n\nDen praktiske test af en abstraktion er derfor: **kan jeg bruge den uden at have det nedenunder i hovedet samtidig?** Kan du ikke det, er det et lag og ikke en abstraktion.',
+  },
+  {
+    id: 'kob-cap-isolation', type: 'kobling', kraever: ['skalering-k3q', 'ydelse-k4q'],
+    hook: 'CAP og isolationsniveauer stiller det samme spørgsmål: hvad vil du give afkald på?',
+    body: '**Isolationsniveauer** i en database er en skala. Serializable giver den stærkeste garanti og koster mest. Read committed giver mindre og koster mindre. Man vælger bevidst, hvor meget rigtighed man betaler for.\n\n**CAP** er samme slags valg, bare når netværket er knækket: konsistens eller tilgængelighed.\n\nI begge tilfælde er den store fejl at tro, at man har fået den stærke garanti gratis. »Tjek om der er plads, og indsæt så« er usikkert på standardniveauet, og »læs fra en replika« giver forældede data i et distribueret system. Begge dele ser fuldstændig rigtige ud i koden.\n\nDen fælles lektie: **garantien er ikke en egenskab ved koden, men ved den konfiguration, den kører under.** To systemer med identisk kode kan opføre sig forskelligt, fordi isolationsniveauet eller replikeringsindstillingen er en anden.\n\nOg begge steder gælder det samme praktiske råd: vælg pr. operation. En overførsel skal have den stærke garanti. Et antal likes skal ikke.',
+  },
 ];
 
-export const pakker = FAG.map(({ moduler, samlet, ...p }) => p);
+export const pakker = FAG.map(({ moduler, samlet, ...p }) => ({ gruppe: 'andet', ...p }));
 
 // En quiz til en video arver videoens spor.
 const videoSpor = (id) => videoer.find((v) => v.id === id)?.spor;
@@ -214,6 +254,7 @@ const medForklaring = (kort) => kort.map((k) => (alleForklaringer[k.id] ? { ...k
 
 export default {
   pakker,
+  grupper,
   temaer,
   spor,
   kort: medForklaring([

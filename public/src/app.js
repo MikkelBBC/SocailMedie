@@ -615,26 +615,45 @@ function buildHighlights() {
     b.innerHTML = `<div class="hl-ring"><span>${emoji}</span><i class="badge" hidden></i></div>${esc(label)}`;
     b.addEventListener('click', onClick ?? (() => restartFeed(filter)));
     bar.append(b);
+    return b;
   };
 
+  const tilbage = (til) => ({
+    emoji: '‹', label: 'Tilbage', gradient: 'linear-gradient(#d9d9e3, #d9d9e3)', farve: '#999', back: true,
+    onClick: () => { hlPakke = til; til === null ? restartFeed(null) : buildHighlights(); },
+  });
+
   if (!hlPakke) {
+    // Forsiden: Alle, grupperne og Temaer. Med 14 fag bliver en flad liste ubrugelig.
     add({ emoji: '✨', label: 'Alle', gradient: 'var(--ig)', farve: '#E1306C', filter: null });
-    for (const p of seed.pakker) {
-      add({
-        emoji: p.emoji, label: p.navn, gradient: p.gradient, farve: p.farve, filter: { pakke: p.id },
-        onClick: () => { hlPakke = p.id; restartFeed({ pakke: p.id }); },
+    for (const g of seed.grupper) {
+      if (!seed.pakker.some((p) => p.gruppe === g.id)) continue;
+      const ring = add({
+        emoji: g.emoji, label: g.navn, gradient: g.gradient, farve: g.farve,
+        onClick: () => { hlPakke = `gruppe:${g.id}`; buildHighlights(); },
       });
+      // Gruppens badge er summen af dens fag, ikke alle kort i appen.
+      ring.gruppe = g.id;
     }
     add({
       emoji: '🔀', label: 'Temaer', gradient: 'linear-gradient(135deg, #36D1DC, #8E2DE2 50%, #F857A6)', farve: '#8E2DE2', back: false,
       filter: { tema: '__alle' }, onClick: () => { hlPakke = 'temaer'; buildHighlights(); },
     });
+  } else if (hlPakke.startsWith('gruppe:')) {
+    const g = seed.grupper.find((x) => x.id === hlPakke.slice(7));
+    add(tilbage(null));
+    for (const p of seed.pakker.filter((x) => x.gruppe === g.id)) {
+      add({
+        emoji: p.emoji, label: p.navn, gradient: p.gradient, farve: p.farve, filter: { pakke: p.id },
+        onClick: () => { hlPakke = p.id; restartFeed({ pakke: p.id }); },
+      });
+    }
   } else if (hlPakke === 'temaer') {
-    add({ emoji: '‹', label: 'Fag', gradient: 'linear-gradient(#d9d9e3, #d9d9e3)', farve: '#999', back: true, onClick: () => { hlPakke = null; restartFeed(null); } });
+    add(tilbage(null));
     for (const t of seed.temaer) add({ emoji: t.emoji, label: t.navn.split(' ')[0], gradient: t.gradient, farve: '#8E2DE2', filter: { tema: t.id } });
   } else {
     const p = seed.pakker.find((x) => x.id === hlPakke);
-    add({ emoji: '‹', label: 'Fag', gradient: 'linear-gradient(#d9d9e3, #d9d9e3)', farve: '#999', back: true, onClick: () => { hlPakke = null; restartFeed(null); } });
+    add(tilbage(`gruppe:${p.gruppe}`));
     add({ emoji: p.emoji, label: `Hele ${p.navn}`, gradient: p.gradient, farve: p.farve, filter: { pakke: p.id } });
     for (const t of seed.spor.filter((x) => x.pakke === hlPakke)) {
       add({ emoji: t.emoji, label: `${t.nr ? `${t.nr}. ` : ''}${t.kort}`, gradient: t.gradient, farve: t.farve, filter: { spor: t.id } });
@@ -670,7 +689,9 @@ function updateHighlightBadges() {
   ringe.forEach((b) => {
     const badge = b.querySelector('.badge');
     if (!badge || b.classList.contains('back') || b.filter?.tema === '__alle') return;
-    const n = b.filter ? (tal[filterKey(b.filter)] ?? 0) : tal.__alle;
+    const n = b.gruppe
+      ? seed.pakker.filter((p) => p.gruppe === b.gruppe).reduce((sum, p) => sum + (tal[`pakke:${p.id}`] ?? 0), 0)
+      : b.filter ? (tal[filterKey(b.filter)] ?? 0) : tal.__alle;
     badge.hidden = n === 0;
     badge.textContent = n > 99 ? '99+' : n;
   });

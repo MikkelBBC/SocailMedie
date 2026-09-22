@@ -29,10 +29,12 @@ fx `http://192.168.0.12:3000`. Der er ingen afhængigheder, kun Node 20.12+.
 | 📈 Investering | Renters rente og risiko, skat og konti i Danmark | `public/data/invest/` |
 | 🗄️ Databaser | Tabeller, nøgler og joins · indeks, planer og transaktioner | `public/data/db/` |
 | 🛠️ Værktøj | Sådan tænker Git | `public/data/vaerktoj/` |
+| 🧱 Arkitektur | Kobling og abstraktion · test der fanger noget | `public/data/arkitektur/` |
+| 📶 Drift | Cache, køer og CAP · når systemet fejler | `public/data/drift/` |
 
 Fagene samles i `public/data/index.js`. Der ligger også koblinger på tværs af
-fagene. I story-ringene trykker du på et fag for at se dets spor. **Alle**
-blander det hele.
+fagene. Ringene i toppen har tre niveauer: **gruppe** (Kode, Mennesker, Penge)
+→ **fag** → **spor**. **Alle** blander det hele.
 
 ## Faner
 
@@ -93,7 +95,13 @@ node tools/nyt-fag.mjs db/normalisering "Normalisering fra 1NF til 3NF" 🧩
 Værktøjet skriver skabelonen med kommentarer om, hvad hvert felt skal indeholde,
 og printer de **to linjer**, du skal sætte ind i `public/data/index.js`: en import
 og en plads i `FAG`-tabellen. Resten – pakker, spor, kort og id-præfikser – følger
-af sig selv.
+af sig selv. Et nyt fag kan få `gruppe: 'kode' | 'menneske' | 'penge'`; uden
+gruppe havner det i »Andet«.
+
+Tre ting, der er lette at glemme:
+- **Spor-id'er skal være globalt unikke** (`kobling` er reserveret til tværfaglige kort).
+- Lad ikke det rigtige svar stå samme sted hver gang – validatoren fejler over 40 %.
+- Alle fire svarmuligheder skal være nogenlunde lige lange.
 
 ### Ret eksisterende kort
 

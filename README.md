@@ -71,7 +71,7 @@ skrives i hånden).
 server.js                    statiske filer + /api/* (klar til API-nøgle)
 public/
   index.html, styles.css, exam.css
-  data/sw3sys/               ét modul pr. eksamensemne + koblinger.js
+  data/sw3sys/               ét modul pr. eksamensemne + koblinger.js + spoergsmaal.js
   src/app.js                 UI, XP, streak, parathed, eksamenssimulator
   src/feed.js                feed-algoritmen
   src/fsrs.js                FSRS-5 spaced repetition

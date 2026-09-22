@@ -7,7 +7,7 @@
 //
 // Hvert punkt er bygget ens: hvad det er, et konkret eksempel, og hvorfor det virker.
 
-export const GUIDE_VERSION = 4;
+export const GUIDE_VERSION = 5;
 
 const AFSNIT = [
   {
@@ -85,7 +85,7 @@ const AFSNIT = [
         emoji: '🎓',
         navn: 'Simulatoren',
         hvad: 'Under Eksamen. Træk et emne, få 8 minutter, og byg din disposition.',
-        eksempel: 'Du trækker »Synkronisering«, sætter dine punkter i rækkefølge, svarer på censorspørgsmål og får en karakter plus kernen i emnet.',
+        eksempel: 'Du trækker »Synkronisering«, sætter punkterne i rækkefølge, svarer på tre spørgsmål – og til sidst graver eksaminator dybere med spørgsmål uden svarmuligheder, som du selv vurderer.',
         hvorfor: 'At øve under noget, der ligner presset, gør viden mere robust, når hjertet banker på dagen.',
       },
       {

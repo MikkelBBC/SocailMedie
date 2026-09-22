@@ -941,7 +941,7 @@ function closeTjek() {
 function startSim(fixedTrack = null) {
   clearInterval(sim?.timer);
   const pool = examTracks();
-  sim = { track: fixedTrack ? tracks[fixedTrack] : pool[Math.floor(Math.random() * pool.length)], before: 0, dispo: 0, scores: [] };
+  sim = { track: fixedTrack ? tracks[fixedTrack] : pool[Math.floor(Math.random() * pool.length)], before: 0, dispo: 0, scores: [], dybdeScores: [], dybde: null };
   sim.before = readiness(sim.track.id);
   $('#sim').hidden = false;
   fixedTrack ? simPrep() : simDraw(pool);
@@ -1055,15 +1055,79 @@ function simQuestion(i) {
       return res;
     },
   }));
-  body.querySelector('#q-next').addEventListener('click', () => (i + 1 < sim.questions.length ? simQuestion(i + 1) : simResult()));
+  body.querySelector('#q-next').addEventListener('click', () => (i + 1 < sim.questions.length ? simQuestion(i + 1) : simDybde(0)));
+}
+
+// ---------- Eksaminatorens opfølgende spørgsmål ----------
+//
+// Her er der ingen multiple choice. Du siger svaret højt, ser modelsvaret og
+// vurderer selv – præcis som til eksamen, hvor ingen giver dig fire muligheder.
+// Selvvurderingen er grov med vilje: tre trin er nok til at styre, hvad du øver.
+
+const DYBDE_DOM = [
+  ['Nej', 0, '#c0392b'],
+  ['Delvist', 0.5, '#c9a227'],
+  ['Ja', 1, '#0fae66'],
+];
+
+function simDybde(i) {
+  const t = sim.track;
+  const spm = sim.dybde ?? (sim.dybde = vaelgDybde(t));
+  if (!spm.length || i >= spm.length) return simResult();
+  const q = spm[i];
+
+  const body = simScreen(`
+    <div class="sim-head small"><span>${t.emoji}</span><h2>${esc(t.titel)}</h2></div>
+    <p class="sim-kicker">👩‍🏫 Eksaminator graver dybere (${i + 1}/${spm.length})</p>
+    <div class="dybde">
+      <p class="dybde-q">${esc(q.q)}</p>
+      <p class="dybde-hint">Sig svaret højt, før du kigger. Det er dét, du skal kunne på dagen.</p>
+      <button class="primary wide" data-act="vis">Vis modelsvar</button>
+      <div class="dybde-svar" hidden>
+        <small>Modelsvar</small>
+        <p>${esc(q.svar)}</p>
+        <p class="dybde-spg">Ramte du det?</p>
+        <div class="dybde-dom">
+          ${DYBDE_DOM.map(([navn, , farve], n) => `<button data-n="${n}" style="--f:${farve}">${navn}</button>`).join('')}
+        </div>
+      </div>
+    </div>`);
+
+  body.querySelector('[data-act="vis"]').addEventListener('click', (e) => {
+    e.currentTarget.hidden = true;
+    body.querySelector('.dybde-svar').hidden = false;
+  });
+  body.querySelectorAll('.dybde-dom button').forEach((b) => b.addEventListener('click', () => {
+    const [, vaerdi] = DYBDE_DOM[Number(b.dataset.n)];
+    sim.dybdeScores.push(vaerdi);
+    addXp(Math.round(5 + 20 * vaerdi));
+    vaerdi >= 0.5 ? sfx.correct(sim.dybdeScores.length) : sfx.wrong();
+    simDybde(i + 1);
+  }));
+}
+
+// Ét basisspørgsmål og ét dybdespørgsmål, tilfældigt valgt – så en gentagelse
+// af samme emne ikke giver de samme to hver gang.
+function vaelgDybde(t) {
+  const alle = t.spoergsmaal ?? [];
+  if (!alle.length) return [];
+  const tag = (niveau) => {
+    const pulje = alle.filter((q) => q.niveau === niveau);
+    return pulje.length ? [pulje[Math.floor(Math.random() * pulje.length)]] : [];
+  };
+  const valgt = [...tag('basis'), ...tag('dybde')];
+  return valgt.length ? valgt : [alle[Math.floor(Math.random() * alle.length)]];
 }
 
 function simResult() {
   const t = sim.track;
   const svar = sim.scores.reduce((a, b) => a + b, 0) / Math.max(1, sim.scores.length);
-  const total = sim.dispo * 0.4 + svar * 0.6;
+  // Dybdespørgsmålene er selvvurderede, så de vægter mindre end de rettede svar.
+  const harDybde = sim.dybdeScores.length > 0;
+  const dybde = harDybde ? sim.dybdeScores.reduce((a, b) => a + b, 0) / sim.dybdeScores.length : 0;
+  const total = harDybde ? sim.dispo * 0.3 + svar * 0.45 + dybde * 0.25 : sim.dispo * 0.4 + svar * 0.6;
   const after = readiness(t.id);
-  state.simHistory.push({ spor: t.id, dag: dayKey(), disposition: sim.dispo, svar });
+  state.simHistory.push({ spor: t.id, dag: dayKey(), disposition: sim.dispo, svar, ...(harDybde ? { dybde } : {}) });
   addXp(25);
   missionEvent({ kind: 'sim' }, false);
   if (total >= 0.75) { addXp(XP_FOR.sim); toast(`🎓 Stærk simulering · +${XP_FOR.sim} XP`); }
@@ -1077,6 +1141,7 @@ function simResult() {
       <div class="result-grid">
         <div><b>${pctText(sim.dispo)}</b><small>disposition</small></div>
         <div><b>${pctText(svar)}</b><small>svar</small></div>
+        ${harDybde ? `<div><b>${pctText(dybde)}</b><small>uddybning</small></div>` : ''}
         <div><b>${pctText(sim.before)} → ${pctText(after)}</b><small>parathed</small></div>
       </div>
       ${t.kerne ? `<div class="kerne">

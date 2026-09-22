@@ -4,7 +4,7 @@
 // der udskiftes under ét, når indholdet ændrer sig: versionen nedenfor er et
 // hash af filernes indhold, så en ny udgivelse altid giver et nyt cache-navn.
 
-const VERSION = '1c0a0a7a45b0';
+const VERSION = '02eed3124701';
 const SKAL = `leths-${VERSION}`;         // appens filer, udskiftes samlet
 const MEDIE = 'leths-medie-v1';            // videoer, hentet efterhånden
 const EKSTERN = 'leths-ekstern-v1';        // skrifttyper
@@ -50,6 +50,7 @@ const FILER = [
   "./data/sikkerhed/forsvar.js",
   "./data/sw3sys/index.js",
   "./data/sw3sys/koblinger.js",
+  "./data/sw3sys/spoergsmaal.js",
   "./data/sw3sys/t00-basics.js",
   "./data/sw3sys/t01-proces.js",
   "./data/sw3sys/t02-lambda.js",

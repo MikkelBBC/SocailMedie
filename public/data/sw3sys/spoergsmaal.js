@@ -1,0 +1,114 @@
+// Eksaminatorspørgsmål: de opfølgende spørgsmål, der kommer efter dispositionen.
+//
+// Det er dem, der afgør forskellen på at have læst og at have forstået. De er
+// skrevet, så svaret er kort nok til at sige højt – en mundtlig eksamen belønner
+// ikke, at man remser alt op, men at man rammer kernen og kan uddybe på opfordring.
+//
+// `niveau`: 'basis' bør sidde, 'dybde' er dem, der trækker karakteren op.
+// Bruges af simulatoren, hvor man svarer højt og selv markerer, om man ramte.
+
+export default {
+  t00: [
+    { niveau: 'basis', q: 'Hvad sker der helt præcist, når et program kalder write()?', svar: 'libc lægger syscall-nummer og argumenter i registre og udfører en trap-instruktion. CPU\'en skifter til kernel mode og hopper til kernens handler, som slår nummeret op i syscall-tabellen og udfører operationen. Derefter return-from-trap tilbage til user mode med returværdien.' },
+    { niveau: 'basis', q: 'Hvorfor må user mode ikke røre hardware direkte?', svar: 'Fordi så kunne ethvert program læse andres hukommelse, skrive på disken uden tilladelse eller sætte maskinen i stå. Kernel mode er det eneste sted, privilegerede instruktioner må udføres, og systemkaldet er den kontrollerede dør imellem.' },
+    { niveau: 'dybde', q: 'Hvad koster et systemkald, og hvorfor bruger man så buffering?', svar: 'Det koster et mode-skift, gemte registre og typisk tabte cache-linjer – i størrelsesordenen hundreder af nanosekunder til mikrosekunder. Derfor samler man mange små skrivninger i en buffer og laver ét kald i stedet for tusind: prisen er per kald, ikke per byte.' },
+    { niveau: 'dybde', q: 'Hvad menes der med lokalitet, og hvorfor virker en cache kun på grund af den?', svar: 'Tidslig lokalitet: det, der lige er brugt, bliver sandsynligvis brugt igen. Rumlig lokalitet: naboerne bliver brugt kort efter. En cache gætter på begge dele. Et program med helt tilfældig adgang får ingen gevinst – cachen bliver ren udgift.' },
+    { niveau: 'dybde', q: 'Hvad betyder x-bitten på en mappe, og hvorfor er den anderledes end på en fil?', svar: 'På en fil betyder x, at den må udføres. På en mappe betyder x, at man må gå ind i den og slå navne op. Man kan derfor have r uden x på en mappe – så kan man se navnene, men ikke tilgå noget indeni. Mangler x på en mappe på vejen, virker stien slet ikke.' },
+  ],
+
+  t01: [
+    { niveau: 'basis', q: 'Hvad er forskellen på et program og en proces?', svar: 'Et program er en passiv fil på disken. En proces er programmet i gang: kode, data, heap, stak, registre og en PCB hos kernen med PID, tilstand og åbne filer. Det samme program kan køre som mange processer på én gang.' },
+    { niveau: 'basis', q: 'fork() returnerer to gange. Forklar hvordan.', svar: 'Kernen laver en kopi af processen. Begge fortsætter fra samme sted, men returværdien er forskellig: 0 i barnet og barnets PID i forælderen. Det er dét, koden bruger til at finde ud af, hvem den er. Ved fejl returneres -1, og der findes kun én proces.' },
+    { niveau: 'dybde', q: 'Hvad er en zombie, og hvorfor findes de overhovedet?', svar: 'En zombie er et barn, der er dødt, men hvis exitstatus ingen har hentet med wait/waitpid. Kernen holder PCB\'en i live, netop for at forælderen kan nå at læse statussen. Havde kernen ryddet den med det samme, ville information gå tabt. Forsvinder forælderen, adopterer init/systemd barnet og rydder op.' },
+    { niveau: 'dybde', q: 'Hvilken IPC-metode ville du vælge til store datamængder, og hvad er prisen?', svar: 'Shared memory er hurtigst, fordi der ikke kopieres – begge processer mapper det samme fysiske område. Prisen er, at man selv skal synkronisere med fx en semafor, og at en fejl i den ene proces kan ødelægge data for den anden. Message passing kopierer, men er sikrest.' },
+    { niveau: 'dybde', q: 'Hvad sker der ved et context switch, og hvorfor er det dyrt?', svar: 'Kernen gemmer den kørende proces\' registre og programtæller i dens PCB, indlæser den næstes, og skifter adresserum (nyt sidetabel-rod, TLB skal typisk flushes). Selve kopieringen er hurtig; det dyre er, at cache og TLB nu er kolde for den nye proces.' },
+  ],
+
+  t02: [
+    { niveau: 'basis', q: 'Hvad genererer compileren, når du skriver en lambda?', svar: 'En unavngiven klasse – closure-typen – med en operator(). Variablerne i capture-listen bliver medlemsvariabler. Det objekt, der opstår ved kørslen, er closure-objektet. Derfor har to lambdaer, der ser ens ud, forskellige typer.' },
+    { niveau: 'basis', q: 'Hvad er forskellen på [=] og [&]?', svar: '[=] tager en kopi af de brugte variabler, når lambdaen oprettes. [&] tager en reference. Kopien er sikker, men ser ikke senere ændringer. Referencen ser ændringer, men bliver ugyldig, hvis den fangede variabel ikke længere findes.' },
+    { niveau: 'dybde', q: 'Hvorfor er en functor ofte hurtigere end en funktionspointer?', svar: 'Compileren kender functorens præcise type på oversættelsestidspunktet og kan inline kaldet. En funktionspointer er en værdi, der først kendes under kørslen, så kaldet bliver et indirekte hop, der sjældent kan inlines. Det er derfor std::sort med en lambda typisk slår qsort.' },
+    { niveau: 'dybde', q: 'Hvornår er en lambda med [&] farlig?', svar: 'Når den overlever den scope, referencerne peger ind i. Klassisk: en lambda med [&] gives til en tråd eller gemmes i en callback, funktionen returnerer, de lokale variabler forsvinder, og lambdaen læser en dangling reference. Fanger man by value, findes problemet ikke.' },
+    { niveau: 'dybde', q: 'Hvad gør mutable på en lambda?', svar: 'operator() er som standard const, så by value-fangede variabler kan ikke ændres indeni. mutable fjerner const\'en, så lambdaen kan ændre sin egen kopi mellem kald. Den oprindelige variabel udenfor påvirkes stadig ikke.' },
+  ],
+
+  t03: [
+    { niveau: 'basis', q: 'Hvad deler to tråde i samme proces, og hvad har de hver for sig?', svar: 'De deler kode, globale data, heap og åbne filer. Hver tråd har sin egen stak, sine egne registre og sin egen programtæller. Det er derfor, en lokal variabel er sikker, mens en global kræver synkronisering.' },
+    { niveau: 'basis', q: 'Hvorfor er tråde billigere end processer?', svar: 'Fordi der ikke skal oprettes et nyt adresserum, og fordi et context switch mellem tråde i samme proces ikke kræver, at sidetabellen skiftes. Prisen er isolation: en fejl i én tråd kan vælte hele processen.' },
+    { niveau: 'dybde', q: 'Forklar Amdahls lov med et tal.', svar: 'Speedup = 1 / (s + (1−s)/n), hvor s er den serielle andel. Er 20 % serielt, er den maksimale speedup 1/0,2 = 5, uanset hvor mange kerner man har. Pointen er, at det er den serielle del, der sætter loftet – ikke antallet af kerner.' },
+    { niveau: 'dybde', q: 'Hvad er forskellen på SCHED_OTHER og SCHED_FIFO?', svar: 'SCHED_OTHER håndteres af CFS/EEVDF og fordeler CPU-tid retfærdigt efter nice-værdi fra −20 til 19. SCHED_FIFO er real-time med statisk prioritet 1-99: en klar FIFO-tråd kører altid før alle normale tråde og bliver ved, til den selv blokerer. Derfor kan en løbsk FIFO-tråd fryse maskinen.' },
+    { niveau: 'dybde', q: 'Hvad sker der, hvis du hverken join\'er eller detach\'er en std::thread?', svar: 'Destruktoren kalder std::terminate, og programmet dør. Det er et bevidst valg i standarden: alternativet ville være enten at blokere uventet eller stille at lade en tråd køre videre efter, at dens data er væk. Fejlen gøres synlig med det samme.' },
+  ],
+
+  t04: [
+    { niveau: 'basis', q: 'Hvorfor er counter++ ikke atomart?', svar: 'Det bliver typisk til tre instruktioner: læs ind i register, læg 1 til, skriv tilbage. Afbrydes tråden imellem dem, kan to tråde læse samme værdi, og den ene optælling går tabt.' },
+    { niveau: 'basis', q: 'Hvad er de tre krav til en løsning på critical section-problemet?', svar: 'Mutual exclusion: højst én tråd inde ad gangen. Progress: er ingen inde, skal en ventende kunne komme ind. Bounded waiting: der er en grænse for, hvor mange gange andre kan springe foran, før en ventende får lov.' },
+    { niveau: 'dybde', q: 'Hvad er forskellen på en mutex og en binær semafor?', svar: 'Ejerskab. Kun den tråd, der låste en mutex, må låse den op, og det gør priority inheritance muligt. En binær semafor er bare en tæller på 0-1: en helt anden tråd må gerne poste den, hvilket er præcis det, man vil have, når den bruges til at signalere en hændelse.' },
+    { niveau: 'dybde', q: 'Hvorfor skal en condition variable altid bruges i en while-løkke?', svar: 'To grunde. Spurious wakeups: tråden kan vågne, uden at nogen har signaleret. Og tabte kapløb: en anden tråd kan nå at ændre tilstanden mellem signalet og opvågningen. En while-løkke tjekker prædikatet igen efter opvågning, så begge dele håndteres.' },
+    { niveau: 'dybde', q: 'Hvad er priority inversion, og hvordan løses det?', svar: 'En højprioritetstråd venter på en lås, som en lavprioritetstråd holder, mens en mellemprioritetstråd holder den lave fra at køre. Nu venter den høje reelt på den mellemste. Løsningen er priority inheritance: den lave tråd arver midlertidigt den ventendes prioritet, så den kan blive færdig og slippe låsen.' },
+  ],
+
+  t05: [
+    { niveau: 'basis', q: 'Hvad er de fire Coffman-betingelser?', svar: 'Mutual exclusion, hold and wait, no preemption og circular wait. Alle fire skal være opfyldt samtidig, for at et deadlock kan opstå – bryder man bare én, kan det ikke ske.' },
+    { niveau: 'basis', q: 'Hvordan læser du en resource allocation graph?', svar: 'Cirkler er tråde, firkanter er ressourcer med en prik per instans. Request edge går fra tråd til ressource, assignment edge fra ressource til tråd. Ingen cyklus betyder intet deadlock. Cyklus med én instans per type betyder deadlock; med flere instanser er det kun en mistanke.' },
+    { niveau: 'dybde', q: 'Hvilken Coffman-betingelse bryder en fast låserækkefølge, og hvorfor virker det?', svar: 'Circular wait. Nummererer man alle låse og tager dem altid i stigende rækkefølge, kan der ikke opstå en ring: den tråd, der holder det højeste nummer, venter aldrig på et lavere. Det er den mest brugte løsning i praksis, fordi den ikke koster noget under kørslen.' },
+    { niveau: 'dybde', q: 'Hvad gør Banker\'s algorithm, og hvorfor bruges den sjældent?', svar: 'Den lader kun en tildeling ske, hvis systemet forbliver i en safe state – altså hvis der findes en rækkefølge, hvor alle kan blive færdige. Den kræver, at hver tråd oplyser sit maksimale behov på forhånd, og det ved næsten ingen programmer. Derfor bruges den stort set kun i lærebøger.' },
+    { niveau: 'dybde', q: 'Hvorfor vælger Linux og Windows at ignorere deadlocks?', svar: 'Det kaldes strudsealgoritmen. Prevention koster designfrihed, avoidance kræver viden man ikke har, og detection koster løbende. Deadlocks er sjældne nok til, at en genstart er billigere end alle tre – og det er et bevidst valg, ikke sjusk.' },
+  ],
+
+  t06: [
+    { niveau: 'basis', q: 'Hvad er forskellen på en file descriptor og en FILE*?', svar: 'En file descriptor er et heltal fra kernen og bruges med read/write/close – ubufret, ét systemkald per kald. En FILE* er libc\'s wrapper med buffer ovenpå, brugt med fprintf/fread. FILE* er hurtigere til mange små skrivninger; fd giver præcis kontrol.' },
+    { niveau: 'basis', q: 'Hvad gør poll(), og hvorfor er det bedre end at spørge i en løkke?', svar: 'poll blokerer, indtil en af de angivne file descriptors er klar, eller til timeouten udløber. Uden den ville man spørge igen og igen og brænde 100 % CPU på at få »ikke endnu«. Med poll sover processen i kernen og bruger ingenting imens.' },
+    { niveau: 'dybde', q: 'Hvad er forskellen på level- og edge-triggered, og hvornår vælger man hvad?', svar: 'Level-triggered udløser, så længe signalet har niveauet; edge-triggered kun ved overgangen. Vil du vide, om en knap er trykket ned lige nu, skal du bruge level. Vil du tælle tryk, skal du bruge edge – ellers tæller du det samme tryk mange gange.' },
+    { niveau: 'dybde', q: 'Hvorfor skal man læse sysfs-value én gang, før man poller?', svar: 'Fordi der kan stå en gammel, uafhentet hændelse. Læser man ikke først, vender det første poll tilbage med det samme, selvom der ikke er sket noget nyt. Man læser for at rydde tilstanden, og derefter poller man med POLLPRI|POLLERR.' },
+    { niveau: 'dybde', q: 'Hvad returnerer read(), og hvilke tilfælde skal du håndtere?', svar: 'Antal læste bytes, som kan være færre end du bad om – en kort læsning er ikke en fejl. 0 betyder end of file. −1 er fejl, og errno EINTR eller EAGAIN betyder »prøv igen«, ikke at noget er galt. Derfor pakkes read næsten altid ind i en løkke.' },
+  ],
+
+  t07: [
+    { niveau: 'basis', q: 'Hvad er fordelen ved at kommunikere med beskeder i stedet for delt hukommelse?', svar: 'Hver tråd ejer sin egen tilstand, så der er kun ét sted, der skal synkroniseres: selve køen. Antallet af steder, hvor en race condition kan opstå, falder fra »overalt hvor data deles« til »inde i køen«, og det sted er lavet rigtigt én gang.' },
+    { niveau: 'basis', q: 'Hvordan implementerer man en blokerende kø?', svar: 'En mutex om selve containeren og en condition variable. send() låser, lægger i køen og notifier. receive() låser og venter i en while-løkke, indtil køen ikke er tom, tager forrest ud og returnerer. Prædikatet i while\'en er det vigtige.' },
+    { niveau: 'dybde', q: 'Hvad er forskellen på en product type og en sum type?', svar: 'En product type er A og B – en struct med både x og y. En sum type er A eller B: værdien er præcis ét af alternativerne, som std::variant. Det gør det muligt for compileren at tjekke, at alle tilfælde er håndteret.' },
+    { niveau: 'dybde', q: 'Hvad giver en message broker, som en direkte kø ikke gør?', svar: 'Løs kobling og mange-til-mange. Afsenderen publicerer på et topic uden at vide, hvem der lytter, og brokeren lægger beskeden i hver subscribers kø. En ny modtager kan tilføjes uden at røre en eneste afsender.' },
+    { niveau: 'dybde', q: 'Hvad sker der, hvis producenten er hurtigere end forbrugeren?', svar: 'Køen vokser, indtil hukommelsen slipper op. Derfor sætter man en øvre grænse og vælger, hvad der så skal ske: blokere producenten (backpressure), smide de ældste væk, eller afvise nye. En ubegrænset kø er ikke en løsning, kun en udskydelse.' },
+  ],
+
+  t08: [
+    { niveau: 'basis', q: 'Hvorfor er I2C-linjerne open-drain?', svar: 'Fordi enhederne kun kan trække linjen lav, mens en pull-up-modstand trækker den høj. Så kan flere enheder hænge på de samme to ledninger uden at kortslutte hinanden, hvis to taler samtidig. Det er dét, der gør flere mastere muligt.' },
+    { niveau: 'basis', q: 'Hvad er de fire SPI-signaler, og hvordan vælges en slave?', svar: 'SCLK (clock fra masteren), MOSI, MISO og CS. Der er ingen adresser: man vælger en slave ved at trække netop dens CS-linje lav. Derfor koster hver ekstra slave en ekstra ledning.' },
+    { niveau: 'dybde', q: 'Hvornår har du brug for repeated START på I2C?', svar: 'Når du skal skrive en registeradresse og derefter læse fra den uden at slippe bussen. Bruger du separate write og read, kommer der et STOP imellem, og mange sensorer glemmer, hvad du spurgte om. Løsningen er I2C_RDWR med to i2c_msg i samme transaktion.' },
+    { niveau: 'dybde', q: 'SPI har ingen ACK. Hvad betyder det i praksis?', svar: 'Masteren får ingen kvittering på, at slaven overhovedet hørte efter. Sidder en ledning løst, får du bare nuller eller 0xFF tilbage, som om det var data. Derfor læser man typisk et kendt ID-register først for at bekræfte, at der faktisk er en enhed i den anden ende.' },
+    { niveau: 'dybde', q: 'Hvorfor skal tx- og rx-bufferen være lige lange i en SPI-overførsel?', svar: 'Fordi SPI er full duplex: der skiftes en bit ud for hver bit ind, styret af den samme clock. Vil du læse to bytes, skal du sende to bytes – typisk nuller – for at få hjulet til at dreje. Længden er antallet af clock-cyklusser, ikke antallet af nyttige bytes.' },
+  ],
+
+  t09: [
+    { niveau: 'basis', q: 'Hvad er forskellen på en logisk og en fysisk adresse?', svar: 'Den logiske adresse er den, programmet ser. MMU\'en oversætter den til en fysisk adresse under kørslen. Det er dét, der gør, at hver proces kan tro, den har hele adresserummet for sig selv, og at to processer kan bruge samme adresse uden at ramme hinanden.' },
+    { niveau: 'basis', q: 'Hvordan deles en logisk adresse op ved paging?', svar: 'I et sidenummer og et offset. Med 4 KB sider er offset de nederste 12 bits, fordi 4096 er 2¹². Resten er sidenummeret, som slås op i sidetabellen og giver frame-nummeret. Derfor er sidestørrelser altid en potens af 2 – så er opdelingen gratis i hardware.' },
+    { niveau: 'dybde', q: 'Hvad er forskellen på intern og ekstern fragmentering?', svar: 'Ekstern fragmentering er ubrugte huller mellem allokeringer, fordi blokkene har forskellig størrelse. Intern fragmentering er spildt plads inde i en tildelt blok. Paging fjerner den eksterne helt, fordi alle sider er lige store, men får intern til gengæld i den sidste side.' },
+    { niveau: 'dybde', q: 'Hvad er en TLB, og hvorfor er den nødvendig?', svar: 'Uden den ville hvert hukommelsesopslag kræve et ekstra opslag i sidetabellen – altså dobbelt så mange adgange. TLB\'en er en lille cache over de seneste oversættelser. Et context switch gør den typisk ugyldig, og det er en stor del af, hvad et skift faktisk koster.' },
+    { niveau: 'dybde', q: 'Hvad sker der ved en page fault?', svar: 'MMU\'en finder ingen gyldig oversættelse og udløser en trap til kernen. Kernen afgør, om adressen er lovlig: er siden swappet ud, hentes den ind, sidetabellen opdateres, og instruktionen køres om. Er den ulovlig, får processen SIGSEGV.' },
+  ],
+
+  t10: [
+    { niveau: 'basis', q: 'Hvad står RAII for, og hvad er garantien?', svar: 'Resource Acquisition Is Initialization: konstruktøren erhverver ressourcen, destruktoren frigiver den. Garantien er, at destruktoren for et lokalt objekt kører, når scopet forlades – uanset om det sker ved return, break eller en exception (stack unwinding).' },
+    { niveau: 'basis', q: 'Hvorfor kan en unique_ptr ikke kopieres?', svar: 'Fordi den ejer alene. To kopier ville betyde to ejere, der hver især sletter objektet – altså double free. Kopikonstruktoren er slettet, så fejlen bliver en oversættelsesfejl i stedet for et nedbrud. Ejerskab overdrages eksplicit med std::move.' },
+    { niveau: 'dybde', q: 'Hvad koster en shared_ptr i forhold til en unique_ptr?', svar: 'unique_ptr har samme størrelse og hastighed som en rå pointer med standard-deleter. shared_ptr har to pointere og en atomar tællerblok; hver kopi og hver destruktion koster en atomar operation, som er dyr på tværs af kerner. Derfor er unique_ptr standardvalget.' },
+    { niveau: 'dybde', q: 'Hvad er en cyklisk reference, og hvordan bryder man den?', svar: 'To shared_ptr, der peger på hinanden. Tælleren når aldrig nul, og hukommelsen frigives aldrig. Den brydes med en weak_ptr på den ene vej: den tæller ikke med i ejerskabet og skal låses op med lock(), som returnerer tom, hvis objektet er væk.' },
+    { niveau: 'dybde', q: 'Hvad fortæller en funktions signatur om ejerskab?', svar: 'unique_ptr<T> by value: funktionen tager ejerskabet, og kalderen skal bruge std::move. T& eller const T&: den låner og ejer ikke – det er standardvalget. T*: låner, må være nullptr. unique_ptr<T>&: må ændre, hvad kalderens pointer peger på.' },
+  ],
+
+  t11: [
+    { niveau: 'basis', q: 'Hvad er forskellen på major- og minor-nummeret?', svar: 'Major identificerer driveren, minor den konkrete enhed hos driveren. Det er dét, der gør, at én driver kan betjene 32 GPIO-enheder: den får minor-nummeret med ind i open og bruger det som indeks.' },
+    { niveau: 'basis', q: 'Hvordan kommer data fra user space ind i en driver?', svar: 'Aldrig med en almindelig pointer-dereference. Man bruger copy_from_user og copy_to_user, som tjekker, at adressen faktisk tilhører processen, og håndterer, at siden kan være swappet ud. Uden dem kunne en ondsindet pointer få kernen til at læse eller skrive hvor som helst.' },
+    { niveau: 'dybde', q: 'Hvordan laver man en blokerende read i en driver?', svar: 'Med en wait queue. I read kaldes wait_event_interruptible(wq, betingelse), som lægger tråden til at sove uden at bruge CPU. Interrupt-handleren sætter flaget og kalder wake_up_interruptible. Fra user space ser det bare ud som et langsomt read.' },
+    { niveau: 'dybde', q: 'Hvorfor deles en interrupt-handler i top half og bottom half?', svar: 'Fordi den øverste halvdel kører med afbrydelser slået fra og skal være så kort som muligt – ellers tabes andre interrupts. Den kvitterer for hardwaren og planlægger resten i en bottom half (tasklet eller workqueue), som må tage tid og må sove.' },
+    { niveau: 'dybde', q: 'Hvad er konsekvensen af en fejl i et kernemodul, sammenlignet med i en app?', svar: 'En app får SIGSEGV og dør; resten af systemet mærker intet. Et modul kører med kernens rettigheder, så den samme fejl kan give en kernel panic, korrupte data på disken eller et system, der hænger. Der er ingen over kernen til at fange faldet.' },
+  ],
+
+  t12: [
+    { niveau: 'basis', q: 'Hvad er de fire trin fra .cpp til eksekverbar?', svar: 'Preprocessor udfolder #include og makroer. Compiler oversætter til assembly/objektkode. Assembler laver .o-filen med symboler og relocations. Linker samler .o-filer og biblioteker, resolver symboler og producerer den eksekverbare.' },
+    { niveau: 'basis', q: 'Hvad er forskellen på et statisk og et dynamisk bibliotek?', svar: 'Et statisk (.a) linkes ind i binæren, som derfor bliver større, men kører uden afhængigheder. Et dynamisk (.so) indlæses ved opstart, deles mellem programmer og kan opdateres uden at genbygge – men skal findes på maskinen i den rigtige version.' },
+    { niveau: 'dybde', q: 'Hvad gør CMake, og hvorfor kaldes det et meta build system?', svar: 'Det bygger ikke selv. Ud fra CMakeLists.txt genererer det Makefiles, Ninja-filer eller IDE-projekter til netop den platform, man står på. Man beskriver målene og forholdet mellem dem én gang, og CMake oversætter til det konkrete værktøj.' },
+    { niveau: 'dybde', q: 'Hvad er forskellen på PUBLIC og PRIVATE i target_link_libraries?', svar: 'PRIVATE betyder, at afhængigheden kun bruges i implementeringen: den forplanter sig ikke til dem, der bruger dit mål. PUBLIC betyder, at den også optræder i din header, så alle brugere arver dens include-stier og flag. Forkert valg giver enten manglende includes eller unødige afhængigheder.' },
+    { niveau: 'dybde', q: 'Hvorfor er en manglende afhængighed farligere end et langsomt build?', svar: 'Fordi build-systemet så springer over. Ændrer du en header, som systemet ikke ved indgår i en .cpp, bliver den ikke genoversat – og du fejlsøger på en binær, der indeholder en blanding af gammel og ny kode. Et langsomt build koster tid; et forkert koster en aften.' },
+  ],
+};

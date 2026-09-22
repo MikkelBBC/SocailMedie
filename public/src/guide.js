@@ -7,7 +7,7 @@
 //
 // Hvert punkt er bygget ens: hvad det er, et konkret eksempel, og hvorfor det virker.
 
-export const GUIDE_VERSION = 2;
+export const GUIDE_VERSION = 3;
 
 const AFSNIT = [
   {
@@ -66,6 +66,13 @@ const AFSNIT = [
   {
     titel: 'Før eksamen',
     punkter: [
+      {
+        emoji: '🗺️',
+        navn: 'Din plan',
+        hvad: 'Øverst under Eksamen. Fortæller, hvad der giver mest lige nu – ikke bare hvor du står.',
+        eksempel: '»Finale · 2 dage tilbage. Start med 4. Synkronisering, 31 % parat. Simulér 7. Queues, du har aldrig trukket det. Sov nok i nat.« Hvert trin har en knap, der fører direkte derhen.',
+        hvorfor: 'En graf siger, hvor du er. En plan siger, hvad du gør. Konkrete »når X, så Y«-planer er langt mere effektive end gode forsætter.',
+      },
       {
         emoji: '🎓',
         navn: 'Simulatoren',

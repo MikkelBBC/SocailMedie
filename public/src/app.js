@@ -9,6 +9,7 @@ import { sfx, setMuted } from './sfx.js';
 import { icon, hydrateIcons } from './icons.js';
 import { ensureMissions, bump, missionEmoji, missionText, isDone, allMissionsDone } from './missions.js';
 import { guideHtml, GUIDE_VERSION } from './guide.js';
+import { lavPlan } from './plan.js';
 
 const DAY = 86_400_000;
 const state = load();
@@ -38,7 +39,12 @@ function readiness(trackId) {
   const items = reviewables(trackId);
   if (!items.length) return 0;
   const t = Math.max(Date.now(), examTime());
-  return items.reduce((sum, k) => sum + (state.items[k.id] ? retrievability(state.items[k.id], t) : 0), 0) / items.length;
+  // Et beskadiget item (fx fra en håndredigeret import) må ikke kunne give NaN % i hele UI'et.
+  const r = (it) => {
+    const x = it ? retrievability(it, t) : 0;
+    return Number.isFinite(x) ? x : 0;
+  };
+  return items.reduce((sum, k) => sum + r(state.items[k.id]), 0) / items.length;
 }
 
 const sw3sysTracks = () => seed.spor.filter((s) => s.pakke === 'sw3sys');
@@ -726,6 +732,20 @@ function renderExam() {
   const weakest = [...topics].sort((a, b) => a.r - b.r)[0];
   const hist = state.simHistory.slice(-5).reverse();
 
+  // Planen er ikke en graf, men en liste over, hvad der giver mest lige nu.
+  const simulerede = new Set(state.simHistory.map((h) => h.spor));
+  const roert = new Set(Object.keys(state.items));
+  const plan = lavPlan({
+    dageTilEksamen: d,
+    emner: topics.map(({ t, r }) => ({ t, r, mestret: mastered(t.id), i_alt: reviewables(t.id).length, simuleret: simulerede.has(t.id) })),
+    forfaldne: feed.dueCount(null),
+    uberoerte: seed.kort.filter((k) => k.pakke === 'sw3sys' && REVIEWABLE.has(k.type) && !roert.has(k.id)).length,
+    svarIdag: state.daily.answered,
+    maal: state.goal,
+    kalibrering: kalibrering(state.log),
+    streak: state.streak.count,
+  });
+
   $('#exam').innerHTML = `
     <div class="exam-hero">
       <div class="exam-top">
@@ -737,6 +757,25 @@ function renderExam() {
       </div>
       <p class="exam-note">Parathed = den sandsynlighed, FSRS forudsiger for at du husker kortene ${d === null ? 'om 7 dage' : 'på eksamensdagen'}, hvis du ikke øver mere. Kort, du ikke har besvaret, tæller som 0.</p>
     </div>
+
+    <section class="plan">
+      <header>
+        <small>Din plan</small>
+        <h3>${esc(plan.titel)}</h3>
+        <p>${esc(plan.hvorfor)}</p>
+      </header>
+      <ol class="plan-trin">
+        ${plan.trin.map((t, i) => `
+          <li>
+            <span class="plan-emoji">${t.emoji}</span>
+            <div>
+              <b>${esc(t.tekst)}</b>
+              <small>${esc(t.hvorfor)}</small>
+              ${t.handling ? `<button class="plan-gaa" data-i="${i}">${esc(t.handling.tekst)} ›</button>` : ''}
+            </div>
+          </li>`).join('')}
+      </ol>
+    </section>
 
     <button class="primary big" id="draw">🎲 Træk et eksamensemne</button>
     <button class="ghost wide weakest" id="weakest" style="--grad:${weakest.t.gradient}">
@@ -774,6 +813,14 @@ function renderExam() {
     save(state);
     renderExam();
   });
+  // Hvert plantrin kan føre direkte til handlingen – ellers bliver planen bare en tekst.
+  document.querySelectorAll('.plan-gaa').forEach((b) => b.addEventListener('click', () => {
+    const h = plan.trin[Number(b.dataset.i)]?.handling;
+    if (!h) return;
+    if (h.type === 'sim') return startSim(h.spor);
+    showView('feed');
+    restartFeed(h.type === 'spor' ? { spor: h.spor } : null);
+  }));
   $('#draw').addEventListener('click', () => startSim());
   $('#weakest').addEventListener('click', () => { showView('feed'); restartFeed({ spor: weakest.t.id }); });
   $('#basics').addEventListener('click', () => { showView('feed'); restartFeed({ spor: 't00' }); });

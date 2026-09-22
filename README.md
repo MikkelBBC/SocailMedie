@@ -40,8 +40,8 @@ fagene. Ringene i toppen har tre niveauer: **gruppe** (Kode, Mennesker, Penge)
 
 - **Feed**: blandet træning på tværs af emner. Tryk på en story-ring for at
   træne ét emne.
-- **Eksamen**: eksamensdato, parathed pr. emne, modeldispositioner og
-  🎲 simulatoren.
+- **Eksamen**: din plan (hvad der giver mest lige nu), eksamensdato,
+  parathed pr. emne, modeldispositioner og 🎲 simulatoren.
 - **Statistik**: grafer, kalibrering (rammer du, når du siger »Sikker«?) og en
   knap, der samler dine data (hvilke kort du svarer rigtigt og forkert) til deling.
 - **Gemt**: kort du har dobbelttrykket på.

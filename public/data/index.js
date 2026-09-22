@@ -36,6 +36,7 @@ import videoer from './videoer.js';
 import forklaringer from './forklaringer.js';
 import forklaringerMere from './forklaringer-mere.js';
 import forklaringerTek from './forklaringer-tek.js';
+import forklaringerMenneske from './forklaringer-menneske.js';
 import temaer from './temaer.js';
 
 const prefix = (t, id) => (id ? `${t}-${id}` : id);
@@ -208,7 +209,7 @@ const spor = samlede.flatMap((f) => f.spor);
 const sporPakke = Object.fromEntries(spor.map((s) => [s.id, s.pakke]));
 
 // Koncepter kan have ekstra forklaring (analogi, tegning, trin) i forklaringer.js.
-const alleForklaringer = { ...forklaringer, ...forklaringerMere, ...forklaringerTek };
+const alleForklaringer = { ...forklaringer, ...forklaringerMere, ...forklaringerTek, ...forklaringerMenneske };
 const medForklaring = (kort) => kort.map((k) => (alleForklaringer[k.id] ? { ...k, ...alleForklaringer[k.id] } : k));
 
 export default {

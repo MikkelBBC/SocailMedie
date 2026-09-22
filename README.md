@@ -27,6 +27,8 @@ fx `http://192.168.0.12:3000`. Der er ingen afhængigheder, kun Node 20.12+.
 | 🔐 Cybersikkerhed | Sådan bliver man hacket, og sikker kode | `public/data/sikkerhed/` |
 | 🏗️ Business | Start et firma i Danmark, og er der en forretning i det? | `public/data/business/` |
 | 📈 Investering | Renters rente og risiko, skat og konti i Danmark | `public/data/invest/` |
+| 🗄️ Databaser | Tabeller, nøgler og joins · indeks, planer og transaktioner | `public/data/db/` |
+| 🛠️ Værktøj | Sådan tænker Git | `public/data/vaerktoj/` |
 
 Fagene samles i `public/data/index.js`. Der ligger også koblinger på tværs af
 fagene. I story-ringene trykker du på et fag for at se dets spor. **Alle**
@@ -82,11 +84,28 @@ udviklingen, hvis der ligger flere filer. Se `fremskridt/LÆS-MIG.md`.
 
 ## Tilføj eller ret indhold
 
-Rediger `public/data/sw3sys/tNN-*.js` og kør:
+### Nyt spor eller nyt fag
+
+```bash
+node tools/nyt-fag.mjs db/normalisering "Normalisering fra 1NF til 3NF" 🧩
+```
+
+Værktøjet skriver skabelonen med kommentarer om, hvad hvert felt skal indeholde,
+og printer de **to linjer**, du skal sætte ind i `public/data/index.js`: en import
+og en plads i `FAG`-tabellen. Resten – pakker, spor, kort og id-præfikser – følger
+af sig selv.
+
+### Ret eksisterende kort
+
+Rediger filen under `public/data/` og kør:
 
 ```bash
 node tools/valider.mjs
 ```
+
+Validatoren er porten: den fanger tomme felter, for lange koncepter, ugyldige
+referencer, svar der kan gættes på længden, og at facit altid står samme sted.
+`node tools/svarlaengde.mjs --liste` viser detaljerne om længde.
 
 Korttyper: `koncept`, `quiz` (evt. med `kode`), `case`, `myte`, `forklar`
 (med `punkter` og nøgle`ord`), `raekkefolge` (med `trin`), `sammenlign`

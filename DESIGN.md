@@ -114,9 +114,13 @@ operativsystemer, algoritmer og psykologi.
 `public/data/sw3sys/` – ét modul pr. emne (t00 basics + t01-t12) plus koblinger.
 Hvert emne har en modeldisposition og en »kerne«: de 5-6 sætninger, en censor venter på.
 
-I alt 587 kort på tværs af alle fag: 174 koncepter, 194 quizzer (inkl. kode),
-63 forklar-højt, 59 myter, 31 sammenlign, 26 koblinger, 20 rækkefølge, 18 cases
-og 2 videoer. Alle tekniske koncepter har en analogi; 69 har også en tegning.
+I alt 627 kort på tværs af tolv fag. Alle tekniske koncepter har en analogi, og
+godt 75 har også en tegning. `node tools/valider.mjs` printer den aktuelle
+fordeling pr. type og pr. spor.
+
+Nye fag tilføjes med `node tools/nyt-fag.mjs <mappe/fil> "<Titel>" <emoji>`, som
+laver skabelonen og printer de to linjer, der skal ind i `public/data/index.js`.
+Selve fagtabellen ligger som `FAG` øverst i den fil – ét sted i stedet for fem.
 
 Tjek indholdet med `node tools/valider.mjs` og feed-mixet med `node tools/simuler-feed.mjs`.
 

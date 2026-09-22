@@ -28,6 +28,9 @@ import firma from './business/firma.js';
 import forretning from './business/forretning.js';
 import invbasis from './invest/basis.js';
 import invdk from './invest/danskskat.js';
+import relation from './db/relation.js';
+import ydelse from './db/ydelse.js';
+import git from './vaerktoj/git.js';
 import sammenlign from './sammenlign.js';
 import videoer from './videoer.js';
 import forklaringer from './forklaringer.js';
@@ -37,6 +40,30 @@ import temaer from './temaer.js';
 
 const prefix = (t, id) => (id ? `${t}-${id}` : id);
 
+// ---------------------------------------------------------------------------
+// FAGENE. Vil du tilføje et fag eller et spor, skal du kun to steder hen:
+//   1. import modulet øverst i filen
+//   2. skriv det ind her
+// Resten (pakker, spor, kort, id-præfikser) følger af sig selv.
+// `node tools/nyt-fag.mjs <id> "<Navn>" <emoji>` laver skabelonen og skriver
+// de to linjer ud, du skal indsætte.
+// ---------------------------------------------------------------------------
+export const FAG = [
+  { id: 'sw3sys', navn: 'SW3SYS', emoji: '🎓', gradient: 'linear-gradient(135deg, #5851DB, #833AB4 45%, #E1306C)', farve: '#833AB4', eksamen: true, samlet: sw3sys },
+  { id: 'dao', navn: 'AlgoDat', emoji: '🧮', gradient: 'linear-gradient(135deg, #00C6FF, #405DE6 50%, #833AB4)', farve: '#405DE6', moduler: [algodat, traeer, grafer, dp] },
+  { id: 'psykologi', navn: 'Psykologi', emoji: '🧠', gradient: 'linear-gradient(135deg, #FCAF45, #F77737 45%, #E1306C)', farve: '#F77737', moduler: [biases, hukommelse, afhaengighed, vaner, social, stress] },
+  { id: 'psykiatri', navn: 'Psykiatri', emoji: '🩺', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6', moduler: [diagnoser, angst, psykose] },
+  { id: 'filosofi', navn: 'Filosofi', emoji: '🏛️', gradient: 'linear-gradient(135deg, #A18CD1, #FF6A88 60%, #FF99AC)', farve: '#A18CD1', moduler: [stoicisme, ragekniv, eksistens] },
+  { id: 'ai', navn: 'AI', emoji: '🤖', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6', moduler: [ailaering, sprogmodeller, aibrug] },
+  { id: 'tek', navn: 'Teknologi', emoji: '🌐', gradient: 'linear-gradient(135deg, #00C6FF, #0072FF 55%, #8E54E9)', farve: '#0072FF', moduler: [internet, krypto] },
+  { id: 'sikkerhed', navn: 'Cybersikkerhed', emoji: '🔐', gradient: 'linear-gradient(135deg, #FF512F, #DD2476 60%, #8E54E9)', farve: '#DD2476', moduler: [angreb, forsvar] },
+  { id: 'business', navn: 'Business', emoji: '🏗️', gradient: 'linear-gradient(135deg, #F7971E, #FFD200 55%, #F77737)', farve: '#F7971E', moduler: [firma, forretning] },
+  { id: 'invest', navn: 'Investering', emoji: '📈', gradient: 'linear-gradient(135deg, #11998E, #38EF7D 60%, #5EEAD4)', farve: '#11998E', moduler: [invbasis, invdk] },
+  { id: 'db', navn: 'Databaser', emoji: '🗄️', gradient: 'linear-gradient(135deg, #2563EB, #7C3AED 55%, #F472B6)', farve: '#2563EB', moduler: [relation, ydelse] },
+  { id: 'vaerktoj', navn: 'Værktøj', emoji: '🛠️', gradient: 'linear-gradient(135deg, #F05133, #FCAF45 60%, #FFD200)', farve: '#F05133', moduler: [git] },
+];
+
+// Et spor giver sine kort sit eget id som præfiks, så lokale id'er må gerne gentages.
 function samlSpor(pakke, moduler) {
   return {
     spor: moduler.map((m) => ({ ...m.spor, pakke })),
@@ -46,15 +73,12 @@ function samlSpor(pakke, moduler) {
   };
 }
 
-const dao = samlSpor('dao', [algodat, traeer, grafer, dp]);
-const psyk = samlSpor('psykologi', [biases, hukommelse, afhaengighed, vaner, social, stress]);
-const psykiatri = samlSpor('psykiatri', [diagnoser, angst, psykose]);
-const filosofi = samlSpor('filosofi', [stoicisme, ragekniv, eksistens]);
-const ai = samlSpor('ai', [ailaering, sprogmodeller, aibrug]);
-const tek = samlSpor('tek', [internet, krypto]);
-const sikkerhed = samlSpor('sikkerhed', [angreb, forsvar]);
-const business = samlSpor('business', [firma, forretning]);
-const invest = samlSpor('invest', [invbasis, invdk]);
+// Et fag, der allerede er samlet (sw3sys), skal kun have pakke-navnet på.
+const samlFag = (f) => (f.samlet
+  ? { spor: f.samlet.spor.map((x) => ({ ...x, pakke: f.id })), kort: f.samlet.kort.map((k) => ({ ...k, pakke: f.id })) }
+  : samlSpor(f.id, f.moduler));
+
+const samlede = FAG.map(samlFag);
 
 // Koblinger på tværs af fag.
 const tvaerfaglige = [
@@ -158,25 +182,29 @@ const tvaerfaglige = [
     hook: 'En model uden RAG er en eksamen uden bøger. Med RAG er det en åben bogs eksamen.',
     body: 'Sprogmodellen husker intet mellem samtaler. Alt, den ved om din situation, står i **kontekstvinduet**.\n\n**RAG** er derfor ikke hukommelse. Det er at slå op i bogen og lægge den rigtige side ind i vinduet, hver eneste gang.\n\nDet forklarer også de to typiske fejl:\n• Finder søgningen den forkerte side, svarer modellen sikkert og forkert.\n• Er siden ikke med, findes den ikke. Modellen gætter i stedet.\n\nPointen: kvaliteten af et AI-svar afgøres oftere af **hvad der kom ind i konteksten** end af hvilken model, der svarede.',
   },
+  {
+    id: 'kob-indeks-hash', type: 'kobling', kraever: ['ydelse-k1q', 'algodat-a2q'],
+    hook: 'Et databaseindeks og en hashtabel løser det samme problem med to forskellige træer.',
+    body: 'Begge steder er problemet det samme: du må ikke lede alle data igennem for at finde én ting.\n\nEn **hashtabel** regner sig frem til pladsen på ét hug. O(1), men kun til opslag på **præcis** den nøgle, du hashede.\n\nEt **B-træ** er sorteret og bruger O(log n). Langsommere per opslag – men det kan noget, hashen ikke kan:\n• finde alt mellem to værdier (`WHERE pris BETWEEN 100 AND 300`)\n• levere rækkerne i sorteret orden gratis\n• bruges forfra på et sammensat indeks\n\nDerfor er standardindekset i en database et B-træ, ikke en hash, selvom hashen er hurtigere på papiret.\n\nDet er den samme lektie som med quicksort og linked lists: den hurtigste operation i teorien er ikke altid den rigtige datastruktur. Kravene afgør det – her: at man også vil søge i intervaller.',
+  },
+  {
+    id: 'kob-transaktion-race', type: 'kobling', kraever: ['ydelse-k4q', 't04-k1q'],
+    hook: '»Tjek om der er plads, og indsæt så« er en race condition – bare med rækker i stedet for variabler.',
+    body: 'I synkroniseringssporet: to tråde læser `i`, lægger 1 til og skriver tilbage. Resultatet blev 1 i stedet for 2, fordi der ikke var **gensidig udelukkelse** mellem læsning og skrivning.\n\nI databasesporet: to transaktioner tæller pladserne, ser 9 ud af 10, og indsætter hver sin. Resultatet er 11 pladser brugt.\n\nDet er nøjagtig samme fejl. Der er et hul mellem **tjek** og **handling**, hvor verden kan nå at ændre sig.\n\nOg løsningerne svarer også til hinanden:\n• En **mutex** om tråden ↔ en **lås på rækken** (`SELECT … FOR UPDATE`).\n• En **atomisk operation** ↔ en **constraint i databasen**, som gør reglen umulig at bryde.\n• **Serializable** isolation ↔ at køre det hele i én kritisk sektion.\n\nDen fælles lektie: en regel, der kun findes i din kode mellem to kald, er ikke en regel. Den er et håb om timing.',
+  },
+  {
+    id: 'kob-git-immutable', type: 'kobling', kraever: ['git-k1q', 't10-k3q'],
+    hook: 'Gits objekter og en unique_ptr bygger på hver sin halvdel af den samme idé om ejerskab.',
+    body: '**Git**: et objekt navngives efter hashen af sit indhold. Ændrer indholdet sig, er det et **andet objekt**. Derfor kan en commit aldrig ændre sig – man kan kun lave en ny.\n\n**unique_ptr**: der findes præcis **én** ejer. Kopiering er slettet, så to kan aldrig tro, de bestemmer over det samme.\n\nBegge dele fjerner en hel klasse af fejl ved at gøre den umulig i stedet for at advare mod den.\n\n• Fordi Git-objekter er uforanderlige, kan to personer arbejde på den samme historie uden at overskrive hinandens fortid. Det værste, der kan ske, er en konflikt, du kan se.\n• Fordi der kun er én ejer, kan der ikke ske double free. Compileren siger fra, før programmet kører.\n\nDet er det samme designgreb, som ligger bag parameteriserede forespørgsler og bag RAII: gør den forkerte tilstand **urepræsentabel**, i stedet for at bede folk om at huske reglen.',
+  },
 ];
 
-export const pakker = [
-  { id: 'sw3sys', navn: 'SW3SYS', emoji: '🎓', gradient: 'linear-gradient(135deg, #5851DB, #833AB4 45%, #E1306C)', farve: '#833AB4', eksamen: true },
-  { id: 'dao', navn: 'AlgoDat', emoji: '🧮', gradient: 'linear-gradient(135deg, #00C6FF, #405DE6 50%, #833AB4)', farve: '#405DE6' },
-  { id: 'psykologi', navn: 'Psykologi', emoji: '🧠', gradient: 'linear-gradient(135deg, #FCAF45, #F77737 45%, #E1306C)', farve: '#F77737' },
-  { id: 'psykiatri', navn: 'Psykiatri', emoji: '🩺', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6' },
-  { id: 'filosofi', navn: 'Filosofi', emoji: '🏛️', gradient: 'linear-gradient(135deg, #A18CD1, #FF6A88 60%, #FF99AC)', farve: '#A18CD1' },
-  { id: 'ai', navn: 'AI', emoji: '🤖', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6' },
-  { id: 'tek', navn: 'Teknologi', emoji: '🌐', gradient: 'linear-gradient(135deg, #00C6FF, #0072FF 55%, #8E54E9)', farve: '#0072FF' },
-  { id: 'sikkerhed', navn: 'Cybersikkerhed', emoji: '🔐', gradient: 'linear-gradient(135deg, #FF512F, #DD2476 60%, #8E54E9)', farve: '#DD2476' },
-  { id: 'business', navn: 'Business', emoji: '🏗️', gradient: 'linear-gradient(135deg, #F7971E, #FFD200 55%, #F77737)', farve: '#F7971E' },
-  { id: 'invest', navn: 'Investering', emoji: '📈', gradient: 'linear-gradient(135deg, #11998E, #38EF7D 60%, #5EEAD4)', farve: '#11998E' },
-];
+export const pakker = FAG.map(({ moduler, samlet, ...p }) => p);
 
 // En quiz til en video arver videoens spor.
 const videoSpor = (id) => videoer.find((v) => v.id === id)?.spor;
 
-const spor = [...sw3sys.spor.map((s) => ({ ...s, pakke: 'sw3sys' })), ...dao.spor, ...psyk.spor, ...psykiatri.spor, ...filosofi.spor, ...ai.spor, ...tek.spor, ...sikkerhed.spor, ...business.spor, ...invest.spor];
+const spor = samlede.flatMap((f) => f.spor);
 const sporPakke = Object.fromEntries(spor.map((s) => [s.id, s.pakke]));
 
 // Koncepter kan have ekstra forklaring (analogi, tegning, trin) i forklaringer.js.
@@ -188,16 +216,7 @@ export default {
   temaer,
   spor,
   kort: medForklaring([
-    ...sw3sys.kort.map((k) => ({ ...k, pakke: 'sw3sys' })),
-    ...dao.kort,
-    ...psyk.kort,
-    ...psykiatri.kort,
-    ...filosofi.kort,
-    ...ai.kort,
-    ...tek.kort,
-    ...sikkerhed.kort,
-    ...business.kort,
-    ...invest.kort,
+    ...samlede.flatMap((f) => f.kort),
     ...sammenlign.map((k) => ({ ...k, type: 'sammenlign', pakke: sporPakke[k.spor] })),
     ...videoer.map((k) => ({ ...k, spor: k.spor ?? videoSpor(k.om), pakke: sporPakke[k.spor ?? videoSpor(k.om)] })),
     ...tvaerfaglige.map((k) => ({ ...k, spor: 'kobling', pakke: 'tvaerfag' })),

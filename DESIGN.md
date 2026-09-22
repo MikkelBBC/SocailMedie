@@ -25,16 +25,17 @@ der dokumenteret får viden til at sidde.
 
 | Mekanik | Holder dig fast | Lærer dig |
 |---|---|---|
-| Mystery-kiste og ×3 bonus | Variabel belønning | Overraskelse (reward prediction error) styrker hukommelsen |
+| ⭐ Milepæle med dine egne tal | Noget at nå, og en opgørelse der rykker sig | Informativ feedback i stedet for en præmie: forventede, tingslige belønninger svækker typisk den indre motivation (overjustification), mens feedback om egen fremgang styrker den |
 | Stories-slides | Kendt Instagram-gestus | Segmentering i eget tempo |
 | Streak, level, dagens mål | Loss aversion og goal gradient | Daglig spacing |
 | Parathed-ring pr. emne | Samlemani: få alle 12 emner op | Viser ærligt, hvor hullerne er |
 | Svageste emne-knap | Klar næste handling | Øvelsestid bruges der, hvor den gør mest gavn |
 | Varme gradienter | Lyst og indbydende | Emotional design: d ≈ 0,33–0,39 på retention og transfer |
-| 🎯 Dagens missioner (3 om dagen, case pr. mission, bonus-case ≥ Restricted) | Nye mål hver dag, nedtælling til nye missioner, samlemani | Missionerne peger på det, der lærer mest: sikker genkaldelse, forklar højt, svageste emne, gentagelser og simulering |
-| Combo-meter og lyd | Ringen fyldes mod næste case, tonen stiger for hvert rigtigt svar, og combo'en knækker synligt | Belønner rigtige svar i træk, altså faktisk hentning og ikke hurtige gæt |
-| »Tæt på«-teasers under svaret | Goal gradient: »1 rigtigt mere til næste case«, »1 kort fra en ny kobling«, »Mission 4/5« | Gør det tydeligt, at næste kort er værd at hente frem |
-| Level-titler og level-case | Identitet (»Mutex-mester«) og en belønning ved hver level | Kun XP fra svar kan give en level-case, så cases aldrig udløser flere cases |
+| 🎯 Dagens missioner (3 om dagen) | Nye mål hver dag og nedtælling til de næste | Missionerne peger på det, der lærer mest: sikker genkaldelse, forklar højt, svageste emne, gentagelser og simulering |
+| Combo-meter og lyd | Ringen fyldes mod næste milepæl, tonen stiger for hvert rigtigt svar, og combo'en knækker synligt | Belønner rigtige svar i træk, altså faktisk hentning og ikke hurtige gæt |
+| »Tæt på«-teasers under svaret | Goal gradient: »1 rigtigt mere til næste milepæl«, »1 kort fra en ny kobling«, »Mission 4/5« | Gør det tydeligt, at næste kort er værd at hente frem |
+| Level-titler | Identitet (»Mutex-mester«) | Kun XP fra svar kan udløse en level-milepæl, så en milepæl aldrig udløser flere milepæle |
+| 🎯 Kalibrering | Et tal, man gerne vil have op | Overmod er farligst før en eksamen: tror man, man kan det, holder man op med at øve. Kortet viser, hvor tit »Sikker« faktisk var rigtigt |
 | ☀️ Dagens første svar: XP ×2 i 10 min | Grund til at åbne appen hver dag | Daglig spacing i stedet for at klemme det hele ind dagen før |
 | 🖼️ Analogi, tegning og trin på de svære koncepter | Man kan overskue kortet i stedet for at give op | Analogi giver en kendt knage at hænge det nye på (Gentner), tegning + tekst huskes bedre end tekst alene (Mayer), og trin gør en usynlig proces synlig i rækkefølge |
 | 🎯 »Kernen i emnet«: de 5-6 sætninger, en censor venter på | Gør et stort emne overskueligt: man kan se, hvor lidt der skal til for at være med | Hentning virker bedst, når man ved, hvad man skal hente. Kernen står i emne-arket og efter hver simulering |
@@ -47,9 +48,17 @@ kvitterer med et hak, der tegner sig selv. Vibration er reserveret til fejl og
 milepæle: vibrerer man ved hvert eneste rigtige svar, holder man op med at
 mærke det. Alt respekterer `prefers-reduced-motion`.
 
-**Fjernet igen:** casinoet (lykkehjul, skrabelod, indsatser og mønter). Det trak
-opmærksomheden væk fra det, appen er til. Tilbage er kun mystery-casen, som
-udløses af rigtige svar i træk.
+**Fjernet igen:** først casinoet (lykkehjul, skrabelod, indsatser og mønter),
+derefter cases og skins. Begge dele trak opmærksomheden væk fra det, appen er
+til, og et loot box-system træner desuden præcis den vane, psykologi-sporet
+advarer imod.
+
+I stedet kommer der **milepæle**. En milepæl er ikke en præmie, men en
+opgørelse: hvor mange koncepter du stadig kan om en uge, hvor mange kort du har
+mestret på tre forskellige dage, og hvor eksamensparat du er – regnet ud af din
+egen FSRS-tilstand. Dertil én sætning om, hvorfor det, du lige gjorde, virker.
+De er rate-limited til højst én pr. otte svar, for en milepæl, der kommer hvert
+andet kort, er ikke en milepæl.
 
 **Det, vi bevidst ikke gør:** ingen passiv uendelig scroll (der kommer altid en
 quiz efter 2 koncepter), ingen straf for fejl (fejl er læring), og »Dagens mål«
@@ -92,8 +101,11 @@ operativsystemer, algoritmer og psykologi.
 ## 7. Indhold
 
 `public/data/sw3sys/` – ét modul pr. emne (t00 basics + t01-t12) plus koblinger.
-205 kort: 58 koncepter, 72 quizzer (inkl. kode), 38 forklar-højt, 13 myter,
-10 rækkefølge, 8 cases, 6 koblinger. Hvert emne har en modeldisposition.
+Hvert emne har en modeldisposition og en »kerne«: de 5-6 sætninger, en censor venter på.
+
+I alt 587 kort på tværs af alle fag: 174 koncepter, 194 quizzer (inkl. kode),
+63 forklar-højt, 59 myter, 31 sammenlign, 26 koblinger, 20 rækkefølge, 18 cases
+og 2 videoer. Alle tekniske koncepter har en analogi; 69 har også en tegning.
 
 Tjek indholdet med `node tools/valider.mjs` og feed-mixet med `node tools/simuler-feed.mjs`.
 
@@ -109,6 +121,10 @@ Tjek detaljer mod lektionerne, især øvelsesspecifikke ting.
 - Spacing og retrieval, matematik: https://link.springer.com/article/10.1007/s10648-025-10035-1
 - Illusion of competence: https://link.springer.com/article/10.3758/BF03193244
 - Parsons problems: https://dl.acm.org/doi/10.1145/3141880.3141895
+- Belønninger og indre motivation (overjustification): https://tipsforteachers.substack.com/p/research-bite-2-extrinsic-rewards
+- Negative effekter af gamification: https://arxiv.org/pdf/2305.08346
+- Loot boxes, ophidselse og trangen til at åbne flere: https://pmc.ncbi.nlm.nih.gov/articles/PMC7882574/
+- Selvforklaring og udfasede worked examples: https://link.springer.com/article/10.3758/s13423-016-1079-5
 - Retrieval practice og eksamensangst: https://theeffortfuleducator.com/2019/05/14/retrieval-practices-impact-on-test-anxiety-and-stress/
 - FSRS: https://faqs.ankiweb.net/what-spaced-repetition-algorithm
 - Nysgerrighed/PACE: https://pubmed.ncbi.nlm.nih.gov/31706791/

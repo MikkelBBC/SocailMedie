@@ -8,11 +8,9 @@ const fresh = () => ({
   explanations: {},   // kort-id -> brugerens egen forklaring
   examDate: null,     // 'YYYY-MM-DD'
   simHistory: [],     // [{ spor, dag, disposition, svar }]
-  log: {},            // 'YYYY-MM-DD' -> { n, ok, xp, typer: {type: {n, ok}}, pakker: {...} }
+  log: {},            // 'YYYY-MM-DD' -> { n, ok, xp, typer: {...}, pakker: {...}, konf: {gaet|tror|sikker: {n, ok}} }
   readyHist: {},      // 'YYYY-MM-DD' -> SW3SYS-parathed (0-1)
-  inventory: [],      // skins fra cases
-  cases: 0,           // gemte, uåbnede cases
-  boost: null,        // { mult, until }
+  boost: null,        // { mult, until } – dagens første svar giver en kort XP-boost
   xp: 0,
   combo: 0,
   bestCombo: 0,
@@ -26,7 +24,13 @@ const fresh = () => ({
 export function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return { ...fresh(), ...JSON.parse(raw) };
+    if (raw) {
+      const gemt = JSON.parse(raw);
+      // Cases og skins findes ikke længere; gamle nøgler ryddes, så de ikke følger med i eksporten.
+      delete gemt.inventory;
+      delete gemt.cases;
+      return { ...fresh(), ...gemt };
+    }
   } catch {}
   return fresh();
 }

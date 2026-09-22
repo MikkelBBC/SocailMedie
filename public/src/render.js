@@ -12,7 +12,7 @@ export function md(text = '') {
     .join('');
 }
 
-// Små »du er tæt på«-chips under et svar: næste case, kobling, mission, level.
+// Små »du er tæt på«-chips under et svar: næste milepæl, kobling, mission, level.
 export const teaserHtml = (res) => (res?.teasers?.length
   ? `<div class="teasers">${res.teasers.map((t) => `<span>${esc(t)}</span>`).join('')}</div>`
   : '');
@@ -54,7 +54,7 @@ const MODE_LABEL = {
 };
 
 const TYPE_LABEL = {
-  koncept: 'Koncept', quiz: 'Quiz', myte: 'Myte eller fakta', case: 'Case',
+  koncept: 'Koncept', quiz: 'Quiz', myte: 'Myte eller fakta', case: 'Case', video: 'Video',
   forklar: 'Forklar højt', raekkefolge: 'Rækkefølge', kobling: 'Kobling låst op', sammenlign: 'Sammenlign',
 };
 
@@ -559,6 +559,29 @@ function popXp(node, res) {
   if (res.crit || res.combo >= 5) confetti(node, 50);
 }
 
+// Videokort: afspilles i feedet. Punkterne står FØR videoen, så man ved,
+// hvad man skal lægge mærke til – og quizzen bagefter tester netop det.
+function renderVideo(card, mode, ctx) {
+  const node = shell(card, mode, ctx, [
+    el(`<h2 class="hook">${esc(card.titel ?? card.hook)}</h2>`),
+    el(`<p class="video-sub">${esc(card.hook)}</p>`),
+    el(`<div class="video-boks">
+      <video src="video/${encodeURIComponent(card.fil)}" poster="video/${encodeURIComponent(card.plakat ?? '')}"
+             controls playsinline preload="none" width="960" height="540"></video>
+    </div>`),
+    el(`<div class="video-punkter"><small>Hold øje med</small><ul>${(card.punkter ?? []).map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div>`),
+  ], 'video-kort');
+  const v = node.querySelector('video');
+  v.addEventListener('play', () => ctx.onVideoStart?.(card));
+  v.addEventListener('ended', () => {
+    ctx.onVideoEnd?.(card);
+    node.querySelector('.video-punkter')?.insertAdjacentHTML('afterend',
+      '<button class="next-btn" data-act="next">Videre – nu kommer spørgsmålet ↓</button>');
+    node.querySelector('[data-act="next"]')?.addEventListener('click', () => ctx.scrollNext());
+  });
+  return node;
+}
+
 function renderKobling(card, mode, ctx) {
   const node = shell(card, 'kobling', ctx, [
     el(`<div class="spark">✦</div>`),
@@ -641,32 +664,46 @@ function renderSammenlign(card, mode, ctx) {
   return node;
 }
 
-// ---------- Case-kort (CS:GO-style) ----------
+// ---------- Milepælskort ----------
+//
+// Et milepælskort belønner ikke med en tilfældig præmie. Det fortæller dig noget sandt om,
+// hvor langt du er, regnet ud af din egen FSRS-tilstand. Informativ feedback styrker den
+// indre motivation, hvor tingslige, forventede præmier typisk svækker den.
 
-function renderCase(mode, ctx) {
+function renderMilepael(mode, ctx) {
   const kilde = mode.split(':')[1] ?? 'combo';
-  const titel = {
-    combo: '5 rigtige i træk!', maal: 'Dagens mål er nået!', perfekt: 'Perfekt runde!', sim: 'Stærk simulering!',
-    mission: 'Mission klaret!', bonus: 'Alle dagens missioner klaret!', level: 'Level up!',
-  }[kilde] ?? 'Du har fået en case';
-  const sub = kilde === 'bonus' ? 'Bonus-case: mindst Restricted – måske en ★ kniv?' : 'Mil-Spec, Restricted, Classified, Covert – eller en sjælden ★ kniv?';
+  const m = ctx.milepael(kilde);
+  const felt = (f) => `
+    <div class="mp-felt">
+      <b>${f.n}</b>
+      <small>${esc(f.label)}</small>
+      ${f.delta != null && Math.abs(f.delta) >= 0.005
+        ? `<i class="${f.delta > 0 ? 'op' : 'ned'}">${f.delta > 0 ? '▲' : '▼'} ${Math.abs(Math.round(f.delta * 100))} pct.point siden start</i>`
+        : ''}
+    </div>`;
+
   const node = el(`
-    <section class="card type-case-drop">
+    <section class="card type-milepael">
       <div class="card-inner center">
-        <div class="case-box">📦</div>
-        <p class="case-kicker">${titel}</p>
-        <h2 class="hook">Leths Case</h2>
-        <p class="sub">${sub}</p>
-        <button class="case-btn" data-act="open">Åbn case</button>
-        ${kilde === 'bonus' ? '' : '<button class="ghost-light" data-act="gem">Gem til senere</button>'}
+        <div class="mp-ring"><span>${m.emoji}</span></div>
+        <p class="mp-kicker">${esc(m.kicker)}</p>
+        <h2 class="hook">${esc(m.titel)}</h2>
+        <div class="mp-tal">${m.felter.map(felt).join('')}</div>
+        ${m.kalibrering ? `<p class="mp-kal">🎯 Når du siger »Sikker«, rammer du <b>${Math.round(m.kalibrering.pct * 100)} %</b> · ${esc(m.kalibrering.dom)}</p>` : ''}
+        <p class="mp-indsigt">${esc(m.indsigt)}</p>
+        <button class="primary wide" data-act="tag">Tag milepælen · +${m.xp} XP</button>
       </div>
     </section>`);
-  const done = (txt) => {
-    node.querySelector('.card-inner').innerHTML = `<div class="case-box opened">✅</div><h2 class="hook">${txt}</h2><button class="case-btn" data-act="next">Videre ↓</button>`;
-    node.querySelector('[data-act="next"]').addEventListener('click', () => ctx.scrollNext());
-  };
-  node.querySelector('[data-act="open"]').addEventListener('click', () => ctx.openCase(kilde, () => done('Case åbnet')));
-  node.querySelector('[data-act="gem"]')?.addEventListener('click', () => { ctx.saveCase(); done('Gemt i dit inventar 🎒'); });
+
+  const btn = node.querySelector('[data-act="tag"]');
+  btn.addEventListener('click', () => {
+    if (btn.dataset.done) return ctx.scrollNext();
+    btn.dataset.done = '1';
+    const xp = ctx.claimMilepael(kilde);
+    popXp(node, { xp });
+    btn.textContent = 'Videre ↓';
+    node.querySelector('.mp-ring').classList.add('taget');
+  });
   return node;
 }
 
@@ -682,13 +719,10 @@ function renderMaal(ctx) {
         <p class="big">${s.streak} ${s.streak === 1 ? 'dag' : 'dage'} i træk</p>
         <p class="sub">${s.answered} svar i dag · level ${s.level}${s.freezes ? ` · 🧊 ${s.freezes} streak-frys` : ''}</p>
         <p class="sub">Det sidder bedst, hvis du stopper nu og kommer igen i morgen. Vil du fortsætte, venter der en bonusrunde.</p>
-        <button class="case-btn" data-act="case">📦 Åbn din daglige case</button>
         <button class="primary light" data-act="next">Bonusrunde ↓</button>
       </div>
     </section>`);
   node.querySelector('[data-act="next"]').addEventListener('click', () => ctx.scrollNext());
-  const caseBtn = node.querySelector('[data-act="case"]');
-  caseBtn.addEventListener('click', () => ctx.openCase('maal', () => caseBtn.remove()), { once: true });
   setTimeout(() => confetti(node, 90), 200);
   return node;
 }
@@ -706,9 +740,10 @@ function renderTom() {
 
 function renderInner(card, mode, ctx) {
   if (mode === 'maal') return renderMaal(ctx);
-  if (mode.startsWith('case')) return renderCase(mode, ctx);
+  if (mode.startsWith('milepael')) return renderMilepael(mode, ctx);
   if (mode === 'tom') return renderTom();
   if (card.type === 'koncept') return renderKoncept(card, mode, ctx);
+  if (card.type === 'video') return renderVideo(card, mode, ctx);
   if (card.type === 'kobling') return renderKobling(card, mode, ctx);
   if (card.type === 'forklar') return renderForklar(card, mode, ctx);
   if (card.type === 'raekkefolge') return renderRaekkefolge(card, mode, ctx);

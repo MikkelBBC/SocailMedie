@@ -3,7 +3,7 @@ import { load, save, reset, dayKey, daysBetween } from './store.js';
 import { review, retrievability } from './fsrs.js';
 import { renderCard, md, confetti, syncSaved, forklarWidget, gradeFromRatio } from './render.js';
 import seed from '../data/index.js';
-import { openCase, RARITIES, rewardText } from './cases.js';
+import { milepaelKort, kalibrering, indsigtFor, XP_FOR } from './milepael.js';
 import { renderStats } from './stats.js';
 import { sfx, setMuted } from './sfx.js';
 import { icon, hydrateIcons } from './icons.js';
@@ -70,8 +70,8 @@ const levelTitle = (L) => TITLER[Math.min(Math.floor((L - 1) / 2), TITLER.length
 
 const boostActive = () => state.boost && state.boost.until > Date.now();
 
-// learning = XP fra svar; kun den ganges med en aktiv case-boost og kun den kan give en level-case
-// (ellers kunne XP fra en case udløse en ny case i en uendelig kæde).
+// learning = XP fra svar; kun den ganges med en aktiv boost, og kun den kan udløse en level-milepæl
+// (ellers kunne XP fra en milepæl udløse en ny milepæl i en uendelig kæde).
 function addXp(n, { learning = false } = {}) {
   if (learning && boostActive()) n = Math.round(n * state.boost.mult);
   const before = levelInfo(state.xp).level;
@@ -86,7 +86,7 @@ function addXp(n, { learning = false } = {}) {
     sfx.fanfare();
     const nyTitel = levelTitle(after) !== levelTitle(before);
     toast(`🎉 Level ${after}${nyTitel ? ` · ny titel: ${levelTitle(after)}` : ''}!`);
-    if (learning) feed.queueCase('level');
+    if (learning) queueMilepael('level');
   }
 }
 
@@ -98,24 +98,24 @@ function setupMissions() {
   return ensureMissions(state, dayKey(), { weakest, dueCount: feed.dueCount(null), freshLeft });
 }
 
-// Fremdrift på missioner. Klarede missioner giver en case (i feedet, eller i inventaret fra simulatoren).
+// Fremdrift på missioner. En klaret mission giver en milepæl i feedet.
 // Returnerer en teaser-tekst, hvis en mission rykkede sig uden at blive klaret.
 function missionEvent(ev, inFeed = true) {
   if (!state.missions) return null;
   const { done, moved } = bump(state, ev);
-  const give = (kilde) => (inFeed ? feed.queueCase(kilde) : (state.cases = (state.cases ?? 0) + 1));
+  const give = (kilde) => { if (inFeed) queueMilepael(kilde); else addXp(XP_FOR[kilde] ?? 30); };
   done.forEach((m, i) => {
     give('mission');
     setTimeout(() => {
       sfx.fanfare();
-      toast(`${missionEmoji(m)} Mission klaret! 📦 Case på vej`);
+      toast(`${missionEmoji(m)} Mission klaret!`);
       $('#goal-ring').animate([{ transform: 'scale(1)' }, { transform: 'scale(1.35)' }, { transform: 'scale(1)' }], 500);
     }, 1500 + i * 2600);
   });
   if (done.length && allMissionsDone(state) && !state.missions.bonus) {
     state.missions.bonus = true;
     give('bonus');
-    setTimeout(() => { confetti(app, 160); toast('💎 Alle 3 missioner! Bonus-case: mindst Restricted'); }, 1500 + done.length * 2600);
+    setTimeout(() => { confetti(app, 160); toast('💎 Alle 3 missioner klaret!'); }, 1500 + done.length * 2600);
   }
   return moved ? `${missionEmoji(moved)} Mission ${moved.have}/${moved.n}` : null;
 }
@@ -141,7 +141,7 @@ function missionsHtml() {
         <small>${m.have}/${m.n}</small>
       </div>`).join('')}
     <div class="mission-chest ${ms.bonus ? 'open' : ''}">
-      <span>💎</span><b>${ms.bonus ? 'Bonus-case optjent' : `Bonus-case · ${doneN}/3`}</b>
+      <span>💎</span><b>${ms.bonus ? 'Alle tre klaret' : `Dagens sæt · ${doneN}/3`}</b>
       <div class="chest-dots">${ms.list.map((m) => `<i class="${isDone(m) ? 'on' : ''}"></i>`).join('')}</div>
     </div>`;
 }
@@ -152,7 +152,7 @@ function openMissions() {
   openSheet(`
     <div class="missions">
       <h2>Dagens missioner</h2>
-      <p class="hint">Hver klaret mission giver en case. Klar alle tre, og bonus-casen er mindst Restricted.</p>
+      <p class="hint">Hver klaret mission giver en milepæl med dine egne tal. Klar alle tre, og du får dagens store opgørelse.</p>
       ${missionsHtml()}
       <div class="goal-line">
         <span>🔥 ${state.streak.count} ${state.streak.count === 1 ? 'dag' : 'dage'} i træk${state.streak.freezes ? ` · 🧊 ${state.streak.freezes}` : ''}</span>
@@ -220,7 +220,7 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
   if (grade > 1) okDays.add(dayKey());
   next.okDays = [...okDays];
   state.items[card.id] = next;
-  logAnswer(card, grade > 1);
+  logAnswer(card, grade > 1, confidence);
   if (grade > 1 && okDays.size === 3 && !prev?.okDays?.includes(dayKey())) toast('⭐ Kort mestret – 3 dage i træk rigtigt');
 
   let xp = 1;
@@ -231,7 +231,7 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
     xp = Math.round(baseXp * (1 + Math.min(state.combo - 1, 10) * 0.1));
     if (Math.random() < 0.12) { xp *= 3; crit = true; }
     const milepael = state.combo % 5 === 0;
-    if (milepael && mode !== 'sim') feed.queueCase('combo');
+    if (milepael && mode !== 'sim') queueMilepael('combo');
     milepael ? sfx.milepael() : sfx.correct(state.combo);
     if (crit) sfx.crit();
   } else {
@@ -257,7 +257,7 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
     const ring = $('#goal-ring');
     ring?.classList.add('fyldt');
     setTimeout(() => ring?.classList.remove('fyldt'), 500);
-    if (mode !== 'sim') feed.queueGoal();
+    if (mode !== 'sim') { feed.queueGoal(); queueMilepael('maal'); }
     toast('🔥 Dagens mål er nået!');
   } else if (left === 3 || left === 1) {
     setTimeout(() => toast(left === 1 ? '🔥 Ét svar mere til dagens mål!' : '🔥 Kun 3 svar til dagens mål'), 900);
@@ -266,8 +266,8 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
   // »Tæt på«-teasers: højst to, vigtigste først.
   const teasers = [];
   if (grade > 1 && mode !== 'sim') {
-    const toCase = 5 - (state.combo % 5);
-    if (toCase <= 2) teasers.push(`📦 ${toCase} ${toCase === 1 ? 'rigtigt' : 'rigtige'} mere til næste case`);
+    const toMil = 5 - (state.combo % 5);
+    if (toMil <= 2) teasers.push(`🔥 ${toMil} ${toMil === 1 ? 'rigtigt' : 'rigtige'} mere til næste milepæl`);
   }
   if (grade > 1) {
     const kob = koblingTeaser(card.id);
@@ -285,10 +285,15 @@ function gradeCard(card, mode, grade, { xp: baseXp = 10, hyper = false, confiden
   return { xp, crit, combo: state.combo, hyper, goalReached, teasers: teasers.slice(0, 2) };
 }
 
-function logAnswer(card, ok) {
+function logAnswer(card, ok, confidence = null) {
   const d = (state.log[dayKey()] ??= { n: 0, ok: 0, xp: 0, typer: {}, pakker: {} });
   d.n++;
   if (ok) d.ok++;
+  if (confidence) {
+    const c = ((d.konf ??= {})[confidence] ??= { n: 0, ok: 0 });
+    c.n++;
+    if (ok) c.ok++;
+  }
   const t = (d.typer[card.type] ??= { n: 0, ok: 0 });
   t.n++;
   if (ok) t.ok++;
@@ -332,22 +337,21 @@ const ctx = {
     updateHud();
     return 15;
   },
-  openCase(kilde, done, minRarity = kilde === 'bonus' ? 'restricted' : null) {
-    openCase(app, {
-      kilde,
-      freezes: state.streak.freezes,
-      minRarity,
-      onWin: (item) => grantLoot(item),
-      onClose: () => done?.(),
-    });
-  },
-  saveCase() {
-    state.cases = (state.cases ?? 0) + 1;
+  milepael: (kilde) => byggMilepael(kilde),
+  claimMilepael(kilde) {
+    const xp = XP_FOR[kilde] ?? 30;
+    addXp(xp);
+    if ((kilde === 'bonus' || kilde === 'level') && state.streak.freezes < 2) {
+      state.streak.freezes++;
+      toast('🧊 +1 streak-frys: én glemt dag vælter ikke din stime');
+    }
+    if (kilde === 'bonus' || kilde === 'sim') confetti(app, 140);
     save(state);
-    toast('📦 Case gemt i dit inventar');
+    updateHud();
+    return xp;
   },
   onPerfect() {
-    feed.queueCase('perfekt');
+    queueMilepael('perfekt');
   },
   tema: (id) => feed.temaById[id],
   onBridge(bro) {
@@ -881,7 +885,7 @@ function simResult() {
   state.simHistory.push({ spor: t.id, dag: dayKey(), disposition: sim.dispo, svar });
   addXp(25);
   missionEvent({ kind: 'sim' }, false);
-  if (total >= 0.75) { state.cases = (state.cases ?? 0) + 1; toast('📦 Stærk simulering – du har fået en case (se Statistik)'); }
+  if (total >= 0.75) { addXp(XP_FOR.sim); toast(`🎓 Stærk simulering · +${XP_FOR.sim} XP`); }
   save(state);
   updateHud();
   const verdict = total >= 0.85 ? ['🏆', 'Du er klar til det her emne'] : total >= 0.6 ? ['💪', 'Solidt – finpuds de røde punkter'] : total >= 0.35 ? ['🧩', 'Rygraden er der, detaljerne mangler'] : ['📖', 'Emnet skal have mere træning'];
@@ -953,14 +957,8 @@ function renderSaved() {
 
 function renderProgress() {
   renderStats($('#progress'), {
-    state, seed, readiness, mastered, reviewables, levelInfo, retrievability, RARITIES,
+    state, seed, readiness, mastered, reviewables, levelInfo, retrievability, kalibrering,
     exportData: buildExport,
-    openSavedCase() {
-      if (!state.cases) return;
-      state.cases--;
-      save(state);
-      ctx.openCase('gemt', () => renderProgress());
-    },
     reset() {
       if (confirm('Slet al fremskridt på denne enhed?')) { reset(); location.reload(); }
     },
@@ -1010,6 +1008,7 @@ function buildExport() {
     parathed_pr_emne: emner,
     rigtige_pr_korttype: saml('typer'),
     rigtige_pr_fag: saml('pakker'),
+    kalibrering: saml('konf'),
     dage_med_aktivitet: log.length,
     aldrig_besvaret: uberoert.length,
     svaereste_kort: svaere,
@@ -1017,21 +1016,44 @@ function buildExport() {
   }, null, 1);
 }
 
-// ---------- Loot ----------
+// ---------- Milepæle ----------
 
-function grantLoot(item) {
-  const r = item.reward;
-  addXp(r.xp);
-  if (r.frys) state.streak.freezes = Math.min(2, state.streak.freezes + r.frys);
-  if (r.boost) {
-    const until = Math.max(Date.now(), boostActive() ? state.boost.until : 0) + r.boost.min * 60_000;
-    state.boost = { mult: Math.max(r.boost.mult, boostActive() ? state.boost.mult : 1), until };
-  }
-  state.inventory.push({ ...item, dag: dayKey() });
-  save(state);
-  updateHud();
-  if (['classified', 'covert', 'gold'].includes(item.rarity)) confetti(app, item.rarity === 'gold' ? 200 : 120);
-  toast(`${item.emoji} ${item.navn} · ${rewardText(r)}`);
+// En milepæl, der kommer hvert andet kort, er ikke en milepæl. Der skal gå mindst
+// otte svar imellem, ellers falder den senere hændelse bare bort.
+let sidsteMilepael = -99;
+function queueMilepael(kilde) {
+  // Tælleren nulstilles ved døgnskift, så afstanden måles forfra på en ny dag.
+  if (state.daily.answered < sidsteMilepael) sidsteMilepael = -99;
+  if (state.daily.answered - sidsteMilepael < 8) return false;
+  sidsteMilepael = state.daily.answered;
+  feed.queueMilepael(kilde);
+  return true;
+}
+
+// Tallene på et milepælskort er hentet fra din egen FSRS-tilstand, ikke fundet på.
+function byggMilepael(kilde) {
+  const om7 = Date.now() + 7 * DAY;
+  const om7dage = seed.kort.filter(
+    (k) => k.type === 'koncept' && state.items[k.id] && retrievability(state.items[k.id], om7) >= 0.9,
+  ).length;
+  const mestret = Object.values(state.items).filter((it) => (it.okDays?.length ?? 0) >= 3).length;
+  const nyeIdag = seed.kort.filter((k) => state.seen[k.id] && dayKey(new Date(state.seen[k.id])) === dayKey()).length;
+
+  const dage = Object.keys(state.readyHist ?? {}).sort();
+  const foer = dage.length ? state.readyHist[dage[0]] : null;
+  const nu = overallReadiness();
+
+  const kort = milepaelKort(kilde, {
+    om7dage,
+    mestret,
+    nyeIdag,
+    svarIdag: state.daily.answered,
+    parathed: nu,
+    parathedDelta: foer != null && dage.length > 1 ? nu - foer : null,
+    spor: null,
+    kalibrering: kalibrering(state.log),
+  });
+  return { ...kort, indsigt: indsigtFor(state.daily.answered + state.streak.count) };
 }
 
 // ---------- Sheet og toast ----------

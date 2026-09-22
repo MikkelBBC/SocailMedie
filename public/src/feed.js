@@ -95,14 +95,14 @@ export class Feed {
     this.insert('__maal', 'maal', this.count);
   }
 
-  queueCase(kilde = 'combo') {
-    this.queueReward('__case', `case:${kilde}`);
+  queueMilepael(kilde = 'combo') {
+    this.queueReward('__milepael', `milepael:${kilde}`);
   }
 
-  // Belønningskort (cases) spredes ud med mindst to
+  // Milepælskort spredes ud med mindst to
   // almindelige kort imellem, så de ikke kommer i klump.
   queueReward(id, mode) {
-    const REWARD = new Set(['__case', '__skrab', '__hjul', '__bet']);
+    const REWARD = new Set(['__milepael']);
     if (this.pending.some((p) => p.mode === mode)) return;
     const lastShown = this.generated.findLastIndex((g) => REWARD.has(g.id));
     const taken = [...this.pending.filter((p) => REWARD.has(p.id)).map((p) => p.at), ...(lastShown >= 0 ? [lastShown] : [])];

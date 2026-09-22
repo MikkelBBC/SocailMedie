@@ -24,6 +24,9 @@ fx `http://192.168.0.12:3000`. Der er ingen afhængigheder, kun Node 20.12+.
 | 🏛️ Filosofi | Stoicisme, tankeværktøjer, eksistens | `public/data/filosofi/` |
 | 🤖 AI | Sådan lærer en model, sprogmodeller indefra, AI i praksis | `public/data/ai/` |
 | 🌐 Teknologi | Internettet bag skærmen, kryptering og sikkerhed | `public/data/tek/` |
+| 🔐 Cybersikkerhed | Sådan bliver man hacket, og sikker kode | `public/data/sikkerhed/` |
+| 🏗️ Business | Start et firma i Danmark, og er der en forretning i det? | `public/data/business/` |
+| 📈 Investering | Renters rente og risiko, skat og konti i Danmark | `public/data/invest/` |
 
 Fagene samles i `public/data/index.js`. Der ligger også koblinger på tværs af
 fagene. I story-ringene trykker du på et fag for at se dets spor. **Alle**
@@ -35,7 +38,8 @@ blander det hele.
   træne ét emne.
 - **Eksamen**: eksamensdato, parathed pr. emne, modeldispositioner og
   🎲 simulatoren.
-- **Statistik**: grafer, inventar og en knap, der samler dine data (hvilke kort du svarer rigtigt og forkert) til deling.
+- **Statistik**: grafer, kalibrering (rammer du, når du siger »Sikker«?) og en
+  knap, der samler dine data (hvilke kort du svarer rigtigt og forkert) til deling.
 - **Gemt**: kort du har dobbelttrykket på.
 - **Fremskridt**: level, streak og mestring pr. emne.
 
@@ -85,4 +89,8 @@ node tools/valider.mjs
 ```
 
 Korttyper: `koncept`, `quiz` (evt. med `kode`), `case`, `myte`, `forklar`
-(med `punkter` og nøgle`ord`), `raekkefolge` (med `trin`) og `kobling`.
+(med `punkter` og nøgle`ord`), `raekkefolge` (med `trin`), `sammenlign`
+(med `udsagn`), `video` og `kobling`.
+
+Analogier, tegninger og »hvorfor«-afsnit til et koncept ligger i
+`public/data/forklaringer*.js` og lægges oven på kortet ud fra dets id.

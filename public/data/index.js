@@ -22,9 +22,17 @@ import sprogmodeller from './ai/sprogmodeller.js';
 import aibrug from './ai/brug.js';
 import internet from './tek/internet.js';
 import krypto from './tek/krypto.js';
+import angreb from './sikkerhed/angreb.js';
+import forsvar from './sikkerhed/forsvar.js';
+import firma from './business/firma.js';
+import forretning from './business/forretning.js';
+import invbasis from './invest/basis.js';
+import invdk from './invest/danskskat.js';
 import sammenlign from './sammenlign.js';
+import videoer from './videoer.js';
 import forklaringer from './forklaringer.js';
 import forklaringerMere from './forklaringer-mere.js';
+import forklaringerTek from './forklaringer-tek.js';
 import temaer from './temaer.js';
 
 const prefix = (t, id) => (id ? `${t}-${id}` : id);
@@ -44,6 +52,9 @@ const psykiatri = samlSpor('psykiatri', [diagnoser, angst, psykose]);
 const filosofi = samlSpor('filosofi', [stoicisme, ragekniv, eksistens]);
 const ai = samlSpor('ai', [ailaering, sprogmodeller, aibrug]);
 const tek = samlSpor('tek', [internet, krypto]);
+const sikkerhed = samlSpor('sikkerhed', [angreb, forsvar]);
+const business = samlSpor('business', [firma, forretning]);
+const invest = samlSpor('invest', [invbasis, invdk]);
 
 // Koblinger på tværs af fag.
 const tvaerfaglige = [
@@ -98,9 +109,29 @@ const tvaerfaglige = [
     body: 'I afhængighedssporet: dopamin koder **prediction error** og markerer, hvad der er vigtigt, især ved uforudsigelige belønninger.\n\nI psykosesporet: Kapurs **aberrant salience**. Når det samme markeringssystem fyrer forkert, bliver ligegyldige ting ladet med betydning, og hjernen bygger en forklaring.\n\nFælles kerne: dopamin siger ikke »det her er rart«, men **»læg mærke til det her«**.\n\n• Ved en spilleautomat er markeringen kunstigt stærk, fordi belønningen er uforudsigelig.\n• Ved psykose er markeringen tilfældig, og verden føles fuld af skjulte mønstre.\n\nDet er også en af grundene til, at rusmidler, der øger dopamin, som amfetamin, kan udløse psykose hos nogle.',
   },
   {
-    id: 'kob-tredemolle-casino', type: 'kobling', kraever: ['eksistens-k5q', 'afhaengighed-k2q'],
-    hook: 'Casinoet i denne app er bygget på to fund. Nu kender du begge.',
-    body: '**Variabel belønning** (afhængighedssporet): du ved ikke, hvornår gevinsten kommer, så hjernen bliver ved med at trykke.\n\n**Hedonisk tilpasning** (eksistenssporet): glæden ved en gevinst falder hurtigt tilbage mod udgangspunktet. Så du vil have **næste** gevinst for at mærke det igen.\n\nSammen er de motoren i spilleautomater, loot boxes og skrabelodder: kort top, hurtig tilpasning, ny indsats.\n\nForskellen her er, at mønterne kun kan tjenes ved at **lære**, og de kan ikke købes for rigtige penge. Oddsene står altid synligt, og husets fordel er ægte: i det lange løb taber du mønter på at spille. Ligesom i et rigtigt casino.\n\nNæste gang et spil føles »lige ved«: det er tredemøllen, der kører.',
+    id: 'kob-tredemolle-penge', type: 'kobling', kraever: ['eksistens-k5q', 'invbasis-k4q'],
+    hook: 'Hedonisk tilpasning forklarer, hvorfor investorer køber dyrest muligt.',
+    body: '**Hedonisk tilpasning** (eksistenssporet): glæden ved en gevinst falder hurtigt tilbage mod udgangspunktet. Derfor skal der mere til næste gang for at mærke det samme.\n\n**Adfærdsgabet** (investeringssporet): den gennemsnitlige investor får mindre ud af en fond, end fonden selv giver, fordi han køber efter en optur og sælger efter en nedtur.\n\nDe to ting er den samme motor. En portefølje, der er steget 8 %, føles efter kort tid som det normale. Så kigger man på noget, der er steget 40 %, og flytter derover. Altså køber man det, der er dyrest, og sælger det, der er billigst.\n\nModtrækket er strukturelt, ikke mentalt: fast månedlig opsparing og en plan, du har skrevet ned i forvejen, fjerner beslutningen fra det øjeblik, hvor følelsen er stærkest.\n\nSamme mekanik ligger bag »én gevinst mere« på en spilleautomat. Forskellen er kun, hvor lang tid der går mellem trykkene.',
+  },
+  {
+    id: 'kob-prompt-sql', type: 'kobling', kraever: ['forsvar-k2q', 'sprogmodeller-k4q'],
+    hook: 'Prompt injection er SQL injection igen. Samme fejl, ny indpakning.',
+    body: '**SQL injection** sker, fordi databasen ikke kan se forskel på din forespørgsel og brugerens tekst, når de er klistret sammen til én streng.\n\n**Prompt injection** sker, fordi sprogmodellen ikke kan se forskel på dine instruktioner og indholdet af den hjemmeside, den fik med i **kontekstvinduet**. Alt er tekst i samme vindue.\n\nGrundfejlen er identisk: **data bliver behandlet som instruktion.**\n\nForskellen er, at SQL har en ren løsning. Parameteriserede forespørgsler holder kode og data i to adskilte kanaler, som ingen tekst kan hoppe imellem.\n\nDen løsning findes ikke for sprogmodeller endnu. Derfor må man i stedet begrænse, hvad modellen **må** gøre: least privilege på dens værktøjer, og et menneske til at godkende det, der ikke kan fortrydes.\n\nDet er den samme konklusion som i forsvarssporet: når du ikke kan stole på input, begrænser du konsekvensen.',
+  },
+  {
+    id: 'kob-phishing-autoritet', type: 'kobling', kraever: ['angreb-k1q', 'social-k3q'],
+    hook: 'Phishing er ikke et teknisk angreb. Det er socialpsykologi brugt som våben.',
+    body: 'I socialsporet lærte du, hvad der får mennesker til at gøre ting: **autoritet**, **social proof** og lydighed under pres.\n\nEn phishingmail bruger alle tre på fire linjer:\n• Afsenderen er **banken** eller **chefen** (autoritet).\n• »Alle medarbejdere skal bekræfte inden fredag« (social proof).\n• »Kontoen lukkes om 24 timer« (tidspres, der slår eftertanken fra).\n\nDerfor er det ikke de dummeste, der falder i. Det er de travleste. Presset er designet til at ramme det system, der handler hurtigt, før det system, der tænker langsomt, når frem.\n\nOg derfor virker tekniske løsninger kun halvt. Modtrækket må være en **vane**, der ikke kræver, at du gennemskuer beskeden: gå selv ind på siden, hver gang, også når den ser ægte ud.',
+  },
+  {
+    id: 'kob-likviditet-lager', type: 'kobling', kraever: ['firma-k4q', 'invdk-k1q'],
+    hook: 'Papirgevinst er ikke penge i kassen. Det gælder både firmaet og depotet.',
+    body: 'I firmasporet: du kan have solgt for 500.000 kr og alligevel gå konkurs, fordi kunderne betaler om 90 dage, mens lønnen skal ud på fredag. **Overskud er ikke likviditet.**\n\nI skattesporet: et **lagerbeskattet** produkt udløser skat af årets værdistigning, også selvom du ikke har solgt noget. Gevinsten er på papiret. Regningen er i kroner.\n\nSamme fejl i to forklædninger: man planlægger efter **værdien** og bliver fanget af **tidspunktet for betalingen**.\n\nModtrækket er også det samme begge steder: læg pengene til den kommende regning væk, **før** du disponerer over resten. I firmaet er det moms og skat på en separat konto. I depotet er det kontanter nok til at betale lagerskatten uden at skulle sælge på et dårligt tidspunkt.',
+  },
+  {
+    id: 'kob-validering-2-4-6', type: 'kobling', kraever: ['forretning-k1q', 'biases-b4q'],
+    hook: 'Iværksættere validerer, som folk løser 2-4-6-opgaven: de leder efter ja.',
+    body: 'I Wasons 2-4-6-opgave testede folk næsten kun tal, der **passede** med deres hypotese. Det er **confirmation bias**.\n\nDen hyppigste dødsårsag for startups er, at ingen havde brug for produktet. Og grunden til, at ingen opdagede det i tide, er nøjagtig den samme fejl:\n\n• Man spørger sine venner, som gerne vil være søde.\n• Man spørger »ville du bruge det her?«, altså et spørgsmål, hvor høflighed giver et ja.\n• Man tæller de begejstrede og glemmer de ligeglade.\n\nDen informative test er den, der kan **vælte** dig, altså 1-2-3-testen for en forretningsidé:\n• Spørg, hvad de gør i dag, ikke hvad de ville gøre i morgen.\n• Bed om en forudbetaling eller en underskrift. Penge lyver sjældent.\n• Spørg de kunder, der sagde nej, hvorfor.\n\nValidering er hypotesetest. Og et ja, der ikke kunne have været et nej, er ingen information.',
   },
   {
     id: 'kob-neuron-perceptron', type: 'kobling', kraever: ['ailaering-k2q', 'hukommelse-k1q'],
@@ -137,13 +168,19 @@ export const pakker = [
   { id: 'filosofi', navn: 'Filosofi', emoji: '🏛️', gradient: 'linear-gradient(135deg, #A18CD1, #FF6A88 60%, #FF99AC)', farve: '#A18CD1' },
   { id: 'ai', navn: 'AI', emoji: '🤖', gradient: 'linear-gradient(135deg, #11998E, #4776E6 55%, #8E54E9)', farve: '#4776E6' },
   { id: 'tek', navn: 'Teknologi', emoji: '🌐', gradient: 'linear-gradient(135deg, #00C6FF, #0072FF 55%, #8E54E9)', farve: '#0072FF' },
+  { id: 'sikkerhed', navn: 'Cybersikkerhed', emoji: '🔐', gradient: 'linear-gradient(135deg, #FF512F, #DD2476 60%, #8E54E9)', farve: '#DD2476' },
+  { id: 'business', navn: 'Business', emoji: '🏗️', gradient: 'linear-gradient(135deg, #F7971E, #FFD200 55%, #F77737)', farve: '#F7971E' },
+  { id: 'invest', navn: 'Investering', emoji: '📈', gradient: 'linear-gradient(135deg, #11998E, #38EF7D 60%, #5EEAD4)', farve: '#11998E' },
 ];
 
-const spor = [...sw3sys.spor.map((s) => ({ ...s, pakke: 'sw3sys' })), ...dao.spor, ...psyk.spor, ...psykiatri.spor, ...filosofi.spor, ...ai.spor, ...tek.spor];
+// En quiz til en video arver videoens spor.
+const videoSpor = (id) => videoer.find((v) => v.id === id)?.spor;
+
+const spor = [...sw3sys.spor.map((s) => ({ ...s, pakke: 'sw3sys' })), ...dao.spor, ...psyk.spor, ...psykiatri.spor, ...filosofi.spor, ...ai.spor, ...tek.spor, ...sikkerhed.spor, ...business.spor, ...invest.spor];
 const sporPakke = Object.fromEntries(spor.map((s) => [s.id, s.pakke]));
 
 // Koncepter kan have ekstra forklaring (analogi, tegning, trin) i forklaringer.js.
-const alleForklaringer = { ...forklaringer, ...forklaringerMere };
+const alleForklaringer = { ...forklaringer, ...forklaringerMere, ...forklaringerTek };
 const medForklaring = (kort) => kort.map((k) => (alleForklaringer[k.id] ? { ...k, ...alleForklaringer[k.id] } : k));
 
 export default {
@@ -158,7 +195,11 @@ export default {
     ...filosofi.kort,
     ...ai.kort,
     ...tek.kort,
+    ...sikkerhed.kort,
+    ...business.kort,
+    ...invest.kort,
     ...sammenlign.map((k) => ({ ...k, type: 'sammenlign', pakke: sporPakke[k.spor] })),
+    ...videoer.map((k) => ({ ...k, spor: k.spor ?? videoSpor(k.om), pakke: sporPakke[k.spor ?? videoSpor(k.om)] })),
     ...tvaerfaglige.map((k) => ({ ...k, spor: 'kobling', pakke: 'tvaerfag' })),
   ]),
 };

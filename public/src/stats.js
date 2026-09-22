@@ -205,7 +205,7 @@ const legend = (items) => `<div class="viz-legend">${items.map(([c, t]) => `<spa
 // ---------- Siden ----------
 
 export function renderStats(el, d) {
-  const { state, seed, readiness, mastered, reviewables, levelInfo, retrievability, RARITIES, openSavedCase, exportData, reset } = d;
+  const { state, seed, readiness, mastered, reviewables, levelInfo, retrievability, kalibrering, exportData, reset } = d;
   const log = state.log ?? {};
   const days14 = lastDays(14);
   const sum = (keys, f) => keys.reduce((a, k) => a + (log[k]?.[f] ?? 0), 0);
@@ -282,8 +282,12 @@ export function renderStats(el, d) {
     .sort((a, b) => b.lapses - a.lapses || a.r - b.r)
     .slice(0, 5);
 
-  const inv = state.inventory ?? [];
-  const invCounts = Object.fromEntries(RARITIES.map((r) => [r.id, inv.filter((x) => x.rarity === r.id).length]));
+  // Kalibrering: passer din fornemmelse af at kunne det med, om du kan det?
+  const kal = kalibrering(state.log);
+  const KONF = [['sikker', '🎯 Sikker'], ['tror', '🤔 Tror det'], ['gaet', '🎲 Gætter']];
+  const konfRows = kal
+    ? KONF.filter(([k]) => kal.alle[k].n >= 3).map(([k, navn]) => ({ label: navn, v: kal.alle[k].ok / kal.alle[k].n }))
+    : [];
 
   el.innerHTML = `
     <div class="stat-tiles">
@@ -312,15 +316,9 @@ export function renderStats(el, d) {
     ${weakest.length ? `<section class="viz-card"><header><h3>Dine sværeste kort</h3><p>Flest glemt – de kommer oftere i feedet</p></header>
       <ol class="weak-list">${weakest.map(({ k, r, lapses }) => `<li><span>${esc(k.hook ?? k.sporgsmal ?? k.pastand ?? `${k.a?.navn} vs ${k.b?.navn}`)}</span><small>${lapses}× glemt · husker ~${pct(r)}</small></li>`).join('')}</ol></section>` : ''}
 
-    <section class="viz-card inventory">
-      <header><h3>Inventar</h3><p>${inv.length} skins${state.cases ? ` · ${state.cases} uåbnede cases` : ''}</p></header>
-      ${state.cases ? '<button class="case-btn" id="open-saved-case">Åbn en gemt case</button>' : ''}
-      <div class="rarity-row">${RARITIES.map((r) => `<span style="--r:${r.farve}"><b>${invCounts[r.id]}</b>${r.navn}</span>`).join('')}</div>
-      <div class="skins">${inv.slice(-24).reverse().map((x) => {
-        const r = RARITIES.find((y) => y.id === x.rarity);
-        return `<div class="skin" style="--r:${r.farve}"><span>${x.emoji}</span><b>${x.stattrak ? 'ST™ ' : ''}${esc(x.navn)}</b><small>${esc(x.wear)}</small></div>`;
-      }).join('') || '<p class="empty">Få 5 rigtige i træk for din første case.</p>'}</div>
-    </section>
+    ${konfRows.length ? card('Kalibrering', 'Rammer du, når du siger, du er sikker?', hbars(konfRows), `
+      <p class="kal-dom"><b>${kal.dom}</b> · ${Math.round(kal.pct * 100)} % rigtige ud af ${kal.n} gange, hvor du sagde »Sikker«.</p>
+      <p class="kal-raad">${kal.raad}</p>`) : ''}
 
     <section class="export-box">
       <h3>Del dine data med Claude</h3>
@@ -336,7 +334,6 @@ export function renderStats(el, d) {
     <button class="ghost danger" id="reset">Nulstil fremskridt</button>`;
 
   el.querySelectorAll('.viz-root').forEach(wireTooltip);
-  el.querySelector('#open-saved-case')?.addEventListener('click', openSavedCase);
   const ta = el.querySelector('#export-text');
   el.querySelector('#export-copy').addEventListener('click', async () => {
     const data = exportData();

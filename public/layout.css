@@ -267,7 +267,7 @@
 @keyframes sweep { from { background-position: 150% 0; } to { background-position: -120% 0; } }
 
 /* Knapper generelt: samme rolige nedtrykning */
-.primary, .ghost, .case-btn, .next-btn, .conf, .seq-item, .vs-buttons button {
+.primary, .ghost, .next-btn, .conf, .seq-item, .vs-buttons button {
   transition: transform .16s cubic-bezier(.2,.8,.3,1), box-shadow .2s, background .2s;
 }
 .primary:active, .ghost:active, .conf:active, .seq-item:active { transform: scale(.97); }
@@ -368,7 +368,7 @@
   --fjeder-pop: cubic-bezier(.2, .9, .3, 1.35);
 }
 
-.opt, .primary, .ghost, .case-btn, .next-btn, .conf, .seq-item, .vs-buttons button, .rail-btn span, .nav-btn, .hl-ring {
+.opt, .primary, .ghost, .next-btn, .conf, .seq-item, .vs-buttons button, .rail-btn span, .nav-btn, .hl-ring {
   transition: transform var(--t-tryk) var(--fjeder), box-shadow var(--t-skift) var(--fjeder),
               background var(--t-skift) ease, border-color var(--t-skift) ease;
 }
@@ -396,3 +396,27 @@
 /* Dagens mål-ringen mærker, at den bliver fyldt */
 #goal-ring.fyldt { animation: ring-fyldt 420ms var(--fjeder-pop); }
 @keyframes ring-fyldt { 40% { transform: scale(1.18); } }
+
+/* ================================================================
+   Videokort
+   ================================================================ */
+.video-kort .card-inner { gap: 10px; }
+.video-sub { margin: 0; font-size: 15px; line-height: 1.45; color: #3a3a3f; }
+.story:not(.on-cover) .video-sub, .video-kort .video-sub { color: #32323a; }
+.video-boks {
+  position: relative; border-radius: 20px; overflow: hidden; background: #000;
+  box-shadow: 0 14px 34px #00000026;
+}
+.video-boks video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+.video-punkter {
+  background: #ffffffee; border-radius: 18px; padding: 14px 16px;
+  box-shadow: 0 8px 24px #00000014;
+}
+.video-punkter small {
+  display: block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 8px; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.video-punkter ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.video-punkter li { position: relative; padding-left: 18px; font-size: 14px; line-height: 1.4; color: #32323a; }
+.video-punkter li::before { content: ''; position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border-radius: 50%; background: var(--grad); }
+.type-video .kind { color: var(--accent); }

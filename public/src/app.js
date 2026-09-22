@@ -1174,6 +1174,32 @@ function toast(msg) {
   toastTimer = setTimeout(() => (t.hidden = true), 2400);
 }
 
+// Offline: appen skal kunne bruges i bussen. Service workeren cacher alt undtagen
+// videoerne, som gemmes efterhånden som de ses.
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  addEventListener('load', async () => {
+    try {
+      const reg = await navigator.serviceWorker.register('./sw.js');
+      // Ny udgave klar: sig det i stedet for at skifte under fingrene på brugeren.
+      reg.addEventListener('updatefound', () => {
+        const ny = reg.installing;
+        ny?.addEventListener('statechange', () => {
+          if (ny.state === 'installed' && navigator.serviceWorker.controller) nyVersionKlar();
+        });
+      });
+    } catch {}
+  });
+}
+
+function nyVersionKlar() {
+  const t = $('#toast');
+  if (!t) return;
+  clearTimeout(toastTimer);
+  t.innerHTML = 'Ny udgave klar <button class="toast-btn">Genindlæs</button>';
+  t.hidden = false;
+  t.querySelector('.toast-btn').addEventListener('click', () => location.reload());
+}
+
 hydrateIcons();
 document.querySelectorAll('.nav-btn').forEach((b) => b.addEventListener('click', () => showView(b.dataset.view)));
 desktop.addEventListener('change', updateHud);

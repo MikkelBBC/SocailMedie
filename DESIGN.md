@@ -72,6 +72,12 @@ hvor level-fremdriften er en tynd streg frem for endnu en ring) og én ring til
 dagens mål, som er det eneste, man kan trykke på. XP-boosten er midlertidig og
 får sin egen smalle linje i stedet for at skubbe til resten.
 
+**Offline:** appen skal kunne bruges på vej til skole. Service workeren
+precacher alt undtagen videoerne under ét cache-navn, der er et hash af filernes
+indhold – så en ny udgivelse altid giver en ny cache, og en gammel aldrig bliver
+hængende. Videoer og skrifttyper cachees under kørslen. En ny udgave siger til i
+en toast i stedet for at skifte under fingrene på en, der er midt i et kort.
+
 **Det, vi bevidst ikke gør:** ingen passiv uendelig scroll (der kommer altid en
 quiz efter 2 koncepter), ingen straf for fejl (fejl er læring), og »Dagens mål«
 anbefaler at stoppe.

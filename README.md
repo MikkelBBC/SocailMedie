@@ -36,6 +36,23 @@ Fagene samles i `public/data/index.js`. Der ligger også koblinger på tværs af
 fagene. Ringene i toppen har tre niveauer: **gruppe** (Kode, Mennesker, Penge)
 → **fag** → **spor**. **Alle** blander det hele.
 
+## Offline og på hjemskærmen
+
+Appen er en PWA. En service worker cacher alt undtagen videoerne, så den
+virker i bussen uden net – videoer gemmes efterhånden, som du ser dem.
+På telefonen kan du lægge den på hjemskærmen fra browserens menu, og så
+åbner den uden adresselinje.
+
+Filerne genereres, så listen ikke kan blive forældet:
+
+```bash
+node tools/sw.mjs
+```
+
+`node tools/sw.mjs --tjek` fejler, hvis `public/sw.js` ikke er opdateret.
+Ikonerne laves med `node tools/ikon.mjs` (ingen afhængigheder – PNG'erne
+skrives i hånden).
+
 ## Faner
 
 - **Feed**: blandet træning på tværs af emner. Tryk på en story-ring for at

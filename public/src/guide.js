@@ -101,11 +101,15 @@ const AFSNIT = [
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const kode = (s) => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
 
+const TAL = ['ingen', 'Én ting', 'To ting', 'Tre ting', 'Fire ting', 'Fem ting', 'Seks ting', 'Syv ting', 'Otte ting', 'Ni ting', 'Ti ting', 'Elleve ting', 'Tolv ting'];
+
 export function guideHtml() {
+  // Tælles frem, så overskriften ikke bliver forkert, næste gang der kommer et punkt til.
+  const n = AFSNIT.reduce((sum, a) => sum + a.punkter.length, 0);
   return `
     <div class="guide">
       <h2>Sådan får du mest ud af appen</h2>
-      <p class="guide-intro">Otte ting, der er lette at overse. Hver af dem står her, fordi den er dokumenteret
+      <p class="guide-intro">${TAL[n] ?? `${n} ting`}, der er lette at overse. Hver af dem står her, fordi den er dokumenteret
       til at virke – ikke fordi den var sjov at bygge.</p>
       ${AFSNIT.map((a) => `
         <h3 class="guide-h">${esc(a.titel)}</h3>

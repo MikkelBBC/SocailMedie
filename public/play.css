@@ -266,3 +266,10 @@ svg.viz rect[rx].hot { stroke: #0b0b0b; stroke-width: 1.5; }
   background: #fff; border: 1px solid var(--border); border-radius: 99px; padding: 6px 12px;
 }
 .plan-gaa:active { transform: scale(.97); }
+
+/* Knappen i en toast, fx »ny udgave klar«. */
+.toast-btn {
+  margin-left: 10px; padding: 4px 11px; border-radius: 99px;
+  background: #ffffff26; color: #fff; font-weight: 800; font-size: 12.5px;
+}
+.toast-btn:active { transform: scale(.96); }

@@ -1,0 +1,17 @@
+{
+  "name": "Leths super App",
+  "short_name": "Leths App",
+  "description": "Scroll-feed til eksamen: koncepter, quizzer og spaced repetition på tværs af fag.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#E1306C",
+  "lang": "da",
+  "icons": [
+    { "src": "ikon/ikon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "ikon/ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "ikon/ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

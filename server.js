@@ -17,6 +17,9 @@ const TYPES = {
   '.json': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
+  '.mp4': 'video/mp4',
+  '.jpg': 'image/jpeg',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
 };
 
 const json = (res, status, body) => {

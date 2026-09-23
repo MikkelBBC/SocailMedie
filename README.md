@@ -28,7 +28,7 @@ fx `http://192.168.0.12:3000`. Der er ingen afhængigheder, kun Node 20.12+.
 | 🏗️ Business | Start et firma i Danmark, og er der en forretning i det? | `public/data/business/` |
 | 📈 Investering | Renters rente og risiko, skat og konti i Danmark | `public/data/invest/` |
 | 🗄️ Databaser | Tabeller, nøgler og joins · indeks, planer og transaktioner | `public/data/db/` |
-| 🛠️ Værktøj | Sådan tænker Git | `public/data/vaerktoj/` |
+| 🛠️ Værktøj | Sådan tænker Git · sådan finder du fejlen | `public/data/vaerktoj/` |
 | 🧱 Arkitektur | Kobling og abstraktion · test der fanger noget | `public/data/arkitektur/` |
 | 📶 Drift | Cache, køer og CAP · når systemet fejler | `public/data/drift/` |
 

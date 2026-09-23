@@ -4,7 +4,7 @@
 // der udskiftes under ét, når indholdet ændrer sig: versionen nedenfor er et
 // hash af filernes indhold, så en ny udgivelse altid giver et nyt cache-navn.
 
-const VERSION = '02eed3124701';
+const VERSION = 'dea184d51048';
 const SKAL = `leths-${VERSION}`;         // appens filer, udskiftes samlet
 const MEDIE = 'leths-medie-v1';            // videoer, hentet efterhånden
 const EKSTERN = 'leths-ekstern-v1';        // skrifttyper
@@ -67,6 +67,7 @@ const FILER = [
   "./data/tek/internet.js",
   "./data/tek/krypto.js",
   "./data/temaer.js",
+  "./data/vaerktoj/fejlfind.js",
   "./data/vaerktoj/git.js",
   "./data/videoer.js",
   "./exam.css",

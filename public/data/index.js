@@ -35,6 +35,7 @@ import fejl from './drift/fejl.js';
 import relation from './db/relation.js';
 import ydelse from './db/ydelse.js';
 import git from './vaerktoj/git.js';
+import fejlfind from './vaerktoj/fejlfind.js';
 import sammenlign from './sammenlign.js';
 import videoer from './videoer.js';
 import forklaringer from './forklaringer.js';
@@ -65,7 +66,7 @@ export const FAG = [
   { id: 'business', gruppe: 'penge', navn: 'Business', emoji: '🏗️', gradient: 'linear-gradient(135deg, #F7971E, #FFD200 55%, #F77737)', farve: '#F7971E', moduler: [firma, forretning] },
   { id: 'invest', gruppe: 'penge', navn: 'Investering', emoji: '📈', gradient: 'linear-gradient(135deg, #11998E, #38EF7D 60%, #5EEAD4)', farve: '#11998E', moduler: [invbasis, invdk] },
   { id: 'db', gruppe: 'kode', navn: 'Databaser', emoji: '🗄️', gradient: 'linear-gradient(135deg, #2563EB, #7C3AED 55%, #F472B6)', farve: '#2563EB', moduler: [relation, ydelse] },
-  { id: 'vaerktoj', gruppe: 'kode', navn: 'Værktøj', emoji: '🛠️', gradient: 'linear-gradient(135deg, #F05133, #FCAF45 60%, #FFD200)', farve: '#F05133', moduler: [git] },
+  { id: 'vaerktoj', gruppe: 'kode', navn: 'Værktøj', emoji: '🛠️', gradient: 'linear-gradient(135deg, #F05133, #FCAF45 60%, #FFD200)', farve: '#F05133', moduler: [git, fejlfind] },
   { id: 'arkitektur', gruppe: 'kode', navn: 'Arkitektur', emoji: '🧱', gradient: 'linear-gradient(135deg, #4338CA, #A5B4FC 55%, #BEF264)', farve: '#4338CA', moduler: [design, test] },
   { id: 'drift', gruppe: 'kode', navn: 'Drift', emoji: '📶', gradient: 'linear-gradient(135deg, #0EA5E9, #A78BFA 55%, #FB923C)', farve: '#0EA5E9', moduler: [skalering, fejl] },
 ];
